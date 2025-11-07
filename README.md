@@ -22,15 +22,15 @@
 
 ## 🚀 Demo
 
-[**Visualizza Demo Live**](#) _(inserisci il link alla tua demo)_
+[**Visualizza Demo Live**](https://guidatv.vercel.app/) _(inserisci il link alla tua demo)_
 
 ## 📸 Screenshot
 
 ### Desktop
-![Desktop View](screenshots/desktop.png)
+![Desktop View](img/desktop.png)
 
 ### Mobile
-![Mobile View](screenshots/mobile.png)
+![Mobile View](img/mobile.png)
 
 ## 🛠️ Tecnologie Utilizzate
 
