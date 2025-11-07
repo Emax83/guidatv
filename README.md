@@ -230,6 +230,7 @@ Questo progetto è rilasciato sotto licenza MIT - vedi il file [LICENSE](LICENSE
 - [Bootstrap Icons](https://icons.getbootstrap.com/) - Set di icone
 - [HLS.js](https://github.com/video-dev/hls.js/) - Supporto streaming HLS
 - [EPG Data Source](https://tvit.leicaflorianrobert.dev/) - Sorgente dati programmi TV
+- [THANKS TO REAL DEV MASTER:](https://github.com/leicaflorian/tvit) - GitHub LEICAFLORIAN
 
 ## 📊 Roadmap
 
@@ -250,8 +251,5 @@ Questo progetto è rilasciato sotto licenza MIT - vedi il file [LICENSE](LICENSE
 
 Made with ❤️ by emax83dev
 
-THANKS TO REAL DEV MASTER:
-
-https://github.com/leicaflorian/tvit
 
 </div>
