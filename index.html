@@ -3,12 +3,11 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="GuidaTV - La tua guida completa ai programmi TV italiani con streaming online. Scopri cosa c'è in onda ora e stasera.">
     <meta name="keywords" content="guida tv, programmi tv, streaming tv italia, palinsesto tv, tv online, canali tv italiani">
     <meta name="author" content="emax83dev">
-    <meta name="theme-color" content="#0dcaf0">
-
+    <meta name="theme-color" content="#0a0e27">
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="GuidaTV - Guida TV Completa">
@@ -49,12 +48,19 @@
         box-sizing: border-box;
     }
     
+    html {
+        background: var(--dark-bg);
+        overscroll-behavior: none;
+    }
+    
     body {
         background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1429 100%);
         color: var(--text-primary);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         min-height: 100vh;
         padding-top: 70px;
+        overscroll-behavior-y: none;
+        -webkit-overflow-scrolling: touch;
     }
     
     /* Toolbar */
@@ -495,7 +501,6 @@
         display: block;
     }
 </style>
-```
 
 </head>
 <body>
