@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuidaTV - Vue 3 Edition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0dcaf0;
+            --secondary-color: #0d6efd;
+            --dark-bg: #0a0e27;
+            --card-bg: #1a1f3a;
+            --hover-bg: #252b4a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c8;
+        }
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1429 100%);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+        .toolbar {
+            background: linear-gradient(135deg, rgba(26,31,58,0.95) 0%, rgba(15,20,41,0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-color);
+            box-shadow: 0 4px 20px rgba(13,202,240,0.2);
+        }
+        .btn-nav { color: var(--text-secondary); border: none; }
+        .btn-nav.active, .btn-nav:hover { color: var(--primary-color); }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .channel-card {
+            min-width: 140px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .channel-card:hover { border-color: var(--primary-color); transform: translateY(-5px); }
+        .channel-logo {
+            width: 80px; height: 80px; object-fit: contain;
+            margin: 0 auto; display: block;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px; padding: 5px;
+        }
+        .channel-name { text-align: center; margin-top: 10px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <nav class="navbar navbar-expand toolbar fixed-top">
+        <div class="container-fluid">
+            <span class="navbar-brand text-info fw-bold"><i class="bi bi-tv"></i> GuidaTV</span>
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-nav" :class="{active: currentSection==='favorites'}" @click="showSection('favorites')">
+                    <i class="bi bi-star"></i> Preferiti
+                </button>
+                <button class="btn btn-nav" :class="{active: currentSection==='now'}" @click="showSection('now')">
+                    <i class="bi bi-broadcast"></i> Ora
+                </button>
+                <button class="btn btn-nav" :class="{active: currentSection==='evening'}" @click="showSection('evening')">
+                    <i class="bi bi-moon-stars"></i> Stasera
+                </button>
+                <button class="btn btn-nav" :class="{active: currentSection==='channels'}" @click="showSection('channels')">
+                    <i class="bi bi-grid-3x3"></i> Canali
+                </button>
+                <span class="current-time text-info ms-2 fw-bold">{{ currentTime }}</span>
+            </div>
+        </div>
+    </nav>
+
+    <div v-if="loading" class="text-center py-5 mt-5">
+        <div class="spinner-border text-info"></div>
+        <p class="mt-3">Caricamento programmi...</p>
+    </div>
+
+    <div v-show="currentSection==='favorites'" class="section container py-4 active">
+        <h3><i class="bi bi-star-fill"></i> I miei preferiti</h3>
+        <div v-if="!hasFavorites" class="text-muted py-5">Nessun preferito salvato</div>
+        <div v-else>
+            <h5 class="mt-4 text-info">Canali Preferiti</h5>
+            <div class="d-flex flex-wrap gap-3 mt-3">
+                <div v-for="ch in favorites.channels" :key="ch.name" class="channel-card text-center">
+                    <img :src="ch.logo" class="channel-logo" @error="onImgError($event)">
+                    <div class="channel-name">{{ ch.name }}</div>
+                    <button class="btn btn-sm btn-danger mt-2" @click.stop="toggleFavoriteChannel(ch)">Rimuovi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentSection==='now'" class="section container py-4 active">
+        <h3><i class="bi bi-broadcast"></i> Ora in Onda</h3>
+        <div class="d-flex overflow-auto gap-3 mt-3">
+            <div v-for="channel in liveChannels" :key="channel.name" class="channel-card text-center">
+                <img :src="channel.logo" class="channel-logo" @error="onImgError($event)">
+                <div class="channel-name">{{ channel.name }}</div>
+                <div class="text-info small">{{ getCurrentProgram(channel)?.title }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentSection==='evening'" class="section container py-4 active">
+        <h3><i class="bi bi-moon-stars"></i> Stasera (20:00 - 23:00)</h3>
+        <div class="d-flex overflow-auto gap-3 mt-3">
+            <div v-for="ch in eveningChannels" :key="ch.name" class="channel-card text-center">
+                <img :src="ch.logo" class="channel-logo" @error="onImgError($event)">
+                <div class="channel-name">{{ ch.name }}</div>
+                <div v-for="p in getEveningPrograms(ch)" :key="p.title" class="text-info small">{{ p.title }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentSection==='channels'" class="section container py-4 active">
+        <h3><i class="bi bi-grid-3x3"></i> Tutti i Canali</h3>
+        <div class="row g-3 mt-3">
+            <div v-for="ch in dataTV?.channels || []" :key="ch.name" class="col-6 col-md-3 col-lg-2">
+                <div class="channel-card text-center" @click="toggleFavoriteChannel(ch)">
+                    <img :src="ch.logo" class="channel-logo" @error="onImgError($event)">
+                    <div class="channel-name">{{ ch.name }}</div>
+                    <small class="text-info" v-if="isFavoriteChannel(ch.name)">★ Preferito</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+<script>
+const vueApp = Vue.createApp({
+    data() {
+        return {
+            dataTV: null,
+            currentSection: 'now',
+            favorites: { channels: [], programs: [] },
+            loading: true,
+            currentTime: ''
+        };
+    },
+    computed: {
+        hasFavorites() {
+            return this.favorites.channels.length > 0;
+        },
+        liveChannels() {
+            if (!this.dataTV) return [];
+            return this.dataTV.channels.filter(ch => this.getCurrentProgram(ch));
+        },
+        eveningChannels() {
+            if (!this.dataTV) return [];
+            return this.dataTV.channels.filter(ch => this.getEveningPrograms(ch).length);
+        }
+    },
+    async mounted() {
+        this.updateTime();
+        setInterval(this.updateTime, 1000);
+        this.loadFavorites();
+        await this.loadData();
+    },
+    methods: {
+        async loadData() {
+            try {
+                const response = await fetch('https://www.emax83dev.it/api/epg');
+                const jsonData = await response.json();
+                this.dataTV = {
+                    channels: jsonData.map(item => ({
+                        name: item.name,
+                        logo: item.logo,
+                        playlist: item.m3uLink,
+                        programs: item.programs.map(p => ({
+                            start: p.start, stop: p.end, title: p.title, category: p.category
+                        }))
+                    }))
+                };
+            } catch (e) {
+                console.error('Errore caricamento:', e);
+            } finally {
+                this.loading = false;
+            }
+        },
+        updateTime() {
+            const now = new Date();
+            this.currentTime = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        },
+        showSection(section) {
+            this.currentSection = section;
+        },
+        utcToLocal(utcDateStr) {
+            const date = new Date(utcDateStr);
+            return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Rome' }));
+        },
+        getCurrentProgram(channel) {
+            const now = new Date();
+            return channel.programs.find(p => {
+                const start = this.utcToLocal(p.start);
+                const end = this.utcToLocal(p.stop);
+                return now >= start && now < end;
+            });
+        },
+        getEveningPrograms(channel) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return channel.programs.filter(p => {
+                const start = this.utcToLocal(p.start);
+                return start.getHours() >= 20 && start.getHours() < 23 && start.toDateString() === today.toDateString();
+            });
+        },
+        loadFavorites() {
+            const stored = localStorage.getItem('guidatv_favorites');
+            if (stored) this.favorites = JSON.parse(stored);
+        },
+        saveFavorites() {
+            localStorage.setItem('guidatv_favorites', JSON.stringify(this.favorites));
+        },
+        toggleFavoriteChannel(channel) {
+            const idx = this.favorites.channels.findIndex(c => c.name === channel.name);
+            if (idx > -1) this.favorites.channels.splice(idx, 1);
+            else this.favorites.channels.push(channel);
+            this.saveFavorites();
+        },
+        isFavoriteChannel(name) {
+            return this.favorites.channels.some(c => c.name === name);
+        },
+        onImgError(e) {
+            e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect fill="%231a1f3a" width="80" height="80"/><text x="50%" y="50%" font-size="14" fill="%230dcaf0" text-anchor="middle" dy=".3em">TV</text></svg>';
+        }
+    }
+});
+vueApp.mount('#app');
+</script>
+</body>
+</html>
