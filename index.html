@@ -29,7 +29,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
     
     <style>
         :root {
@@ -182,6 +182,8 @@
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 15px;
             padding: 20px 0;
+            overflow: auto;
+            max-height: 75vh;
         }
         
         .channel-grid-item {
@@ -502,15 +504,29 @@
         }
 
         .cookie-banner{
+            display: none;
             position: fixed;
             bottom: 0;
             width: 100vw;
             height: auto;
             padding: 2rem;
-            border-top: 2px solid var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
             box-shadow: 0 4px 20px rgba(13, 202, 240, 0.2);
+            z-index: 10000;
+            background-color: #03050c;
+            overflow: hidden;
         }
 
+        .cookie-banner.show{
+            display: block;
+        }
+
+        .btn-simple-ok{
+            color: #fff;
+            border: solid 2px #0dcaf0;
+        }
+        
     </style>
 </head>
 <body>
@@ -651,13 +667,13 @@
     </div>
 
     <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-banner" id="cookieBanner" >
         <div class="cookie-banner-content">
             <div class="cookie-banner-text">
                 <h5><i class="bi bi-shield-check"></i> Privacy & Cookie</h5>
                 <p>
                     Questo sito <strong>non utilizza cookie di tracciamento</strong> e <strong>non memorizza informazioni personali</strong>. 
-                    Utilizziamo solo il localStorage del browser per salvare le tue preferenze locali (come i canali preferiti).
+                    Utilizziamo solo la memoria del browser per salvare le tue preferenze come i canali preferiti.
                 </p>
             </div>
             <div class="cookie-banner-actions">
@@ -756,6 +772,9 @@
             },
 
             acceptCookies(acceptAll = false) {
+
+                console.log("acceptCookies: " + acceptAll);
+
                 this.cookieConsent.bannerVisible = false;
                 this.cookieConsent.cookiesAccepted = acceptAll;
                 this.saveCookieConsent();
@@ -993,8 +1012,8 @@
                     // Prova prima con CORS proxy
                     let response;
                     //const originalUrl = 'https://tvit.leicaflorianrobert.dev/epg/list.json';
-                    //const originalUrl = 'https://www.emax83dev.it/api/epg';
-                    const originalUrl = 'https://localhost:7031/api/epg';
+                    const originalUrl = 'https://www.emax83dev.it/api/epg';
+                    //const originalUrl = 'https://localhost:7031/api/epg';
                     
                     // Lista di CORS proxy da provare in ordine
                     const corsProxies = [
