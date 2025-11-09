@@ -1416,13 +1416,15 @@
                 
                 document.getElementById('playerChannelName').textContent = name;
                 const video = document.getElementById('videoPlayer');
-                
+                //const originalUrl = "https://tvit.leicaflorianrobert.dev/rai/rai-1/stream.m3u8";
+const proxiedUrl = `/api/stream?url=${encodeURIComponent(m3u8Url)}`;
+
                 if (Hls.isSupported()) {
                     if (this.hls) {
                         this.hls.destroy();
                     }
                     this.hls = new Hls();
-                    this.hls.loadSource(m3u8Url);
+                    this.hls.loadSource(proxiedUrl);
                     this.hls.attachMedia(video);
                     this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play();
