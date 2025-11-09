@@ -18,7 +18,7 @@
 - 🔍 **Ricerca avanzata** - Cerca tra canali e programmi
 - ⏱️ **Progress bar** - Indicatore di avanzamento programma in tempo reale
 - 🌍 **Conversione timezone** - Automatica da UTC a fuso orario italiano
-- 🎬 **Video player** - Player integrato con HLS.js
+
 
 ## 🚀 Demo
 
@@ -40,7 +40,7 @@
 - **Vue.js** - Framework reattivo _(opzionale)_
 - **Bootstrap 5.3** - Framework CSS responsive
 - **Bootstrap Icons** - Set di icone
-- **HLS.js** - Supporto streaming HLS/M3U8
+
 
 ## 📦 Installazione
 
@@ -108,11 +108,6 @@ guidatv/
 - **Lista Canali**: Griglia completa di tutti i canali disponibili
 - **Cerca**: Utilizza la ricerca per trovare canali o programmi specifici
 
-### Streaming
-
-1. Naviga verso un canale nella sezione "Ora in Onda" o "Lista Canali"
-2. Clicca sul pulsante **Play** (▶️)
-3. Il player video si aprirà automaticamente con lo streaming
 
 ### Visualizzazione Programmi
 
@@ -228,7 +223,6 @@ Questo progetto è rilasciato sotto licenza MIT - vedi il file [LICENSE](LICENSE
 
 - [Bootstrap](https://getbootstrap.com/) - Framework CSS
 - [Bootstrap Icons](https://icons.getbootstrap.com/) - Set di icone
-- [HLS.js](https://github.com/video-dev/hls.js/) - Supporto streaming HLS
 - [EPG Data Source](https://tvit.leicaflorianrobert.dev/) - Sorgente dati programmi TV
 - [THANKS TO REAL DEV MASTER:](https://github.com/leicaflorian/tvit) - GitHub LEICAFLORIAN
 
