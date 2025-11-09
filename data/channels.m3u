@@ -1,0 +1,81 @@
+#EXTM3U
+#EXTINF:1 tvg-id="rai-1" tvg-name="Rai 1" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/217/logo?width=120&theme=dark" radio="" group-title="rai", Rai 1
+https://tvit.leicaflorianrobert.dev/rai/rai-1/stream.m3u8
+#EXTINF:2 tvg-id="rai-2" tvg-name="Rai 2" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/218/logo?width=120&theme=dark" radio="" group-title="rai", Rai 2
+https://tvit.leicaflorianrobert.dev/rai/rai-2/stream.m3u8
+#EXTINF:3 tvg-id="rai-3" tvg-name="Rai 3" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/219/logo?width=120&theme=dark" radio="" group-title="rai", Rai 3
+https://tvit.leicaflorianrobert.dev/rai/rai-3/stream.m3u8
+#EXTINF:4 tvg-id="rete-4" tvg-name="Rete 4" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/189/logo?width=120&theme=dark" radio="" group-title="mediaset", Rete 4
+https://tvit.leicaflorianrobert.dev/mediaset/rete-4/stream.m3u8
+#EXTINF:5 tvg-id="canale-5" tvg-name="Canale 5" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/187/logo?width=120&theme=dark" radio="" group-title="mediaset", Canale 5
+https://tvit.leicaflorianrobert.dev/mediaset/canale-5/stream.m3u8
+#EXTINF:6 tvg-id="italia-1" tvg-name="Italia 1" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/188/logo?width=120&theme=dark" radio="" group-title="mediaset", Italia 1
+https://tvit.leicaflorianrobert.dev/mediaset/italia-1/stream.m3u8
+#EXTINF:7 tvg-id="la7" tvg-name="La7" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/253/logo?width=120&theme=dark" radio="" group-title="la7", La7
+https://tvit.leicaflorianrobert.dev/la7/la7/stream.m3u8
+#EXTINF:8 tvg-id="tv8" tvg-name="TV8" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/237/logo?width=120&theme=dark" radio="" group-title="sky", TV8
+https://tvit.leicaflorianrobert.dev/sky/tv8/stream.m3u8
+#EXTINF:9 tvg-id="nove" tvg-name="Nove" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/238/logo?width=120&theme=dark" radio="" group-title="discovery", Nove
+https://tvit.leicaflorianrobert.dev/discovery/nove/stream.m3u8
+#EXTINF:20 tvg-id="20" tvg-name="20" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/443/logo?width=120&theme=dark" radio="" group-title="mediaset", Mediaset 20
+https://tvit.leicaflorianrobert.dev/mediaset/20/stream.m3u8
+#EXTINF:21 tvg-id="rai-4" tvg-name="Rai 4" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/220/logo?width=120&theme=dark" radio="" group-title="rai", Rai 4
+https://tvit.leicaflorianrobert.dev/rai/rai-4/stream.m3u8
+#EXTINF:22 tvg-id="iris" tvg-name="Iris" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/192/logo?width=120&theme=dark" radio="" group-title="mediaset", Iris
+https://tvit.leicaflorianrobert.dev/mediaset/iris/stream.m3u8
+#EXTINF:23 tvg-id="rai-5" tvg-name="Rai 5" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/221/logo?width=120&theme=dark" radio="" group-title="rai", Rai 5
+https://tvit.leicaflorianrobert.dev/rai/rai-5/stream.m3u8
+#EXTINF:24 tvg-id="rai-movie" tvg-name="Rai Movie" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/229/logo?width=120&theme=dark" radio="" group-title="rai", Rai Movie
+https://tvit.leicaflorianrobert.dev/rai/rai-movie/stream.m3u8
+#EXTINF:26 tvg-id="cielo" tvg-name="Cielo" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/239/logo?width=120&theme=dark" radio="" group-title="sky", Cielo
+https://tvit.leicaflorianrobert.dev/sky/cielo/stream.m3u8
+#EXTINF:27 tvg-id="twenty-seven" tvg-name="Twenty Seven" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/601/logo?width=120&theme=dark" radio="" group-title="mediaset", Twenty Seven
+https://tvit.leicaflorianrobert.dev/mediaset/twenty-seven/stream.m3u8
+#EXTINF:29 tvg-id="la7d" tvg-name="La7d" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/254/logo?width=120&theme=dark" radio="" group-title="la7", La7d
+https://tvit.leicaflorianrobert.dev/la7/la7d/stream.m3u8
+#EXTINF:30 tvg-id="la-5" tvg-name="La 5" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/190/logo?width=120&theme=dark" radio="" group-title="mediaset", La 5
+https://tvit.leicaflorianrobert.dev/mediaset/la-5/stream.m3u8
+#EXTINF:31 tvg-id="real-time" tvg-name="Real Time" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/255/logo?width=120&theme=dark" radio="" group-title="discovery", Real Time
+https://tvit.leicaflorianrobert.dev/discovery/real-time/stream.m3u8
+#EXTINF:34 tvg-id="cine34" tvg-name="Cine34" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/574/logo?width=120&theme=dark" radio="" group-title="mediaset", Cine34
+https://tvit.leicaflorianrobert.dev/mediaset/cine34/stream.m3u8
+#EXTINF:35 tvg-id="focus" tvg-name="Focus" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/249/logo?width=120&theme=dark" radio="" group-title="mediaset", Focus
+https://tvit.leicaflorianrobert.dev/mediaset/focus/stream.m3u8
+#EXTINF:37 tvg-id="warner-tv" tvg-name="Warner TV" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/1344181813/logo?width=120&theme=dark" radio="" group-title="discovery", Warner TV
+https://tvit.leicaflorianrobert.dev/discovery/warner-tv/stream.m3u8
+#EXTINF:38 tvg-id="giallo" tvg-name="Giallo" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/244/logo?width=120&theme=dark" radio="" group-title="discovery", Giallo
+https://tvit.leicaflorianrobert.dev/discovery/giallo/stream.m3u8
+#EXTINF:39 tvg-id="top-crime" tvg-name="Top Crime" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/193/logo?width=120&theme=dark" radio="" group-title="mediaset", Top Crime
+https://tvit.leicaflorianrobert.dev/mediaset/top-crime/stream.m3u8
+#EXTINF:40 tvg-id="boing" tvg-name="Boing" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/195/logo?width=120&theme=dark" radio="" group-title="mediaset", Boing
+https://tvit.leicaflorianrobert.dev/mediaset/boing/stream.m3u8
+#EXTINF:41 tvg-id="k2" tvg-name="K2" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/245/logo?width=120&theme=dark" radio="" group-title="discovery", K2
+https://tvit.leicaflorianrobert.dev/discovery/k2/stream.m3u8
+#EXTINF:44 tvg-id="frisbee" tvg-name="Frisbee" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/246/logo?width=120&theme=dark" radio="" group-title="discovery", Frisbee
+https://tvit.leicaflorianrobert.dev/discovery/frisbee/stream.m3u8
+#EXTINF:46 tvg-id="cartoonito" tvg-name="Cartoonito" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/196/logo?width=120&theme=dark" radio="" group-title="mediaset", Cartoonito
+https://tvit.leicaflorianrobert.dev/mediaset/cartoonito/stream.m3u8
+#EXTINF:49 tvg-id="italia-2" tvg-name="Italia 2" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/191/logo?width=120&theme=dark" radio="" group-title="mediaset", Italia 2
+https://tvit.leicaflorianrobert.dev/mediaset/italia-2/stream.m3u8
+#EXTINF:51 tvg-id="tgcom24" tvg-name="Tgcom24" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/197/logo?width=120&theme=dark" radio="" group-title="mediaset", Tgcom 24
+https://tvit.leicaflorianrobert.dev/mediaset/tgcom24/stream.m3u8
+#EXTINF:52 tvg-id="dmax" tvg-name="DMAX" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/256/logo?width=120&theme=dark" radio="" group-title="discovery", DMAX
+https://tvit.leicaflorianrobert.dev/discovery/dmax/stream.m3u8
+#EXTINF:55 tvg-id="mediaset-extra" tvg-name="Mediaset Extra" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/194/logo?width=120&theme=dark" radio="" group-title="mediaset", Mediaset Extra
+https://tvit.leicaflorianrobert.dev/mediaset/mediaset-extra/stream.m3u8
+#EXTINF:66 tvg-id="radio-105" tvg-name="Radio 105" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/460/logo?width=120&theme=dark" radio="" group-title="mediaset", Radio 105
+https://tvit.leicaflorianrobert.dev/mediaset/radio-105/stream.m3u8
+#EXTINF:67 tvg-id="r101" tvg-name="R101" tvg-shift="" tvg-logo="https://api.superguidatv.it/v1/channels/463/logo?width=120&theme=dark" radio="" group-title="mediaset", Radio 101
+https://tvit.leicaflorianrobert.dev/mediaset/r101/stream.m3u8
+#EXTINF:99 tvg-id="protv" tvg-name="protv" tvg-shift="" tvg-logo="https://cmero-ott-images-avod.ssl.cdn.cra.cz/rx/23daa37d-7b69-41ab-90ab-383cc67f3c05.png?default=b507a3ad-e712-494d-9667-5274d0c05bca" radio="" group-title="protv", Pro TV
+https://tvit.leicaflorianrobert.dev/protv/protv/stream.m3u8
+#EXTINF:99 tvg-id="antena3" tvg-name="antena3" tvg-shift="" tvg-logo="https://assets.antenaplay.ro/2022/10/24/HUA4X5c2dFIsScrTa0KZ.png" radio="" group-title="antena", Antena 3
+https://tvit.leicaflorianrobert.dev/antena/antena3/stream.m3u8
+#EXTINF:100 tvg-id="antena1" tvg-name="antena1" tvg-shift="" tvg-logo="https://assets.antenaplay.ro/2022/10/20/6fiwx2Ydv5JBEsCShluH.png" radio="" group-title="antena", Antena 1
+https://tvit.leicaflorianrobert.dev/antena/antena1/stream.m3u8
+#EXTINF:101 tvg-id="comedy-play" tvg-name="comedy-play" tvg-shift="" tvg-logo="https://assets.antenaplay.ro/2023/04/13/AUZDYJFeAKhziBVlUWTK.png" radio="" group-title="antena", Comedy Play
+https://tvit.leicaflorianrobert.dev/antena/comedy-play/stream.m3u8
+#EXTINF:102 tvg-id="antena-monden" tvg-name="antena-monden" tvg-shift="" tvg-logo="https://assets.antenaplay.ro/2023/04/13/MrwirFrMppGIcWVNzlGK.png" radio="" group-title="antena", Antena Monden
+https://tvit.leicaflorianrobert.dev/antena/antena-monden/stream.m3u8
+#EXTINF:900 tvg-id="tele-norba" tvg-name="Tele Norba" tvg-shift="" tvg-logo="https://portiamovalore.uniba.it/uploads/loghi/Logo%20telenorba_1579780216.png" radio="" group-title="regionali", Tele Norba
+https://tvit.leicaflorianrobert.dev/regionali/tele-norba/stream.m3u8
