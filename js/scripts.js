@@ -735,9 +735,23 @@ const app = {
             },
 
             playChannel(channelName) {
-                let channel = this.data.filter((ch) => {
-                    return (ch.name == channelName);
-                });
+
+                // cerca il canale corrispondente
+                const channel = data.channels.find(ch => ch.name === channelName);
+                if (!channel || !channel.playUrl) {
+                    console.warn('Canale non trovato o playUrl mancante');
+                    return;
+                }
+
+                this.selectedChannel = channel;
+
+                // crea un link temporaneo e cliccalo
+                const a = document.createElement('a');
+                a.href = channel.playUrl;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.click();
+                
                 /*
                 <a v-if="channel.playUrl"
                 :href="channel.playUrl"
