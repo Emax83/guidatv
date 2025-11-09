@@ -381,7 +381,7 @@ const app = {
                     }
                     
                     // Assicurati che this.data contenga i canali della guida TV
-                    this.data.forEach(channel => {
+                    this.data.channels.forEach(channel => {
                         const found = this.officialLinks.find(item => {
                             // Confronta per id o nome, a seconda di cosa hai nella guida
                             return (
@@ -901,7 +901,7 @@ const app = {
 
                         this.officialLinks = await resp2.json();
                         // Assicurati che this.data contenga i canali della guida TV
-                        this.dataTV.forEach(channel => {
+                        this.dataTV.channels.forEach(channel => {
                             const found = this.officialLinks.find(item => {
                                 // Confronta per id o nome, a seconda di cosa hai nella guida
                                 return (
