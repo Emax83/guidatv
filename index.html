@@ -1430,7 +1430,7 @@ const proxiedUrl = `/api/stream?url=${encodeURIComponent(m3u8Url)}`;
                         video.play();
                     });
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = m3u8Url;
+                    video.src = proxiedUrl;
                     video.addEventListener('loadedmetadata', function() {
                         video.play();
                     });
