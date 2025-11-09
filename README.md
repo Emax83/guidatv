@@ -22,7 +22,7 @@
 
 ## 🚀 Demo
 
-[**Visualizza Demo Live**](https://guidatv.vercel.app/) _(inserisci il link alla tua demo)_
+[**Visualizza Demo Live**](https://guidatv.vercel.app/)
 
 ## 📸 Screenshot
 
