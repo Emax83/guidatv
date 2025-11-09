@@ -765,6 +765,8 @@ const app = {
 
             openSearch() {
                 this.searchModal.show();
+                let searchInput = document.getElementById('searchInput');
+                searchInput.focus();
                 document.getElementById('searchInput').focus();
             },
 
