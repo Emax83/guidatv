@@ -737,7 +737,7 @@ const app = {
             playChannel(channelName) {
 
                 // cerca il canale corrispondente
-                const channel = data.channels.find(ch => ch.name === channelName);
+                const channel = this.data.channels.find(ch => ch.name === channelName);
                 if (!channel || !channel.playUrl) {
                     console.warn('Canale non trovato o playUrl mancante');
                     return;
