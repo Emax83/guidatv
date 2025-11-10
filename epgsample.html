@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>EPG Dinamica Completa</title>
+<style>
+body {
+  background: #111;
+  color: #eee;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.section {
+  padding: 15px;
+}
+.section h2 {
+  margin-bottom: 10px;
+}
+
+/* TIMELINE ORARIA */
+.time-header {
+  position: relative;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  background: #1a1a1a;
+  height: 30px;
+}
+.time-slot {
+  display: inline-block;
+  text-align: center;
+  border-right: 1px solid #222;
+  color: #aaa;
+  font-size: 0.9em;
+  line-height: 30px;
+  width: 60px; /* 30 minuti se PIXELS_PER_MINUTE=2 */
+}
+
+/* ORA IN ONDA */
+.epg-now {
+  position: relative;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-bottom: 1px solid #333;
+  padding: 10px 0;
+}
+.channel-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.channel-name {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 10px;
+  font-weight: bold;
+}
+.channel-logo {
+  width: 30px;
+  height: 30px;
+  margin-left: 8px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.programs {
+  display: flex;
+  position: relative;
+}
+.program {
+  height: 40px;
+  background-color: #1e90ff;
+  margin-right: 4px;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  flex-shrink: 0;
+  font-size: 0.9em;
+}
+.current-time-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: red;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* STASERA */
+.epg-tonight {
+  display: flex;
+  overflow-x: auto;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  padding: 10px 0;
+}
+.channel-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 10px;
+  width: 150px;
+  flex-shrink: 0;
+}
+.channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.channel img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+.program-box {
+  width: 120px;
+  height: 60px;
+  background-color: #444;
+  color: white;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 60px;
+  margin-bottom: 4px;
+  font-size: 0.9em;
+}
+</style>
+</head>
+<body>
+
+<div class="section">
+  <h2>Ora in onda</h2>
+  <!-- Timeline oraria -->
+  <div class="time-header" id="timeHeader"></div>
+
+  <!-- EPG Now -->
+  <div class="epg-now" id="epgNow">
+    <div class="current-time-line" id="currentTimeLine"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Stasera (20:00 - 23:00)</h2>
+  <div class="epg-tonight" id="epgTonight"></div>
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const PIXELS_PER_MINUTE = 2; // scala temporale (2px per minuto)
+const EPG_START_HOUR = 20;
+const EPG_END_HOUR = 23;
+
+// ==================== DATI ====================
+const data = {
+  channels: Array.from({ length: 10 }, (_, i) => ({
+    name: `Canale ${i + 1}`,
+    logo: `https://via.placeholder.com/40x40?text=C${i + 1}`,
+    programs: [
+      { title: "TG", start: "20:00", duration: 30 },
+      { title: "Film", start: "20:30", duration: 90 },
+      { title: "Talk Show", start: "22:00", duration: 60 },
+    ]
+  }))
+};
+
+// ==================== FUNZIONI RENDER ====================
+function renderTimeline(container) {
+  const totalMinutes = (EPG_END_HOUR - EPG_START_HOUR) * 60;
+  const step = 30; // 30 minuti per slot
+  for (let m = 0; m <= totalMinutes; m += step) {
+    const hour = EPG_START_HOUR + Math.floor(m / 60);
+    const minute = (m % 60).toString().padStart(2, "0");
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "time-slot";
+    timeDiv.textContent = `${hour}:${minute}`;
+    container.appendChild(timeDiv);
+  }
+}
+
+function renderNow(epgContainer) {
+  data.channels.forEach(channel => {
+    const row = document.createElement("div");
+    row.className = "channel-row";
+
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "channel-name";
+    nameDiv.textContent = channel.name;
+    const logo = document.createElement("img");
+    logo.className = "channel-logo";
+    logo.src = channel.logo;
+    nameDiv.appendChild(logo);
+
+    const programsDiv = document.createElement("div");
+    programsDiv.className = "programs";
+
+    channel.programs.forEach(p => {
+      const programDiv = document.createElement("div");
+      programDiv.className = "program";
+      programDiv.textContent = p.title;
+      programDiv.style.width = (p.duration * PIXELS_PER_MINUTE) + "px";
+      programsDiv.appendChild(programDiv);
+    });
+
+    row.appendChild(nameDiv);
+    row.appendChild(programsDiv);
+    epgContainer.appendChild(row);
+  });
+}
+
+function renderTonight(epgContainer) {
+  data.channels.forEach(channel => {
+    const col = document.createElement("div");
+    col.className = "channel-column";
+
+    const header = document.createElement("div");
+    header.className = "channel";
+    const logo = document.createElement("img");
+    logo.src = channel.logo;
+    const name = document.createElement("div");
+    name.textContent = channel.name;
+    header.appendChild(logo);
+    header.appendChild(name);
+    col.appendChild(header);
+
+    channel.programs.forEach(p => {
+      const programDiv = document.createElement("div");
+      programDiv.className = "program-box";
+      programDiv.textContent = p.title;
+      col.appendChild(programDiv);
+    });
+
+    epgContainer.appendChild(col);
+  });
+}
+
+// ==================== LINEA DEL TEMPO FLUIDA ====================
+function animateCurrentTimeLine() {
+  const epgStart = new Date();
+  epgStart.setHours(EPG_START_HOUR, 0, 0, 0);
+
+  const now = new Date();
+  const diffMinutes = (now - epgStart) / 60000;
+  const offset = diffMinutes * PIXELS_PER_MINUTE;
+
+  const line = document.getElementById("currentTimeLine");
+  line.style.left = offset + "px";
+
+  requestAnimationFrame(animateCurrentTimeLine);
+}
+
+// ==================== INIZIALIZZAZIONE ====================
+const epgNow = document.getElementById("epgNow");
+const epgTonight = document.getElementById("epgTonight");
+const timeHeader = document.getElementById("timeHeader");
+
+renderTimeline(timeHeader);
+renderNow(epgNow);
+renderTonight(epgTonight);
+requestAnimationFrame(animateCurrentTimeLine);
+
+// ==================== SYNC SCROLL HEADER & BODY ====================
+epgNow.addEventListener("scroll", () => {
+  timeHeader.scrollLeft = epgNow.scrollLeft;
+});
+timeHeader.addEventListener("scroll", () => {
+  epgNow.scrollLeft = timeHeader.scrollLeft;
+});
+</script>
+
+</body>
+</html>
