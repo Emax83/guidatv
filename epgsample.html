@@ -94,12 +94,26 @@ body {
 
 /* STASERA */
 .epg-tonight {
+  position: relative;
   display: flex;
   overflow-x: auto;
   border-top: 1px solid #333;
   border-bottom: 1px solid #333;
   padding: 10px 0;
 }
+
+/* Linea rossa STICKY per "Stasera" */
+.current-time-line-tonight {
+  position: sticky;
+  left: var(--line-position, 0px);
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: red;
+  z-index: 100;
+  pointer-events: none;
+}
+
 .channel-column {
   display: flex;
   flex-direction: column;
@@ -142,18 +156,20 @@ body {
 
   <!-- EPG Now -->
   <div class="epg-now" id="epgNow">
-    <div class="current-time-line" id="currentTimeLine"></div>
+    <div class="current-time-line" id="currentTimeLineNow"></div>
   </div>
 </div>
 
 <div class="section">
   <h2>Stasera (20:00 - 23:00)</h2>
-  <div class="epg-tonight" id="epgTonight"></div>
+  <div class="epg-tonight" id="epgTonight">
+    <div class="current-time-line-tonight" id="currentTimeLineTonight"></div>
+  </div>
 </div>
 
 <script>
 // ==================== CONFIG ====================
-const PIXELS_PER_MINUTE = 2; // scala temporale (2px per minuto)
+const PIXELS_PER_MINUTE = 2;
 const EPG_START_HOUR = 20;
 const EPG_END_HOUR = 23;
 
@@ -173,7 +189,7 @@ const data = {
 // ==================== FUNZIONI RENDER ====================
 function renderTimeline(container) {
   const totalMinutes = (EPG_END_HOUR - EPG_START_HOUR) * 60;
-  const step = 30; // 30 minuti per slot
+  const step = 30;
   for (let m = 0; m <= totalMinutes; m += step) {
     const hour = EPG_START_HOUR + Math.floor(m / 60);
     const minute = (m % 60).toString().padStart(2, "0");
@@ -240,19 +256,27 @@ function renderTonight(epgContainer) {
   });
 }
 
-// ==================== LINEA DEL TEMPO FLUIDA ====================
-function animateCurrentTimeLine() {
-  const epgStart = new Date();
-  epgStart.setHours(EPG_START_HOUR, 0, 0, 0);
-
+// ==================== LINEE DEL TEMPO ====================
+function updateTimeLines() {
   const now = new Date();
-  const diffMinutes = (now - epgStart) / 60000;
+
+  const epgStartNow = new Date();
+  epgStartNow.setHours(EPG_START_HOUR, 0, 0, 0);
+  const diffMinutes = (now - epgStartNow) / 60000;
   const offset = diffMinutes * PIXELS_PER_MINUTE;
 
-  const line = document.getElementById("currentTimeLine");
-  line.style.left = offset + "px";
+  // "Ora in onda"
+  const lineNow = document.getElementById("currentTimeLineNow");
+  lineNow.style.left = offset + "px";
 
-  requestAnimationFrame(animateCurrentTimeLine);
+  // "Stasera"
+  const tonightLine = document.getElementById("currentTimeLineTonight");
+  if (now.getHours() >= EPG_START_HOUR) {
+    tonightLine.style.display = "block";
+    tonightLine.style.setProperty("--line-position", offset + "px");
+  } else {
+    tonightLine.style.display = "none";
+  }
 }
 
 // ==================== INIZIALIZZAZIONE ====================
@@ -263,9 +287,11 @@ const timeHeader = document.getElementById("timeHeader");
 renderTimeline(timeHeader);
 renderNow(epgNow);
 renderTonight(epgTonight);
-requestAnimationFrame(animateCurrentTimeLine);
+updateTimeLines();
+setInterval(updateTimeLines, 60000);
+updateTimeLines();
 
-// ==================== SYNC SCROLL HEADER & BODY ====================
+// SYNC SCROLL
 epgNow.addEventListener("scroll", () => {
   timeHeader.scrollLeft = epgNow.scrollLeft;
 });
