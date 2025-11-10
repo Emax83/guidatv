@@ -1,160 +1,181 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<title>EPG Dinamica Completa</title>
+<meta charset="utf-8" />
+<title>EPG - Now & Stasera (programmi uniti)</title>
 <style>
-body {
-  background: #111;
-  color: #eee;
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
+:root{
+  --channel-name-width: 100px;
+  --slot-height: 60px;
+  --pixels-per-minute: 2;
 }
 
-.section {
-  padding: 15px;
+body{
+  margin:0;
+  background:#111;
+  color:#eee;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
-.section h2 {
-  margin-bottom: 10px;
-}
+
+.section{ padding:15px; }
+h2{ margin:0 0 10px 0; font-size:18px; }
 
 /* TIMELINE ORARIA */
-.time-header {
+.time-header{
   position: relative;
   overflow-x: auto;
   white-space: nowrap;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-  background: #1a1a1a;
-  height: 30px;
+  border-top:1px solid #333;
+  border-bottom:1px solid #333;
+  background:#1a1a1a;
+  height:30px;
+  display:flex;
+  align-items:center;
 }
-.time-slot {
-  display: inline-block;
-  text-align: center;
-  border-right: 1px solid #222;
-  color: #aaa;
-  font-size: 0.9em;
-  line-height: 30px;
-  width: 60px; /* 30 minuti se PIXELS_PER_MINUTE=2 */
+.time-spacer{
+  width: var(--channel-name-width);
+  flex:0 0 var(--channel-name-width);
+}
+.time-slot{
+  display:inline-block;
+  width: calc(30 * var(--pixels-per-minute));
+  text-align:center;
+  color:#aaa;
+  border-right:1px solid #222;
+  font-size:0.9em;
+  line-height:30px;
 }
 
 /* ORA IN ONDA */
-.epg-now {
+.epg-now{
   position: relative;
   overflow-x: auto;
   white-space: nowrap;
-  border-bottom: 1px solid #333;
-  padding: 10px 0;
+  border-bottom:1px solid #333;
+  padding:10px 0;
 }
-.channel-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
+.channel-row{
+  display:flex;
+  align-items:center;
+  margin-bottom:6px;
 }
-.channel-name {
-  width: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-right: 10px;
-  font-weight: bold;
+.channel-name{
+  width: var(--channel-name-width);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  margin-right:10px;
+  font-weight:700;
+  flex:0 0 var(--channel-name-width);
 }
-.channel-logo {
-  width: 30px;
-  height: 30px;
-  margin-left: 8px;
-  border-radius: 4px;
-  object-fit: cover;
+.channel-logo{ width:30px;height:30px;margin-left:8px;border-radius:4px; object-fit:cover; }
+.programs{ display:flex; position:relative; }
+.program{
+  height:40px;
+  background:#1e90ff;
+  margin-right:4px;
+  border-radius:4px;
+  color:#fff;
+  text-align:center;
+  line-height:40px;
+  flex-shrink:0;
+  font-size:0.9em;
+  padding:0 6px;
 }
-.programs {
-  display: flex;
-  position: relative;
-}
-.program {
-  height: 40px;
-  background-color: #1e90ff;
-  margin-right: 4px;
-  border-radius: 4px;
-  color: white;
-  text-align: center;
-  line-height: 40px;
-  flex-shrink: 0;
-  font-size: 0.9em;
-}
-.current-time-line {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: red;
-  z-index: 10;
-  pointer-events: none;
+.current-time-line{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:red;
+  z-index:10;
+  pointer-events:none;
+  transform: translateX(-50%);
 }
 
 /* STASERA */
-.epg-tonight {
-  position: relative;
-  display: flex;
-  overflow-x: auto;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-  padding: 10px 0;
+.epg-tonight-wrap{
+  display:flex;
+  border-top:1px solid #333;
+  border-bottom:1px solid #333;
+  overflow:hidden;
 }
 
-/* Linea rossa STICKY per "Stasera" */
-.current-time-line-tonight {
+.time-column{
+  width: var(--channel-name-width);
+  flex: 0 0 var(--channel-name-width);
+  background:#0f0f0f;
+  border-right:1px solid #222;
+}
+.time-cell{
+  height: calc(var(--slot-height));
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding-right:8px;
+  color:#aaa;
+  font-size:0.9em;
+  border-bottom:1px solid #1a1a1a;
+}
+
+.epg-tonight{
+  overflow-x: auto;
+  display:flex;
+  align-items:flex-start;
+  padding:10px 0;
+}
+
+.current-time-line-tonight{
   position: sticky;
-  left: var(--line-position, 0px);
+  left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
-  background-color: red;
-  z-index: 100;
-  pointer-events: none;
+  width:4px;
+  background:red;
+  z-index:100;
+  pointer-events:none;
+  transform: translateX(var(--line-translate, 0px)) translateX(-50%);
 }
 
-.channel-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 10px;
-  width: 150px;
-  flex-shrink: 0;
+.channel-column{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-right:10px;
+  width:150px;
+  flex:0 0 150px;
 }
-.channel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 6px;
+.channel{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:6px;
 }
-.channel img {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  margin-bottom: 4px;
+.channel img{ width:40px;height:40px;border-radius:4px;margin-bottom:4px; }
+.program-cell{
+  width:120px;
+  background:#2b2b2b;
+  color:#fff;
+  border-radius:4px;
+  text-align:center;
+  margin-bottom:4px;
+  font-size:0.9em;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.program-box {
-  width: 120px;
-  height: 60px;
-  background-color: #444;
-  color: white;
-  border-radius: 4px;
-  text-align: center;
-  line-height: 60px;
-  margin-bottom: 4px;
-  font-size: 0.9em;
-}
+.program-cell.long{ background:#1e90ff; }
 </style>
 </head>
 <body>
 
 <div class="section">
   <h2>Ora in onda</h2>
-  <!-- Timeline oraria -->
-  <div class="time-header" id="timeHeader"></div>
+  <div class="time-header" id="timeHeader">
+    <div class="time-spacer"></div>
+  </div>
 
-  <!-- EPG Now -->
   <div class="epg-now" id="epgNow">
     <div class="current-time-line" id="currentTimeLineNow"></div>
   </div>
@@ -162,143 +183,158 @@ body {
 
 <div class="section">
   <h2>Stasera (20:00 - 23:00)</h2>
-  <div class="epg-tonight" id="epgTonight">
-    <div class="current-time-line-tonight" id="currentTimeLineTonight"></div>
+
+  <div class="epg-tonight-wrap">
+    <div class="time-column" id="timeColumn"></div>
+
+    <div style="position:relative; flex:1 1 auto; overflow:hidden;">
+      <div class="current-time-line-tonight" id="currentTimeLineTonight"></div>
+      <div class="epg-tonight" id="epgTonight"></div>
+    </div>
   </div>
 </div>
 
 <script>
-// ==================== CONFIG ====================
+const channelNameWidth = 100;
 const PIXELS_PER_MINUTE = 2;
+const slotHeight = 60;
 const EPG_START_HOUR = 20;
 const EPG_END_HOUR = 23;
 
-// ==================== DATI ====================
 const data = {
   channels: Array.from({ length: 10 }, (_, i) => ({
-    name: `Canale ${i + 1}`,
-    logo: `https://via.placeholder.com/40x40?text=C${i + 1}`,
+    name: `Canale ${i+1}`,
+    logo: `https://via.placeholder.com/40x40?text=C${i+1}`,
     programs: [
       { title: "TG", start: "20:00", duration: 30 },
       { title: "Film", start: "20:30", duration: 90 },
-      { title: "Talk Show", start: "22:00", duration: 60 },
+      { title: "Talk Show", start: "22:00", duration: 60 }
     ]
   }))
 };
 
-// ==================== FUNZIONI RENDER ====================
-function renderTimeline(container) {
+function hhmmToMinutes(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  return h*60 + m;
+}
+
+function renderTimeHeader(container){
   const totalMinutes = (EPG_END_HOUR - EPG_START_HOUR) * 60;
-  const step = 30;
-  for (let m = 0; m <= totalMinutes; m += step) {
-    const hour = EPG_START_HOUR + Math.floor(m / 60);
-    const minute = (m % 60).toString().padStart(2, "0");
-    const timeDiv = document.createElement("div");
-    timeDiv.className = "time-slot";
-    timeDiv.textContent = `${hour}:${minute}`;
-    container.appendChild(timeDiv);
+  for(let m=0; m<= totalMinutes; m+=30){
+    const hour = EPG_START_HOUR + Math.floor(m/60);
+    const minute = (m%60).toString().padStart(2,'0');
+    const div = document.createElement('div');
+    div.className = 'time-slot';
+    div.textContent = `${hour}:${minute}`;
+    container.appendChild(div);
   }
 }
 
-function renderNow(epgContainer) {
-  data.channels.forEach(channel => {
-    const row = document.createElement("div");
-    row.className = "channel-row";
+function renderNow(container){
+  data.channels.forEach(ch => {
+    const row = document.createElement('div');
+    row.className = 'channel-row';
 
-    const nameDiv = document.createElement("div");
-    nameDiv.className = "channel-name";
-    nameDiv.textContent = channel.name;
-    const logo = document.createElement("img");
-    logo.className = "channel-logo";
-    logo.src = channel.logo;
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'channel-name';
+    nameDiv.textContent = ch.name;
+    const logo = document.createElement('img');
+    logo.className = 'channel-logo';
+    logo.src = ch.logo;
     nameDiv.appendChild(logo);
 
-    const programsDiv = document.createElement("div");
-    programsDiv.className = "programs";
+    const programsDiv = document.createElement('div');
+    programsDiv.className = 'programs';
 
-    channel.programs.forEach(p => {
-      const programDiv = document.createElement("div");
-      programDiv.className = "program";
-      programDiv.textContent = p.title;
-      programDiv.style.width = (p.duration * PIXELS_PER_MINUTE) + "px";
-      programsDiv.appendChild(programDiv);
+    ch.programs.forEach(p => {
+      const pd = document.createElement('div');
+      pd.className = 'program';
+      pd.textContent = p.title;
+      pd.style.width = (p.duration * PIXELS_PER_MINUTE) + 'px';
+      programsDiv.appendChild(pd);
     });
 
     row.appendChild(nameDiv);
     row.appendChild(programsDiv);
-    epgContainer.appendChild(row);
+    container.appendChild(row);
   });
 }
 
-function renderTonight(epgContainer) {
-  data.channels.forEach(channel => {
-    const col = document.createElement("div");
-    col.className = "channel-column";
+function renderTonight(timeColumn, epgTonight){
+  // Crea timeline verticale (20–23)
+  for(let h=EPG_START_HOUR; h<=EPG_END_HOUR; h++){
+    const c = document.createElement('div');
+    c.className = 'time-cell';
+    c.style.height = slotHeight + 'px';
+    c.textContent = `${h.toString().padStart(2,'0')}:00`;
+    timeColumn.appendChild(c);
+  }
 
-    const header = document.createElement("div");
-    header.className = "channel";
-    const logo = document.createElement("img");
-    logo.src = channel.logo;
-    const name = document.createElement("div");
-    name.textContent = channel.name;
+  // Crea colonne canali
+  data.channels.forEach(ch => {
+    const col = document.createElement('div');
+    col.className = 'channel-column';
+
+    const header = document.createElement('div');
+    header.className = 'channel';
+    const logo = document.createElement('img');
+    logo.src = ch.logo;
+    const name = document.createElement('div');
+    name.textContent = ch.name;
     header.appendChild(logo);
     header.appendChild(name);
     col.appendChild(header);
 
-    channel.programs.forEach(p => {
-      const programDiv = document.createElement("div");
-      programDiv.className = "program-box";
-      programDiv.textContent = p.title;
-      col.appendChild(programDiv);
+    ch.programs.forEach(p => {
+      const cell = document.createElement('div');
+      cell.className = 'program-cell long';
+      cell.textContent = p.title;
+
+      const slots = p.duration / 30;
+      cell.style.height = (slotHeight * slots) + 'px';
+      col.appendChild(cell);
     });
 
-    epgContainer.appendChild(col);
+    epgTonight.appendChild(col);
   });
 }
 
-// ==================== LINEE DEL TEMPO ====================
-function updateTimeLines() {
+function updateLines(){
   const now = new Date();
+  const startMinutes = EPG_START_HOUR * 60;
+  const nowMinutes = now.getHours()*60 + now.getMinutes() + now.getSeconds()/60;
+  const diff = nowMinutes - startMinutes;
+  const offsetPx = diff * PIXELS_PER_MINUTE;
 
-  const epgStartNow = new Date();
-  epgStartNow.setHours(EPG_START_HOUR, 0, 0, 0);
-  const diffMinutes = (now - epgStartNow) / 60000;
-  const offset = diffMinutes * PIXELS_PER_MINUTE;
+  const lineNow = document.getElementById('currentTimeLineNow');
+  lineNow.style.left = offsetPx + 'px';
 
-  // "Ora in onda"
-  const lineNow = document.getElementById("currentTimeLineNow");
-  lineNow.style.left = offset + "px";
-
-  // "Stasera"
-  const tonightLine = document.getElementById("currentTimeLineTonight");
-  if (now.getHours() >= EPG_START_HOUR) {
-    tonightLine.style.display = "block";
-    tonightLine.style.setProperty("--line-position", offset + "px");
+  const lineTonight = document.getElementById('currentTimeLineTonight');
+  if(now.getHours() >= EPG_START_HOUR && now.getHours() < EPG_END_HOUR){
+    const translatePx = channelNameWidth + offsetPx;
+    lineTonight.style.display = 'block';
+    lineTonight.style.setProperty('--line-translate', translatePx + 'px');
   } else {
-    tonightLine.style.display = "none";
+    lineTonight.style.display = 'none';
   }
 }
 
-// ==================== INIZIALIZZAZIONE ====================
-const epgNow = document.getElementById("epgNow");
-const epgTonight = document.getElementById("epgTonight");
-const timeHeader = document.getElementById("timeHeader");
+(function init(){
+  const timeHeader = document.getElementById('timeHeader');
+  const epgNow = document.getElementById('epgNow');
+  const timeColumn = document.getElementById('timeColumn');
+  const epgTonight = document.getElementById('epgTonight');
 
-renderTimeline(timeHeader);
-renderNow(epgNow);
-renderTonight(epgTonight);
-updateTimeLines();
-setInterval(updateTimeLines, 60000);
-updateTimeLines();
+  renderTimeHeader(timeHeader);
+  renderNow(epgNow);
+  renderTonight(timeColumn, epgTonight);
 
-// SYNC SCROLL
-epgNow.addEventListener("scroll", () => {
-  timeHeader.scrollLeft = epgNow.scrollLeft;
-});
-timeHeader.addEventListener("scroll", () => {
-  epgNow.scrollLeft = timeHeader.scrollLeft;
-});
+  timeHeader.addEventListener('scroll', () => epgNow.scrollLeft = timeHeader.scrollLeft);
+  epgNow.addEventListener('scroll', () => timeHeader.scrollLeft = epgNow.scrollLeft);
+
+  updateLines();
+  setInterval(updateLines, 1000);
+})();
 </script>
-
 </body>
 </html>
