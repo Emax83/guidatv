@@ -260,6 +260,7 @@
         <!-- Films Section -->
          <div id="moviesSection" class="section" v-show="currentSection == 'movies'">
             <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film</h2>
+             <div><label class="form-check-label"><input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi</label></div>
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
@@ -281,7 +282,6 @@
                         </div>
                         <div class="program-time">
                             <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} • {{getDuration(movie.program)}}</span>
-                            <span class="program-genre">{{movie.program.category}}</span>
                             <p class="mt-3 program-description">{{movie.program.description}}</p>
                         </div>
                     </div>
