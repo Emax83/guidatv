@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0e27">
+    <title>404 - Pagina Non Trovata | GuidaTV</title>
+
+    <link rel="icon" href="favicon.ico" />
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-color: #0dcaf0;
+        --secondary-color: #0d6efd;
+        --dark-bg: #0a0e27;
+        --card-bg: #1a1f3a;
+        --hover-bg: #252b4a;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b8c8;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    html {
+        background: var(--dark-bg);
+        overscroll-behavior: none;
+    }
+    
+    body {
+        background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1429 100%);
+        color: var(--text-primary);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-x: hidden;
+    }
+    
+    .error-container {
+        text-align: center;
+        max-width: 600px;
+        animation: fadeIn 0.8s ease;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .logo-text {
+        font-size: 2rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 30px;
+        display: inline-block;
+    }
+    
+    .tv-container {
+        position: relative;
+        margin: 40px auto;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .tv-screen {
+        background: var(--card-bg);
+        border: 8px solid var(--hover-bg);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 20px 60px rgba(13, 202, 240, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .tv-screen::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(13, 202, 240, 0.1) 50%,
+            transparent 100%
+        );
+        animation: scan 3s linear infinite;
+    }
+    
+    @keyframes scan {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+    
+    .tv-image-placeholder {
+        width: 100%;
+        aspect-ratio: 4/3;
+        background: linear-gradient(135deg, #1a1f3a 0%, #0f1429 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .static-noise {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px),
+            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+        animation: static 0.2s infinite;
+    }
+    
+    @keyframes static {
+        0% { transform: translate(0, 0); }
+        10% { transform: translate(-2px, 2px); }
+        20% { transform: translate(2px, -2px); }
+        30% { transform: translate(-2px, -2px); }
+        40% { transform: translate(2px, 2px); }
+        50% { transform: translate(0, 0); }
+        60% { transform: translate(2px, -2px); }
+        70% { transform: translate(-2px, 2px); }
+        80% { transform: translate(2px, 2px); }
+        90% { transform: translate(-2px, -2px); }
+        100% { transform: translate(0, 0); }
+    }
+    
+    .no-signal-icon {
+        font-size: 5rem;
+        color: var(--primary-color);
+        position: relative;
+        z-index: 2;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 0.6;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+    
+    .tv-antenna {
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 40px;
+    }
+    
+    .antenna-left, .antenna-right {
+        position: absolute;
+        width: 3px;
+        height: 40px;
+        background: var(--primary-color);
+        bottom: 0;
+        border-radius: 3px;
+    }
+    
+    .antenna-left {
+        left: 20px;
+        transform: rotate(-25deg);
+        transform-origin: bottom;
+        animation: antennaWave 2s ease-in-out infinite;
+    }
+    
+    .antenna-right {
+        right: 20px;
+        transform: rotate(25deg);
+        transform-origin: bottom;
+        animation: antennaWave 2s ease-in-out infinite reverse;
+    }
+    
+    @keyframes antennaWave {
+        0%, 100% { transform: rotate(-25deg); }
+        50% { transform: rotate(-35deg); }
+    }
+    
+    .error-code {
+        font-size: 6rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-shadow: 0 0 30px rgba(13, 202, 240, 0.5);
+        margin: 20px 0 10px;
+        line-height: 1;
+    }
+    
+    .error-message {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    
+    .error-description {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+    }
+    
+    .remote-control {
+        background: linear-gradient(135deg, var(--card-bg), var(--hover-bg));
+        border: 3px solid var(--primary-color);
+        border-radius: 25px;
+        padding: 30px 20px;
+        max-width: 200px;
+        margin: 0 auto;
+        box-shadow: 0 10px 40px rgba(13, 202, 240, 0.3);
+        position: relative;
+    }
+    
+    .remote-control::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 8px;
+        background: var(--hover-bg);
+        border-radius: 10px;
+    }
+    
+    .remote-display {
+        background: #0a3d4a;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--primary-color);
+        font-family: 'Courier New', monospace;
+        border: 2px solid var(--primary-color);
+    }
+    
+    .home-button {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(13, 202, 240, 0.4);
+        position: relative;
+    }
+    
+    .home-button:hover {
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 10px 30px rgba(13, 202, 240, 0.6);
+    }
+    
+    .home-button:active {
+        transform: scale(0.95) translateY(0);
+    }
+    
+    .home-button::before {
+        content: 'HOME';
+        position: absolute;
+        bottom: -25px;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    
+    .button-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 50px;
+    }
+    
+    .remote-btn {
+        background: var(--hover-bg);
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 0 auto;
+    }
+    
+    .remote-btn:hover {
+        background: var(--primary-color);
+        color: var(--dark-bg);
+        transform: scale(1.1);
+    }
+    
+    @media (max-width: 576px) {
+        .error-code {
+            font-size: 4rem;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+        }
+        
+        .no-signal-icon {
+            font-size: 3rem;
+        }
+    }
+    
+    .glitch {
+        animation: glitch 1s infinite;
+    }
+    
+    @keyframes glitch {
+        0%, 100% {
+            text-shadow: 2px 2px #0dcaf0, -2px -2px #0d6efd;
+        }
+        25% {
+            text-shadow: -2px -2px #0dcaf0, 2px 2px #0d6efd;
+        }
+        50% {
+            text-shadow: 2px -2px #0dcaf0, -2px 2px #0d6efd;
+        }
+        75% {
+            text-shadow: -2px 2px #0dcaf0, 2px -2px #0d6efd;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <div class="error-container">
+        <!-- Logo -->
+        <div class="logo-text">
+            <a href="/" style="text-decoration:none;">
+            <img alt="Guida Tv" title="GuidaTV" src="/img/favicon.png" style="width:48px;" /> GuidaTV
+            </a>
+        </div>
+
+    <!-- TV with No Signal -->
+    <div class="tv-container">
+        <div class="tv-antenna">
+            <div class="antenna-left"></div>
+            <div class="antenna-right"></div>
+        </div>
+        
+        <div class="tv-screen">
+            <div class="tv-image-placeholder">
+                <div class="static-noise"></div>
+                <img src="/img/404.jpg" alt="No Signal" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                <!--<i class="bi bi-reception-0 no-signal-icon"></i>-->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Message -->
+    <h1 class="error-code glitch">404</h1>
+    <h2 class="error-message">Segnale Perso!</h2>
+    <p class="error-description">
+        La pagina che stai cercando non è disponibile.<br>
+        Premi il pulsante HOME sul telecomando per tornare alla guida TV.
+    </p>
+    
+    <!-- Remote Control -->
+    <div class="remote-control">
+        <div class="remote-display">
+            CANALE 404<br>
+            NESSUN SEGNALE
+        </div>
+        
+        <!-- Home Button -->
+        <a href="/" style="text-decoration: none;">
+            <button class="home-button" title="Torna alla Home">
+                <i class="bi bi-house-fill"></i>
+            </button>
+        </a>
+        
+        <!-- Decorative Buttons -->
+        <div class="button-grid">
+            <div class="remote-btn">1</div>
+            <div class="remote-btn">2</div>
+            <div class="remote-btn">3</div>
+            <div class="remote-btn">4</div>
+            <div class="remote-btn">5</div>
+            <div class="remote-btn">6</div>
+            <div class="remote-btn">7</div>
+            <div class="remote-btn">8</div>
+            <div class="remote-btn">9</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Easter egg: click sui numeri per effetti
+    document.querySelectorAll('.remote-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tv = document.querySelector('.tv-screen');
+            tv.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                tv.style.transform = 'scale(1)';
+            }, 100);
+        });
+    });
+</script>
+
+</body>
+</html>
