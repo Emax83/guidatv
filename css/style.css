@@ -583,7 +583,7 @@ body {
 
 
 .favorite-card {
-    min-width: 140px;
+    min-width: 8rem;
     background: var(--card-bg);
     border-radius: 15px;
     padding: 1rem;
@@ -591,6 +591,10 @@ body {
     transition: all 0.3s ease;
     border: 2px solid var(--primary-color);
     position: relative;
+}
+
+.favorite-card-program{
+    min-width: 20rem;
 }
 
 .favorite-card:hover {
@@ -603,6 +607,7 @@ body {
     border-radius: 1rem;
     margin-left: 1rem;
 }
+
 
 .remove-favorite {
     position: absolute;
@@ -632,6 +637,21 @@ body {
     font-style: italic;
     font-size: 0.85rem;
 }
+
+
+.movies-grid{
+
+}
+
+.movie-card{
+    margin: 1rem;
+    padding: 1rem;
+    border: solid 2px var(--primary-color);
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(13, 202, 240, 0.2);
+}
+
 .bottom-sheet-backdrop {
     position: fixed;
     top: 0;
@@ -672,4 +692,7 @@ body {
 .btn-simple-ok{
     color: #fff;
     border: solid 2px #0dcaf0;
+}
+.btn-close{
+    margin-left: 1rem;
 }

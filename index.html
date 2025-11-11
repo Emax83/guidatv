@@ -47,7 +47,7 @@
     <nav class="navbar navbar-expand toolbar fixed-top">
         <div class="container-fluid">
             <span class="navbar-brand logo-text mb-0 h1">
-                <img src="img/favicon.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
+                <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
                 <span class="d-none d-md-inline">Guida TV</span>
             </span>
             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -62,6 +62,10 @@
                 <button class="btn btn-nav" @click="currentSection = 'evening'" title="Stasera">
                     <i class="bi bi-moon-stars"></i>
                     <span class="d-none d-sm-inline ms-1">Stasera</span>
+                </button>
+                <button class="btn btn-nav" @click="currentSection = 'movies'" title="Film">
+                    <i class="bi bi-film"></i>
+                    <span class="d-none d-sm-inline ms-1">Films</span>
                 </button>
                 <button class="btn btn-nav" @click="currentSection = 'channels'" title="Canali">
                     <i class="bi bi-grid-3x3"></i>
@@ -94,11 +98,11 @@
             
             <div id="favoritesEmpty" class="text-center py-5" v-if="!hasFavorites">
                 <i class="bi bi-star" style="font-size: 4rem; color: var(--text-secondary);"></i>
-                <p class="text-muted mt-3">Nessun preferito salvato</p>
-                <p class="text-muted">Aggiungi canali o programmi ai preferiti per vederli qui!</p>
+                <p class="text-light mt-3">Nessun preferito salvato</p>
+                <p class="text-light">Aggiungi canali o programmi ai preferiti per vederli qui!</p>
             </div>
             
-            <div id="favoriteChannelsContainer" class="mb-3">
+            <div id="favoriteChannelsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
                 <div id="favoriteChannels" class="channel-scroll p-3">
                     <div class="favorite-card" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
@@ -108,20 +112,20 @@
                 </div>
             </div>
             
-            <div id="favoriteProgramsContainer" class="mb-3">
+            <div id="favoriteProgramsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi</h4>
                 <div id="favoritePrograms" class="channel-scroll p-3">
-                    <div class="favorite-card" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="me-3">
+                    <div class="favorite-card favorite-card-program" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
+                        <div class="row mb-2">
+                            <div class="col-5">
                                 <img :src="fav.channelLogo" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
                                 <div class="channel-name">{{fav.channelName}}</div>
                             </div>
-                            <div>
+                            <div class="col-7">
                                 <h5 class="program-title">{{fav.title}}</h5>
                                 <span class="program-genre">{{fav.category}}</span>
-                                <span class="badge bg-warning" v-if="isFavoriteProgramScheduled(fav)" >OGGI</span>
-                                <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)" >IN ONDA</span>
+                                <span class="badge bg-warning" v-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
+                                <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
                             </div>
                         </div>
                         
@@ -252,6 +256,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- Films Section -->
+         <div id="moviesSection" class="section" v-show="currentSection == 'movies'">
+            <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film</h2>
+            <div id="moviesGrid" class="movies-grid">
+                <div class="movie-card" v-for="movie in allMovies">
+                    <div class="text-center mb-3">
+                        <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+                            <img :src="movie.channel.logo" :alt="movie.channel.name" :title="movie.channel.name">
+                            <h4 class="mx-3">{{movie.channel.name}}</h4>
+                            <button class="favorite-btn float-end" title="Aggiungi canale ai preferiti" @click="toggleFavoriteChannel(movie.channel)">
+                                <i class="bi bi-star"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="program-card">
+                        <img :src="movie.program.image" :alt="movie.program.title" class="program-image">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h3 class="program-title">{{movie.program.title}}</h3>
+                            <button class="favorite-btn float-end" title="Aggiungi programma ai preferiti" @click="toggleFavoriteProgram(movie.channel, movie.program)">
+                                <i class="bi bi-star"></i>
+                            </button>
+                        </div>
+                        <div class="program-time">
+                            <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} • {{getDuration(movie.program)}}</span>
+                            <span class="program-genre">{{movie.program.category}}</span>
+                            <p class="mt-3 program-description">{{movie.program.description}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
 
         <!-- Lista Canali Section -->
         <div id="channelsSection" class="section" v-show="currentSection == 'channels'">
@@ -389,7 +425,7 @@
     </div>
 
     <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner" v-if="showCookieBanner == true" >
+    <div class="cookie-banner" id="cookieBanner" v-if="showCookieBanner==true" >
         <div class="cookie-banner-content">
             <div class="cookie-banner-text">
                 <h5><i class="bi bi-shield-check"></i> Privacy & Cookie</h5>

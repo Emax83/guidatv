@@ -108,9 +108,37 @@ const vueApp = createApp({
             return results;
         },
 
-        timeSlots() {
+        allMovies() {
+            let movies = [];
+            this.channels.forEach(channel => {
+                channel.programs.forEach(program => {
+                    //aggiungi se ora di inizio superiore ad ora
+                    let now = new Date();
+                    let startDate = this.utcToLocal(program.start);
+                    if(startDate >= now & program.category?.toLowerCase() == 'film') {
+                        let movie = {
+                            channel: JSON.parse(JSON.stringify(channel)),
+                            program: JSON.parse(JSON.stringify(program)),
+                        };
+                        movies.push(movie);
+                    }
+                });
+            });
+            return movies;
+        },
+
+        timeSlotsAllDay() {
             const slots = [];
-            for (let hour = 20; hour <= 22; hour++) {
+            for (let hour = 0; hour <= 24; hour++) {
+                slots.push(`${hour}:00`);
+                slots.push(`${hour}:30`);
+            }
+            return slots;
+        },
+
+        timeSlotsEvening() {
+            const slots = [];
+            for (let hour = 20; hour < 24; hour++) {
                 slots.push(`${hour}:00`);
                 slots.push(`${hour}:30`);
             }
