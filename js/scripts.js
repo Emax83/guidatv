@@ -119,7 +119,7 @@ const vueApp = createApp({
                     let startDate = this.utcToLocal(program.start);
 					let endDate = this.utcToLocal(program.end);
 					// se vogliamo nascondere i film già finiti
-                    if (hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
+                    if (this.hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
                         continue;
                     }
 
