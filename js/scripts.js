@@ -282,10 +282,28 @@ const vueApp = createApp({
             return `${minutes} min`;
         },
 
+        getProgress(program){
+            if(!program) return 0;
+            if (!program?.start || !program?.stop) return 0;
+
+            const now = new Date();
+            const start = new Date(program.start);
+            const stop = new Date(program.stop);
+
+            if (now <= start) return 0;
+            if (now >= stop) return 100;
+
+            const total = stop - start;
+            const elapsed = now - start;
+            return (elapsed / total) * 100;
+        },
+
         isCurrentProgram(channel, program) {
             const current = this.getCurrentProgram(channel);
             return current?.title === program.title;
         },
+
+
 
         isFavoriteProgramScheduled(favorite){
             // Trova il canale

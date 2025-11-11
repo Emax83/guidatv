@@ -327,9 +327,9 @@
                 <p class="mt-3">{{selectedProgram.description}}</p>
                 <div class="mt-3" v-if="isProgramLive(selectedProgram)">
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 11.877628205128204%"></div>
+                        <div class="progress-bar" role="progressbar" :style="{ width: getProgress(selectedProgram) + '%' }"></div>
                     </div>
-                    <small class="text-muted">12% completato</small>
+                    <small class="text-muted">{{getProgress(selectedProgram)}} completato</small>
                     <div class="border-top mt-2">
                         <a class="btn btn-primary mt-3 w-100" :href="selectedChannel.playUrl" target="_blank">
                             <i class="bi bi-play-fill"></i> Guarda Online
