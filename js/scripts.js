@@ -24,6 +24,7 @@ const vueApp = createApp({
             searchQuery: '',
             showCookieBanner: false,
             cookiesAccepted: false,
+			hideAiredMovies: true,
         }
     },
 
@@ -89,7 +90,8 @@ const vueApp = createApp({
                 }
 
                 channel.programs.forEach(program => {
-                    if (program.title.toLowerCase().includes(searchLower)) {
+                    if (program.title.toLowerCase().includes(searchLower)
+					   || program.category?.toLowerCase().includes(searchLower)) {
                         const start = this.utcToLocal(program.start);
                         if (start.toDateString() === today.toDateString()) {
                             results.push({
@@ -115,7 +117,13 @@ const vueApp = createApp({
                     //aggiungi se ora di inizio superiore ad ora
                     let now = new Date();
                     let startDate = this.utcToLocal(program.start);
-                    if(program.category?.toLowerCase() == 'film') {
+					let endDate = this.utcToLocal(program.end);
+					// se vogliamo nascondere i film già finiti
+                    if (hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
+                        continue;
+                    }
+
+                    if(program.category?.toLowerCase() === 'film') {
                         let movie = {
                             channel: JSON.parse(JSON.stringify(channel)),
                             program: JSON.parse(JSON.stringify(program)),
