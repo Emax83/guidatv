@@ -115,7 +115,7 @@ const vueApp = createApp({
                     //aggiungi se ora di inizio superiore ad ora
                     let now = new Date();
                     let startDate = this.utcToLocal(program.start);
-                    if(startDate >= now && program.category?.toLowerCase() == 'film') {
+                    if(program.category?.toLowerCase() == 'film') {
                         let movie = {
                             channel: JSON.parse(JSON.stringify(channel)),
                             program: JSON.parse(JSON.stringify(program)),
