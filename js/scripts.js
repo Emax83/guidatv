@@ -86,6 +86,7 @@ const vueApp = createApp({
                         key: `channel-${channel.id}`,
                         image: channel.logo,
                         title: channel.name,
+						category: ''
                     });
                 }
 
@@ -100,7 +101,8 @@ const vueApp = createApp({
                                 program: program,
                                 key: `program-${channel.id}-${program.start}`,
                                 image: program.image ?? channel.logo,
-                                title: program.title
+                                title: program.title,
+								category: program.category ?? ''
                             });
                         }
                     }
