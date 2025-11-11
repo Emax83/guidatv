@@ -319,6 +319,7 @@
                             <small class="text-light">
                                 <span v-if="item.channel" class="me-3"><i class="bi bi-tv"></i> {{item.channel.name}}</span>
                                 <span v-if="item.program" class="me-3"><i class="bi bi-clock"></i> {{ formatTime(item.program.start)}}</span>
+                                <span v-if="item.program" class="program-genre me-3">{{item.program.category}}</span>
                             </small>
                         </div>
                     </div>
