@@ -259,8 +259,8 @@
 
         <!-- Films Section -->
          <div id="moviesSection" class="section" v-show="currentSection == 'movies'">
+            <div class="float-end"><label class="form-check-label"><input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi</label></div>
             <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film</h2>
-             <div class="float-end"><label class="form-check-label"><input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi</label></div>
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
