@@ -91,7 +91,7 @@ const vueApp = createApp({
 
                 channel.programs.forEach(program => {
                     if (program.title.toLowerCase().includes(searchLower)
-					   || program.category.toLowerCase().includes(searchLower)) {
+					   || program.category?.toLowerCase().includes(searchLower)) {
                         const start = this.utcToLocal(program.start);
                         if (start.toDateString() === today.toDateString()) {
                             results.push({
