@@ -71,6 +71,128 @@ body {
     font-weight: 600;
 }
 
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  border: 1px solid #ccc;
+  max-width: 100%;
+  background: #111;
+  color: white;
+  font-family: sans-serif;
+   max-height: 75vh;
+}
+
+.fixed-column {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #222;
+  flex-shrink: 0;
+  min-width: 5rem;
+  border-right: 2px solid #333;
+}
+
+.scrollable-columns {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  border-right: 1px solid #333;
+}
+
+.cell {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    white-space: nowrap;
+    min-height: 120px;
+}
+
+.cell-program{
+    padding: 0.2rem 0.5rem;
+    border-bottom: 1px solid #333;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.header {
+  background: #0a84ff;
+  font-weight: bold;
+    min-height: 60px!important;
+}
+
+.epg-container {
+  display: flex;
+  max-width: 100%;
+  border-top: 1px solid #333;
+  background-color: #0b0b0b;
+  color: #fff;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+/* Colonna canali fissa */
+.channels-column {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #111;
+  border-right: 2px solid #222;
+  flex-shrink: 0;
+  width: 8rem;
+}
+
+.channel-header {
+  padding: 10px;
+  font-weight: bold;
+  background: #0a84ff;
+  text-align: center;
+}
+
+.channel {
+  padding: 10px;
+  border-bottom: 1px solid #222;
+}
+
+/* Sezione scrollabile */
+.epg-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.epg-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #222;
+}
+
+.epg-header {
+  background: #0a84ff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.time-slot {
+  padding: 10px;
+  border-right: 1px solid #333;
+  flex-shrink: 0;
+  width: 120px; /* 2px per minuto */
+}
+
+.program {
+  padding: 10px;
+  background: #1a1a1a;
+  border-right: 1px solid #333;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Channel Cards */
 .channel-scroll {
     display: flex;
