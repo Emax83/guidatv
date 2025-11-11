@@ -29,6 +29,10 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+.container-fluid{
+    max-width: 1024px;
+}
+
 /* Toolbar */
 .toolbar {
     background: linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(15, 20, 41, 0.95) 100%);
@@ -134,12 +138,15 @@ body {
     padding: 5px;
 }
 
+
 .channel-name {
     text-align: center;
     margin-top: 10px;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* Grid Canali */
@@ -147,9 +154,9 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 15px;
-    padding: 20px 0;
+    padding: 1.5rem;
     overflow: auto;
-    max-height: 75vh;
+    max-height: 80vh;
 }
 
 .channel-grid-item {
@@ -164,6 +171,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 95%;
 }
 
 .channel-grid-item:hover {
@@ -172,11 +180,19 @@ body {
     box-shadow: 0 10px 30px rgba(13, 202, 240, 0.3);
 }
 
+.modal.show{
+    display: block!important;
+}
+
+
 /* Modals */
 .modal-content {
+    top: 5rem;
     background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
     border: 2px solid var(--primary-color);
     border-radius: 20px;
+    max-height: 80vh;
+    box-shadow: 0 -10px 40px rgba(13, 202, 240, 0.3);
 }
 
 .modal-header {
@@ -185,6 +201,10 @@ body {
 
 .modal-footer {
     border-top: 2px solid var(--primary-color);
+}
+
+[v-cloak]{
+    display: none;
 }
 
 .modal-body{
@@ -274,6 +294,10 @@ body {
     transition: width 0.3s ease;
 }
 
+.progress{
+    height: 10px;
+}
+
 /* Evening Programs Scroll */
 .evening-programs {
     display: flex;
@@ -344,6 +368,14 @@ body {
     box-shadow: 0 0 20px rgba(13, 202, 240, 0.3);
 }
 
+.search-results-list{
+    overflow: auto;
+    max-height: 60vh;
+    border: solid 2px #0dcaf0;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
 .search-result {
     background: var(--card-bg);
     border-radius: 10px;
@@ -352,11 +384,19 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    display: flex;
+    justify-content: start;
+    /* gap: 10px; */
+    vertical-align: top;
 }
 
 .search-result:hover {
     border-color: var(--primary-color);
     transform: translateX(5px);
+}
+
+.search-result-image{
+    width: 50px; height: 50px; object-fit: contain; margin-right: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px;
 }
 
 /* Loading */
@@ -366,13 +406,15 @@ body {
 
 /* Section */
 .section {
-    display: none;
+    /*display: none;*/
     animation: fadeIn 0.5s ease;
 }
 
+/*
 .section.active {
     display: block;
 }
+*/
 
 @keyframes fadeIn {
     from {
@@ -391,7 +433,9 @@ body {
     border: 2px solid var(--primary-color);
     color: var(--primary-color);
     width: 40px;
+    min-width: 40px;
     height: 40px;
+    min-height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -415,11 +459,12 @@ body {
     content: "\f586"; /* bi-star-fill */
 }
 
+
 .favorite-card {
-    min-width: 160px;
+    min-width: 140px;
     background: var(--card-bg);
     border-radius: 15px;
-    padding: 15px;
+    padding: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid var(--primary-color);
@@ -429,6 +474,12 @@ body {
 .favorite-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(13, 202, 240, 0.3);
+}
+
+.badge {
+    padding: 0.6rem;
+    border-radius: 1rem;
+    margin-left: 1rem;
 }
 
 .remove-favorite {
@@ -475,10 +526,11 @@ body {
 }
 
 .cookie-banner{
-    display: none;
+    /*display: none;*/
     position: fixed;
-    bottom: 0;
-    width: 100vw;
+    bottom: 5vh;
+    width: 80vw;
+    left: 10vw;
     height: auto;
     padding: 2rem;
     border: 2px solid var(--primary-color);
@@ -489,9 +541,11 @@ body {
     overflow: hidden;
 }
 
+/*
 .cookie-banner.show{
     display: block;
 }
+*/
 
 .btn-simple-ok{
     color: #fff;

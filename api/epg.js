@@ -14,8 +14,11 @@ export default async function handler(req, res) {
 
   // Altrimenti scarica dall’API esterna
   try {
+    
     console.log('⬇️  Scarico nuova EPG dal server remoto');
-    const response = await fetch('https://www.emax83dev.it/api/epg');
+
+    const remoteUrl = 'https://www.emax83dev.it/api/epg';
+    const response = await fetch(remoteUrl);
     if (!response.ok) throw new Error('Errore HTTP');
 
     const data = await response.json();

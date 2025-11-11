@@ -38,35 +38,36 @@
     
     <!-- Miei files -->
     <link rel="stylesheet" href="/css/style.css">
-    <script src="js/scripts.js"></script>
+    
 
 </head>
 <body>
+    <div id="app" v-cloak>
     <!-- Toolbar -->
     <nav class="navbar navbar-expand toolbar fixed-top">
         <div class="container-fluid">
             <span class="navbar-brand logo-text mb-0 h1">
-                <img src="img/guidatv-logo.png" alt="Guida TV" title="Guida TV" style="width: 32px;" />
+                <img src="img/favicon.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
                 <span class="d-none d-md-inline">Guida TV</span>
             </span>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button class="btn btn-nav" onclick="app.showSection('favorites')" title="Preferiti">
+                <button class="btn btn-nav" @click="currentSection = 'favorites'" title="Preferiti">
                     <i class="bi bi-star"></i>
                     <span class="d-none d-sm-inline ms-1">Preferiti</span>
                 </button>
-                <button class="btn btn-nav" onclick="app.showSection('now')" title="Ora in Onda">
+                <button class="btn btn-nav" @click="currentSection = 'now'" title="Ora in Onda">
                     <i class="bi bi-broadcast"></i>
                     <span class="d-none d-sm-inline ms-1">Ora</span>
                 </button>
-                <button class="btn btn-nav" onclick="app.showSection('evening')" title="Stasera">
+                <button class="btn btn-nav" @click="currentSection = 'evening'" title="Stasera">
                     <i class="bi bi-moon-stars"></i>
                     <span class="d-none d-sm-inline ms-1">Stasera</span>
                 </button>
-                <button class="btn btn-nav" onclick="app.showSection('channels')" title="Canali">
+                <button class="btn btn-nav" @click="currentSection = 'channels'" title="Canali">
                     <i class="bi bi-grid-3x3"></i>
                     <span class="d-none d-sm-inline ms-1">Canali</span>
                 </button>
-                <button class="btn btn-nav" onclick="app.openSearch()" title="Cerca">
+                <button class="btn btn-nav" @click="currentSection = 'search'" title="Cerca">
                     <i class="bi bi-search"></i>
                 </button>
                 <span class="current-time ms-2" id="currentTime"></span>
@@ -76,111 +77,212 @@
 
     <!-- Main Content -->
     <div class="container-fluid px-3 py-4">
+        
         <!-- Loading -->
-        <div id="loading" class="text-center py-5">
+        <div id="loading" class="text-center py-5" v-if="loading == true">
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Caricamento...</span>
             </div>
-            <p class="mt-3">Caricamento programmi...</p>
+            <p class="mt-3">Caricamento...</p>
         </div>
 
         <!-- Preferiti Section -->
-        <div id="favoritesSection" class="section">
+        <div id="favoritesSection" class="section" v-show="currentSection == 'favorites'">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="bi bi-star-fill"></i> I Miei Preferiti</h2>
             </div>
             
-            <div id="favoritesEmpty" class="text-center py-5" style="display: none;">
+            <div id="favoritesEmpty" class="text-center py-5" v-if="!hasFavorites">
                 <i class="bi bi-star" style="font-size: 4rem; color: var(--text-secondary);"></i>
                 <p class="text-muted mt-3">Nessun preferito salvato</p>
                 <p class="text-muted">Aggiungi canali o programmi ai preferiti per vederli qui!</p>
             </div>
             
-            <div id="favoriteChannelsContainer" style="display: none;">
-                <h4 class="mb-3"><i class="bi bi-tv"></i> Canali Preferiti</h4>
-                <div id="favoriteChannels" class="channel-scroll"></div>
+            <div id="favoriteChannelsContainer" class="mb-3">
+                <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
+                <div id="favoriteChannels" class="channel-scroll p-3">
+                    <div class="favorite-card" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
+                        <img :src="fav.logo" :alt="fav.name" class="channel-logo" @error="handleImageError">
+                        <div class="channel-name">{{fav.name}}</div>
+                    </div>
+                </div>
             </div>
             
-            <div id="favoriteProgramsContainer" style="display: none;" class="mt-4">
-                <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi Preferiti</h4>
-                <div id="favoritePrograms" class="channel-scroll"></div>
+            <div id="favoriteProgramsContainer" class="mb-3">
+                <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi</h4>
+                <div id="favoritePrograms" class="channel-scroll p-3">
+                    <div class="favorite-card" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="me-3">
+                                <img :src="fav.channelLogo" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
+                                <div class="channel-name">{{fav.channelName}}</div>
+                            </div>
+                            <div>
+                                <h5 class="program-title">{{fav.title}}</h5>
+                                <span class="program-genre">{{fav.category}}</span>
+                                <span class="badge bg-warning" v-if="isFavoriteProgramScheduled(fav)" >OGGI</span>
+                                <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)" >IN ONDA</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Ora in Onda Section -->
-        <div id="nowSection" class="section">
+        <div id="nowSection" class="section" v-show="currentSection == 'now'">
             <h2 class="mb-4"><i class="bi bi-broadcast"></i> Ora in Onda</h2>
-            <div id="nowChannels" class="channel-scroll"></div>
+            <div id="nowChannels" class="channel-scroll">
+
+            </div>
         </div>
 
         <!-- Stasera Section -->
-        <div id="eveningSection" class="section">
+        <div id="eveningSection" class="section" v-show="currentSection == 'evening'">
             <h2 class="mb-4"><i class="bi bi-moon-stars"></i> Stasera (20:00 - 23:00)</h2>
-            <div id="eveningChannels" class="channel-scroll"></div>
+            <div id="eveningChannels" class="channel-scroll">
+
+            </div>
         </div>
 
         <!-- Lista Canali Section -->
-        <div id="channelsSection" class="section">
+        <div id="channelsSection" class="section" v-show="currentSection == 'channels'">
             <h2 class="mb-4"><i class="bi bi-grid-3x3"></i> Tutti i Canali</h2>
-            <div id="channelsGrid" class="channels-grid"></div>
-        </div>
-    </div>
-
-    <!-- Bottom Sheet Backdrop -->
-    <div class="bottom-sheet-backdrop" id="bottomSheetBackdrop" onclick="app.closeBottomSheet()"></div>
-
-    <!-- Bottom Sheet -->
-    <div class="bottom-sheet" id="bottomSheet">
-        <div class="bottom-sheet-handle"></div>
-        <div class="p-4" id="bottomSheetContent"></div>
-    </div>
-
-    <!-- Search Modal -->
-    <div class="modal fade" id="searchModal" tabindex="-1">
-        <div class="modal-dialog modal-fullscreen-sm-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-search"></i> Cerca Programmi</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control search-input mb-4" id="searchInput" placeholder="Cerca canale o programma...">
-                    <div id="searchResults"></div>
+            <div id="channelsGrid" class="channels-grid">
+                <div class="channel-grid-item" v-for="channel in channels" @click="showChannelSchedule(channel)">
+                    <img :src="channel.logo" :alt="channel.name" :title="channel.name" class="channel-logo" @error="handleImageError(event)">
+                    <div class="channel-name">{{channel.name}}</div>
                 </div>
             </div>
         </div>
+
+        <!-- Schermata Ricerca -->
+         <div id="searchSection" class="section" v-show="currentSection == 'search'">
+            <h2 class="mb-4"><i class="bi bi-search"></i> Cerca Canali e Programmi</h2>
+            <input type="search" class="form-control search-input mb-4" autofocus id="searchInput" placeholder="Cerca canale o programma..." v-model="searchQuery" >
+            <div v-if="searchQuery.length < 3">
+                <small>Inserisci almento 3 caratteri</small>
+            </div>
+            <div v-if="searchQuery.length > 2 & searchResults.length == 0">
+                <small>Nessun risultato trovato..</small>
+            </div>
+            <div id="searchResults" class="search-results-list" v-show="searchResults.length > 0">
+                <div v-for="item in searchResults" class="search-result" @click="handleSearchResultClick(item)">
+                    <div class="d-flex align-items-center">
+                        <img :src="item.image" class="search-result-image" @error="handleImageError(event)">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">{{item.title}}</div>
+                            <small class="text-light">
+                                <span v-if="item.channel" class="me-3"><i class="bi bi-tv"></i> {{item.channel.name}}</span>
+                                <span v-if="item.program" class="me-3"><i class="bi bi-clock"></i> {{ formatTime(item.program.start)}}</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+
     </div>
 
-    <!-- Video Player Modal -->
-    <div class="modal fade" id="playerModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="playerChannelName">Player</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- Bottom Sheet Backdrop -->
+    <div class="bottom-sheet-backdrop" :class="{'show' : showBottomSheet}" v-if="showBottomSheet" id="bottomSheetBackdrop" @click="showBottomSheet = false"></div>
+
+    <!-- Bottom Sheet -->
+    <div class="bottom-sheet" :class="{'show' : showBottomSheet}" id="bottomSheet" v-if="showBottomSheet">
+        <div class="bottom-sheet-handle"></div>
+        <div class="p-4" id="bottomSheetContent">
+            <div class="text-center mb-3">
+                <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+                    <img :src="selectedChannel.logo" :alt="selectedChannel.name" :title="selectedChannel.name" @error="handleImageError(event)">
+                    <h4 class="mx-3">{{selectedChannel.name}}</h4>
+                    <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
+                        <i class="bi bi-star"></i>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <video id="videoPlayer" controls></video>
+            </div>
+            <div class="program-card" v-if="selectedProgram">
+                <img :src="selectedProgram.image" class="program-image" @error="handleImageError(event)">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h3 class="program-title">{{selectedProgram.title}}</h3>
+                        <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(selectedChannel, selectedProgram)}" 
+                        @click="toggleFavoriteProgram(selectedChannel, selectedProgram)" title="Aggiungi programma ai preferiti">
+                            <i class="bi bi-star"></i>
+                        </button>
                 </div>
+                
+                <div class="program-time">
+                    <i class="bi bi-clock"></i> {{formatTime(selectedProgram.start)}} • {{getDuration(selectedProgram)}}
+                </div>
+                <span class="program-genre">{{selectedProgram.category}}</span>
+                <span class="badge bg-danger" v-if="isProgramLive(selectedProgram)" >IN ONDA</span>
+
+                <p class="mt-3">{{selectedProgram.description}}</p>
+                <div class="mt-3" v-if="isProgramLive(selectedProgram)">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 11.877628205128204%"></div>
+                    </div>
+                    <small class="text-muted">12% completato</small>
+                    <div class="border-top mt-2">
+                        <a class="btn btn-primary mt-3 w-100" :href="selectedChannel.playUrl" target="_blank">
+                            <i class="bi bi-play-fill"></i> Guarda Online
+                        </a>
+                    </div>
+                </div>
+                <div v-else>
+                    <!-- aggiungi a calendario -->
+                </div>
+                
             </div>
         </div>
     </div>
 
     <!-- Channel Schedule Modal -->
-    <div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal fade" :class="{'show' : showScheduleModal}" id="scheduleModal" tabindex="-1" v-if="showScheduleModal == true && selectedChannel">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="scheduleChannelName">Programmazione</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header d-flex justify-content-between">
+                    <img :src="selectedChannel.logo" :alt="selectedChannel.name" @error="handleImageError(event)">
+                    <h5 class="modal-title me-5" id="scheduleChannelName">{{selectedChannel.name}}</h5>
+
+                    <button class="favorite-btn" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
+                        <i class="bi bi-star"></i>
+                    </button>
+
+                    <button type="button" class="btn-close btn-close-white text-white" @click="showScheduleModal = false"></button>
                 </div>
-                <div class="modal-body" id="scheduleContent" style="max-height: 70vh; overflow-y: auto;"></div>
+                <div class="modal-body" id="scheduleContent" >
+                    <div class="program-card" :class="{ 'border-primary': isProgramLive(program) }"
+                        v-for="program in selectedChannel.programs" :key="program.id"
+                        @click="showProgramInModal(selectedChannel, program);showScheduleModal=false;">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(selectedChannel, program)}" 
+                                @click.stop="toggleFavoriteProgram(selectedChannel, program)" title="Aggiungi programma ai preferiti">
+                                    <i class="bi bi-star"></i>
+                                </button>
+                                <h5 class="program-title" >{{program.title}}</h5>
+                                <div class="program-time">
+                                    <i class="bi bi-clock"></i> {{ formatTime(program.start)}} • {{getDuration(program)}}
+                                </div>
+                            </div>
+                            <span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>
+                        </div>
+                        <span class="program-genre">{{program.category}}</span>
+                        <p class="mt-2 mb-0 small">{{program.description}}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary mt-3" :href="selectedChannel.playUrl" target="_blank">
+                            <i class="bi bi-play-fill"></i> Guarda Online
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner" >
+    <div class="cookie-banner" id="cookieBanner" v-if="showCookieBanner == true" >
         <div class="cookie-banner-content">
             <div class="cookie-banner-text">
                 <h5><i class="bi bi-shield-check"></i> Privacy & Cookie</h5>
@@ -191,7 +293,7 @@
             </div>
             <div class="cookie-banner-actions">
                 <!-- Versione semplice (attuale) -->
-                <button class="btn btn-simple-ok" onclick="app.acceptCookies(false)">
+                <button class="btn btn-simple-ok" @click="acceptCookies(false)">
                     <i class="bi bi-check-circle"></i> Ho capito
                 </button>
                 
@@ -207,7 +309,9 @@
             </div>
         </div>
     </div>
+   </div>
 
-   
+   <script src="js/scripts.js"></script>
+
 </body>
 </html>
