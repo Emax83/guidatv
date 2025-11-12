@@ -124,13 +124,17 @@ const vueApp = createApp({
                 channel.programs.forEach(program => {
                     //aggiungi se ora di inizio superiore ad ora
                     const now = new Date();
+					const endOfDay = new Date();
+					endOfDay.setHours(24,0,0,0);// end of day
                     const startDate = this.utcToLocal(program.start);
 					const endDate = this.utcToLocal(program.stop);
 
                     if(program.category?.toLowerCase() === 'film') {
 
                         // nascondo i film già finiti
-                        if (this.hideAiredMovies && endDate && endDate < now) {
+                        if (this.hideAiredMovies 
+							&& endDate && endDate < now
+						    && startDate < endOfDay) {
                             return;
                         }
 
