@@ -170,77 +170,71 @@ const vueApp = createApp({
         async loadData() {
             this.loading = true;
             this.error = null;
+            const originalUrl = 'https://www.emax83dev.it/api/epg';
+            var response;
 
-                try {
-                    // fetch local file
-                    response = await fetch('/data/channels.json');
-                    if (!response.ok) throw new Error('Direct fetch failed');
-
-                    this.officialLinks = await response.json();
+            try {
+                // fetch local file
+                response = await fetch('/data/channels.json');
+                if (!response.ok) throw new Error('Direct fetch failed');
+                
+                this.officialLinks = await response.json();
 
             } catch (err) {
                 console.error('Errore nel caricamento officialLinks:', err);
                 this.officialLinks = [];
             }
-
+            
             try {
+
+                response = await fetch(originalUrl);
+                if (!response.ok) throw new Error('Direct fetch failed');
+
+            } catch (directError) {
+
+                const corsProxies = [
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`,
+                    `https://corsproxy.io/?${encodeURIComponent(originalUrl)}`,
+                    `https://cors-anywhere.herokuapp.com/${originalUrl}`,
+                    '/api/epg', //local serverless function
+                    '/data/list.json' //local static file
+                ];
                 
-                const originalUrl = 'https://www.emax83dev.it/api/epg';
-                //const originalUrl = '/data/list.json';
-                
-                let response;
-                try {
-                    response = await fetch(originalUrl);
-                    if (!response.ok) throw new Error('Direct fetch failed');
-                } catch (directError) {
-                    const corsProxies = [
-                        '/api/epg', //local serverless function
-						`https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`,
-						`https://corsproxy.io/?${encodeURIComponent(originalUrl)}`,
-						`https://cors-anywhere.herokuapp.com/${originalUrl}`
-					];
-                    
-                    for (const proxyUrl of corsProxies) {
-                        try {
-                            response = await fetch(proxyUrl);
-                            if (response.ok) break;
-                        } catch (e) {
-                            console.log('Proxy failed:', e);
-                        }
+                for (const proxyUrl of corsProxies) {
+                    try {
+                        response = await fetch(proxyUrl);
+                        if (response.ok) break;
+                    } catch (e) {
+                        console.log('Proxy failed:', e);
                     }
                 }
-
-                if (!response || !response.ok) {
-                    throw new Error('Impossibile caricare i dati');
-                }
-
-                const jsonData = await response.json();
-                
-                this.channels = jsonData.map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    epgName: item.epgName,
-                    logo: item.logo,
-                    playlist: item.m3uLink,
-                    externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
-                    programs: item.programs.map(program => ({
-                        start: program.start,
-                        stop: program.end,
-                        title: program.title,
-                        description: program.description,
-                        category: program.category,
-                        image: program.poster
-                    }))
-                }));
-
-                this.loading = false;
-                this.autoOpenFirstChannel();
-
-            } catch (error) {
-                console.error('Error loading data:', error);
-                this.error = error.message;
-                this.loading = false;
             }
+
+            if (!response || !response.ok) {
+                throw new Error('Impossibile caricare i dati');
+            }
+
+            const jsonData = await response.json();
+            
+            this.channels = jsonData.map(item => ({
+                id: item.id,
+                name: item.name,
+                epgName: item.epgName,
+                logo: item.logo,
+                playlist: item.m3uLink,
+                externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
+                programs: item.programs.map(program => ({
+                    start: program.start,
+                    stop: program.end,
+                    title: program.title,
+                    description: program.description,
+                    category: program.category,
+                    image: program.poster
+                }))
+            }));
+
+            this.loading = false;
+            this.autoOpenFirstChannel();
         },
 
         utcToLocal(utcDateStr) {
