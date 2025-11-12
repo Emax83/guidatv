@@ -91,7 +91,7 @@
         </div>
 
         <!-- Preferiti Section -->
-        <div id="favoritesSection" class="section" v-show="currentSection == 'favorites'">
+        <div id="favoritesSection" class="section" v-if="currentSection == 'favorites'">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="bi bi-star-fill"></i> I Miei Preferiti</h2>
             </div>
@@ -134,7 +134,7 @@
         </div>
 
         <!-- Ora in Onda Section -->
-        <div id="nowSection" class="section" v-show="currentSection == 'now'">
+        <div id="nowSection" class="section" v-if="currentSection == 'now'">
             <div class="form-check float-end">
                 <label class="form-check-label">
                     <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
@@ -173,7 +173,7 @@
         </div>
 
         <!-- Stasera Section -->
-        <div id="eveningSection" class="section" v-show="currentSection == 'evening'">
+        <div id="eveningSection" class="section" v-if="currentSection == 'evening'">
             <div class="form-check float-end">
                 <label class="form-check-label">
                     <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
@@ -205,7 +205,7 @@
         </div>
 
         <!-- Films Section -->
-         <div id="moviesSection" class="section" v-show="currentSection == 'movies'">
+         <div id="moviesSection" class="section" v-if="currentSection == 'movies'">
             <div class="float-end form-check">
                 <label class="form-check-label">
                     <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi
@@ -250,7 +250,7 @@
          </div>
 
         <!-- Lista Canali Section -->
-        <div id="channelsSection" class="section" v-show="currentSection == 'channels'">
+        <div id="channelsSection" class="section" v-if="currentSection == 'channels'">
             <h2 class="mb-4"><i class="bi bi-grid-3x3"></i> Tutti i Canali</h2>
             <div id="channelsGrid" class="channels-grid">
                 <div class="channel-grid-item" v-for="channel in channels" @click="showChannelSchedule(channel)">
