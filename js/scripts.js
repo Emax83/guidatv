@@ -136,7 +136,7 @@ const vueApp = createApp({
                             return;
                         }
 
-						if (startDate < endOfDay) {
+						if (startDate > endOfDay) { //nascondo quelli che iniziano dopo mezzanotte
 							return;
 						}
 
