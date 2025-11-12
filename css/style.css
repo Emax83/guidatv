@@ -53,7 +53,8 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* per Safari */
   background: rgba(20, 20, 30, 0.4);   /* colore semitrasparente */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--primary-color);
+  /*border-bottom: 1px solid rgba(255, 255, 255, 0.1);*/
   z-index: 1000;
     
 }
