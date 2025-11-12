@@ -56,6 +56,10 @@ body {
     transform: translateY(-2px);
 }
 
+.logo-image{
+
+}
+
 .logo-text {
     font-size: 1.5rem;
     font-weight: bold;
@@ -279,6 +283,21 @@ body {
     padding: 1.5rem;
     overflow: auto;
     max-height: 80vh;
+    scroll-behavior: smooth;
+}
+
+.channels-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.channels-grid::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.channels-grid::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
 .channel-grid-item {
@@ -363,6 +382,8 @@ body {
     border-radius: 10px;
     margin: 15px auto;
 }
+
+
 
 /* Program Cards */
 .program-card {
@@ -496,6 +517,21 @@ body {
     border: solid 2px #0dcaf0;
     border-radius: 10px;
     padding: 1rem;
+    scroll-behavior: smooth;
+}
+
+.search-results-list::-webkit-scrollbar {
+    height: 8px;
+}
+
+.search-results-list::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.search-results-list::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
 .search-result {
@@ -602,6 +638,10 @@ body {
     box-shadow: 0 10px 30px rgba(13, 202, 240, 0.3);
 }
 
+.text-shadow{
+    text-shadow: 0 10px 30px rgba(13, 202, 240, 1.0);
+}
+
 .badge {
     padding: 0.6rem;
     border-radius: 1rem;
@@ -640,13 +680,30 @@ body {
 
 
 .movies-grid{
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh;
+    scroll-behavior: smooth;
+}
 
+.movies-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.movies-grid::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.movies-grid::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
 .movie-card{
     margin: 1rem;
     padding: 1rem;
-    border: solid 2px var(--primary-color);
+    border: solid 2px #0dcaf04d;
     border-radius: 1rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 20px rgba(13, 202, 240, 0.2);
@@ -694,5 +751,9 @@ body {
     border: solid 2px #0dcaf0;
 }
 .btn-close{
-    margin-left: 1rem;
+    margin-left: 1rem!important;
+}
+
+input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
+    cursor: pointer!important;
 }

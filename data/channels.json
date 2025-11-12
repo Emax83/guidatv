@@ -2,11 +2,11 @@
     {
         "id":"rai-1",
         "epgName":"Rai 1",
-        "playUrl": "https://www.raiplay.it/dirette/rai1"
+        "externalUrl": "https://www.raiplay.it/dirette/rai1"
     },
     {
         "id":"rai-2",
         "epgName":"Rai 2",
-        "playUrl": "https://www.raiplay.it/dirette/rai2"
+        "externalUrl": "https://www.raiplay.it/dirette/rai2"
     }
 ]

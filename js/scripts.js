@@ -11,6 +11,7 @@ const vueApp = createApp({
             error: null,
             currentSection: 'favorites',
             currentTime: '',
+            currentDate: '',
             favorites: {
                 channels: [],
                 programs: []
@@ -25,6 +26,7 @@ const vueApp = createApp({
             showCookieBanner: false,
             cookiesAccepted: false,
 			hideAiredMovies: true,
+            epgOnlyFavoritesChannels: false,
         }
     },
 
@@ -119,18 +121,26 @@ const vueApp = createApp({
                     //aggiungi se ora di inizio superiore ad ora
                     let now = new Date();
                     let startDate = this.utcToLocal(program.start);
-					let endDate = this.utcToLocal(program.end);
-					// se vogliamo nascondere i film già finiti
-                    if (this.hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
-                        return;
-					}
+					let endDate = this.utcToLocal(program.stop);
 
                     if(program.category?.toLowerCase() === 'film') {
-                        let movie = {
+
+                        // 1) salta i film che iniziano nel futuro
+                        if (startDate && startDate.getTime() > now.getTime()) {
+                            return;
+                        }
+
+                        // 2) se vogliamo nascondere i film già finiti
+                        if (this.hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
+                            return;
+                        }
+
+                        // altrimenti includi
+                        movies.push({
                             channel: JSON.parse(JSON.stringify(channel)),
                             program: JSON.parse(JSON.stringify(program)),
-                        };
-                        movies.push(movie);
+                        });
+                        
                     }
                 });
             });
@@ -175,8 +185,8 @@ const vueApp = createApp({
 
             try {
                 
-                //const originalUrl = 'https://www.emax83dev.it/api/epg';
-                const originalUrl = '/data/list.json';
+                const originalUrl = 'https://www.emax83dev.it/api/epg';
+                //const originalUrl = '/data/list.json';
                 
                 let response;
                 try {
@@ -212,7 +222,7 @@ const vueApp = createApp({
                     epgName: item.epgName,
                     logo: item.logo,
                     playlist: item.m3uLink,
-                    playUrl: this.officialLinks.find(link => link.epgName === item.name)?.playUrl || null,
+                    externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
                     programs: item.programs.map(program => ({
                         start: program.start,
                         stop: program.end,
@@ -246,6 +256,46 @@ const vueApp = createApp({
         updateCurrentTime() {
             const now = new Date();
             this.currentTime = this.formatTime(now);
+            const giorni = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+            const mesi = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+
+            const giornoSettimana = giorni[now.getDay()];
+            const giorno = now.getDate().toString().padStart(2, '0');
+            const mese = mesi[now.getMonth()];
+            const ore = now.getHours().toString().padStart(2, '0');
+            const minuti = now.getMinutes().toString().padStart(2, '0');
+
+            this.currentDate = `${giornoSettimana} ${giorno} ${mese} ${ore}:${minuti}`;
+        },
+
+        getTmdbLink(title){
+            if(!title){
+                return '#';
+            }
+
+            const url = 'https://www.themoviedb.org/search?query=' + encodeURIComponent(title);
+            return url;
+            
+            /* da IMPLEMENTARE
+            const apiKey = '<<TMDB_API_KEY>>'; // inserisci la tua chiave TMDB
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(title)}&language=it-IT`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const movie = data.results[0];
+                    // ritorna link diretto alla pagina del film su TMDB
+                    return `https://www.themoviedb.org/movie/${movie.id}`;
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.error('Errore TMDB:', error);
+                return null;
+            }
+            */
         },
 
         getCurrentProgram(channel) {

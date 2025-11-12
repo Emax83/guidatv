@@ -136,7 +136,13 @@
 
         <!-- Ora in Onda Section -->
         <div id="nowSection" class="section" v-show="currentSection == 'now'">
-            <h2 class="mb-4"><i class="bi bi-broadcast"></i> Ora in Onda</h2>
+            <div class="form-check float-end">
+                <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
+                     Favoriti
+                </label>
+            </div>
+            <h2 class="mb-4"><i class="bi bi-broadcast"></i><span class="ms-3 text-shadow">{{ currentDate }}</span></h2>
             <div id="nowChannels" class="epg-container">
                 <!-- Colonna fissa con i canali -->
                 <div class="channels-column">
@@ -180,7 +186,14 @@
 
         <!-- Stasera Section -->
         <div id="eveningSection" class="section" v-show="currentSection == 'evening'">
-            <h2 class="mb-4"><i class="bi bi-moon-stars"></i> Stasera (20:00 - 23:00)</h2>
+            <div class="form-check float-end">
+                <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
+                     Favoriti
+                </label>
+            </div>
+            <h2 class="mb-4"><i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow">Stasera (20:00 - 23:00)</span></h2>
+
             <div id="eveningChannels" class="scroll-container">
                 <div class="fixed-column">
                     <div class="cell header"><i class="bi bi-moon-stars"></i></div>
@@ -259,15 +272,19 @@
 
         <!-- Films Section -->
          <div id="moviesSection" class="section" v-show="currentSection == 'movies'">
-            <div class="float-end"><label class="form-check-label"><input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi</label></div>
-            <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film</h2>
+            <div class="float-end form-check">
+                <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi
+                </label>
+            </div>
+            <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film ({{allMovies.length}})</h2>
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
                         <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
                             <img :src="movie.channel.logo" :alt="movie.channel.name" :title="movie.channel.name">
                             <h4 class="mx-3">{{movie.channel.name}}</h4>
-                            <button class="favorite-btn float-end" title="Aggiungi canale ai preferiti" @click="toggleFavoriteChannel(movie.channel)">
+                            <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(movie.channel)}" @click="toggleFavoriteChannel(movie.channel)" title="Aggiungi canale ai preferiti">
                                 <i class="bi bi-star"></i>
                             </button>
                         </div>
@@ -276,13 +293,22 @@
                         <img :src="movie.program.image" :alt="movie.program.title" class="program-image">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h3 class="program-title">{{movie.program.title}}</h3>
-                            <button class="favorite-btn float-end" title="Aggiungi programma ai preferiti" @click="toggleFavoriteProgram(movie.channel, movie.program)">
+                            <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(movie.channel, movie.program)}" @click="toggleFavoriteProgram(movie.channel, movie.program)" title="Aggiungi programma ai preferiti">
                                 <i class="bi bi-star"></i>
                             </button>
                         </div>
                         <div class="program-time">
                             <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} • {{getDuration(movie.program)}}</span>
-                            <p class="mt-3 program-description">{{movie.program.description}}</p>
+                            <span>
+                            <a :href="getTmdbLink(movie.program.title)" target="_blank" class="badge bg-success"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
+                            </span>
+                        </div>
+                        <p class="mt-3 program-description">{{movie.program.description}}</p>
+
+                        <div class="border-top mt-2" >
+                                <a v-if="isProgramLive(movie.program)" class="btn btn-primary mt-3 w-100" :href="movie.channel.externalUrl" target="_blank" >
+                                    <i class="bi bi-play-fill"></i> Guarda Online
+                                </a>
                         </div>
                     </div>
                 </div>
@@ -317,7 +343,7 @@
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{item.title}}</div>
                             <small class="text-light">
-                                <span v-if="item.channel" class="me-3"><i class="bi bi-tv"></i> {{item.channel.name}}</span>
+                                <span v-if="item.channel" class="me-3 fw-bold"><i class="bi bi-tv"></i> {{item.channel.name}}</span>
                                 <span v-if="item.program" class="me-3"><i class="bi bi-clock"></i> {{ formatTime(item.program.start)}}</span>
                                 <span v-if="item.program" class="program-genre me-3">{{item.program.category}}</span>
                             </small>
@@ -368,7 +394,7 @@
                     </div>
                     <small class="text-muted">{{getProgress(selectedProgram)}} completato</small>
                     <div class="border-top mt-2">
-                        <a class="btn btn-primary mt-3 w-100" :href="selectedChannel.playUrl" target="_blank">
+                        <a class="btn btn-primary mt-3 w-100" :href="selectedChannel.externalUrl" target="_blank">
                             <i class="bi bi-play-fill"></i> Guarda Online
                         </a>
                     </div>
@@ -400,24 +426,24 @@
                         v-for="program in selectedChannel.programs" :key="program.id"
                         @click="showProgramInModal(selectedChannel, program);showScheduleModal=false;">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(selectedChannel, program)}" 
+                                
+                                <h5 class="program-title" >{{program.title}}</h5>
+                                
+                                <button class="favorite-btn" :class="{'active' : isFavoriteProgram(selectedChannel, program)}" 
                                 @click.stop="toggleFavoriteProgram(selectedChannel, program)" title="Aggiungi programma ai preferiti">
                                     <i class="bi bi-star"></i>
                                 </button>
-                                <h5 class="program-title" >{{program.title}}</h5>
-                                <div class="program-time">
+                        </div>
+                        <div class="program-time">
                                     <i class="bi bi-clock"></i> {{ formatTime(program.start)}} • {{getDuration(program)}}
                                 </div>
-                            </div>
-                            <span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>
-                        </div>
                         <span class="program-genre">{{program.category}}</span>
+                        <span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>
                         <p class="mt-2 mb-0 small">{{program.description}}</p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary mt-3" :href="selectedChannel.playUrl" target="_blank">
+                    <a class="btn btn-primary mt-3" :href="selectedChannel.externalUrl" target="_blank">
                             <i class="bi bi-play-fill"></i> Guarda Online
                     </a>
                 </div>
