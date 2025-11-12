@@ -11,10 +11,11 @@
 
 - 🎨 **Design moderno** con dark theme e accenti blu/cyan
 - 📱 **Mobile-first** e completamente responsive
-- 🔴 **Streaming live** integrato con supporto HLS (M3U8)
 - 🕐 **Ora in Onda** - Visualizza i programmi attualmente in onda
 - 🌙 **Stasera** - Programmazione serale (20:00-23:00)
 - 📋 **Lista Canali** - Griglia completa con tutti i canali disponibili
+- **Lista Canali e Programmi Preferiti** - Accesso diretto ai soli canali preferiti
+- **Tutti i Film** - Elenco dei soli film in programmazione
 - 🔍 **Ricerca avanzata** - Cerca tra canali e programmi
 - ⏱️ **Progress bar** - Indicatore di avanzamento programma in tempo reale
 - 🌍 **Conversione timezone** - Automatica da UTC a fuso orario italiano
