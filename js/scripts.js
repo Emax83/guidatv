@@ -319,8 +319,7 @@ const vueApp = createApp({
             const startEvening = new Date();
             startEvening.setHours(20,0,0,0);
             const endEvening = new Date();
-            endEvening.setHours(24,0,0,0);
-
+            endEvening.setHours(23,59,59,999);
             return channel.programs.filter(program => {
                 const start = this.utcToLocal(program.start);
                 const stop = this.utcToLocal(program.stop);
@@ -356,11 +355,12 @@ const vueApp = createApp({
         },
 
         getTodayPrograms(channel) {
+            this.loading = true;
             const today = new Date();
             const hh = today.getHours()-1;
             today.setHours(hh, 0, 0, 0);
             const endDay = new Date();
-            endDay.setHours(24,0,0,0);
+            endDay.setHours(23,59,59,999);
             return channel.programs
                 .filter(program => {
                     let start = this.utcToLocal(program.start); // questi però sono UTC
