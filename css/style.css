@@ -78,7 +78,7 @@ body {
 .scroll-container {
   display: flex;
   overflow-x: auto;
-  border: 1px solid #ccc;
+  border: 1px solid #0a84ff;
   max-width: 100%;
   background: #111;
   color: white;
@@ -116,9 +116,12 @@ body {
 
 .cell-program{
     padding: 0.2rem 0.5rem;
-    border-bottom: 1px solid #333;
+    border-right: 1px solid #0a84ff;
+    border-bottom: 1px solid #0a84ff;
+    border-collapse: collapse;
     white-space: nowrap;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .header {
@@ -157,8 +160,11 @@ body {
 
 .channel {
   padding: 10px;
-  border-bottom: 1px solid #222;
-}
+  border-left: 1px solid #0a84ff;
+  border-bottom: 1px solid #0a84ff;
+  border-right: 1px solid #0a84ff;
+  height: 120px;
+  }
 
 /* Sezione scrollabile */
 .epg-scroll {
@@ -177,24 +183,30 @@ body {
 .epg-header {
   background: #0a84ff;
   font-weight: bold;
-  text-align: center;
+  text-align: left;
+  padding-left: 1rem;
 }
 
 .time-slot {
   padding: 10px;
   border-right: 1px solid #333;
   flex-shrink: 0;
-  width: 120px; /* 2px per minuto */
+  width: 120px; /* 4px per minuto */
 }
 
 .program {
-  padding: 10px;
+  padding: 5px;
+  height: 120px; /* stessa altezza di .channel */
   background: #1a1a1a;
-  border-right: 1px solid #333;
+  border-right: 1px solid #0a84ff;
+  border-bottom: 1px solid #0a84ff;
+  border-collapse: collapse;
+  margin-top: -1px;
   flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 /* Channel Cards */

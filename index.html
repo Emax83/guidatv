@@ -128,7 +128,6 @@
                                 <span class="badge bg-warning" v-else-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -147,38 +146,27 @@
                 <!-- Colonna fissa con i canali -->
                 <div class="channels-column">
                     <div class="channel-header">Canali</div>
-                    <div class="channel">Rai 1</div>
-                    <div class="channel">Rai 2</div>
-                    <div class="channel">Rai 3</div>
-                    <div class="channel">Rai 4</div>
+                    <div class="channel" v-for="channel in epgChannels">
+                        <img class="channel-logo" :src="channel.logo" :alt="channel.name" :title="channel.name" />
+                    </div>
                 </div>
 
                 <!-- Parte scrollabile -->
                 <div class="epg-scroll">
                     <!-- RIGA HEADER (slot orari) -->
-                    <div class="epg-row epg-header">
-                    <div class="time-slot">08:00</div>
-                    <div class="time-slot">09:00</div>
-                    <div class="time-slot">10:00</div>
-                    <div class="time-slot">11:00</div>
+                    <div class="epg-row">
+                        <div class="time-slot epg-header" v-for="slot in timeSlotsAllDay">{{slot}}</div>
                     </div>
-
                     <!-- RIGHE PROGRAMMI -->
-                    <div class="epg-row">
-                    <div class="program" style="width: 400px;">TG1 Mattina</div>
-                    <div class="program" style="width: 570px;">Unomattina</div>
-                    </div>
-
-                    <div class="epg-row">
-                    <div class="program" style="width: 200px;">Cartoni</div>
-                    <div class="program" style="width: 400px;">Sport</div>
-                    <div class="program" style="width: 350px;">Film</div>
-                    </div>
-
-                    <div class="epg-row">
-                    <div class="program" style="width: 300px;">Documentario</div>
-                    <div class="program" style="width: 350px;">Serie TV</div>
-                    <div class="program" style="width: 300px;">Talk Show</div>
+                    <div class="epg-row" v-for="channel in epgChannels">
+                        <div class="program" v-for="program in getTodayPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
+                            @click="showProgramInModal(channel, program)" :title="program.title">
+                            <div class="program-title">{{program.title}}</div>
+                            <div class="program-time">
+                                <span>{{formatTime(program.start)}}</span> - <span>{{ getDuration(program)}}</span>
+                            </div>
+                            <span class="program-genre">{{program.category}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,75 +185,21 @@
             <div id="eveningChannels" class="scroll-container">
                 <div class="fixed-column">
                     <div class="cell header"><i class="bi bi-moon-stars"></i></div>
-                    <div class="cell">20:00</div>
-                    <div class="cell">20:30</div>
-                    <div class="cell">21:00</div>
-                    <div class="cell">21:30</div>
-                    <div class="cell">22:00</div>
-                    <div class="cell">22:30</div>
-                    <div class="cell">23:00</div>
+                    <div class="cell epg-header" v-for="slot in timeSlotsEvening">{{slot}}</div>
                 </div>
 
                 <div class="scrollable-columns">
-                    <div class="column">
-                        <div class="cell header">RAI 1</div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
+                    <div class="column" v-for="channel in epgChannels">
+                        <div class="cell header">{{channel.name}}</div>
+                        <div class="cell-program" v-for="program in getEveningPrograms(channel)"
+                            :style="'height: ' + getProgramHeight(program)"
+                            @click="showProgramInModal(channel, program)" :title="program.title">
+                            <div class="program-title">{{program.title}}</div>
+                            <div class="program-time">{{formatTime(program.start)}} - {{getDuration(program)}}</div>
+                            <div class="program-genre">{{program.category}}</div>
                         </div>
                     </div>
 
-                    <div class="column">
-                        <div class="cell header">RAI 2</div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell">
-                            <div>Programma 2</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell-program">
-                            <div>Programma 3</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                    </div>
-
-                    <div class="column">
-                        
-                    <div class="cell header">RAI 3</div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell-program">
-                            <div>Programma 1</div>
-                            <div>20:00 - 30 min</div>
-                            <div>Azione</div>
-                        </div>
-                        <div class="cell-program">
-                            <div>Programma 1</span>
-                            <div>20:00 - 30 min</span>
-                            <div>Azione</div>
-                        </div>
-                    </div>
-                </div>
-                    </div>
                 </div>
             </div>
         </div>

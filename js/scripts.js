@@ -150,7 +150,8 @@ const vueApp = createApp({
 
         timeSlotsAllDay() {
             const slots = [];
-            for (let hour = 0; hour <= 24; hour++) {
+            const startH = new Date().getHours()-1;
+            for (let hour = startH; hour <= 24; hour++) {
                 slots.push(`${hour}:00`);
                 slots.push(`${hour}:30`);
             }
@@ -164,7 +165,15 @@ const vueApp = createApp({
                 slots.push(`${hour}:30`);
             }
             return slots;
-        }
+        },
+
+        epgChannels() {
+            if (this.epgOnlyFavoritesChannels == true) {
+                return this.favoriteChannels;
+            }
+            return this.channels;
+        },
+
     },
 
     methods: {
@@ -308,9 +317,11 @@ const vueApp = createApp({
             
             return channel.programs.filter(program => {
                 const start = this.utcToLocal(program.start);
-                const hour = start.getHours();
+                const stop = this.utcToLocal(program.stop);
+                const startH = start.getHours();
+                const stopH = stop.getHours();
                 const isSameDay = start.toDateString() === today.toDateString();
-                return isSameDay && hour >= 20 && hour < 23;
+                return isSameDay && stopH > 20 && startH < 24;
             });
         },
 
@@ -339,12 +350,15 @@ const vueApp = createApp({
 
         getTodayPrograms(channel) {
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
+            const hh = today.getHours()-1;
+            today.setHours(hh, 0, 0, 0);
+            const endDay = new Date();
+            endDay.setHours(24,0,0,0);
             return channel.programs
                 .filter(program => {
-                    const start = this.utcToLocal(program.start);
-                    return start.toDateString() === today.toDateString();
+                    let start = this.utcToLocal(program.start); // questi però sono UTC
+                    let stop = this.utcToLocal(program.stop); //questi però sono UTC
+                    return stop > today && start < endDay;
                 })
                 .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
         },
@@ -386,7 +400,92 @@ const vueApp = createApp({
             return current?.title === program.title;
         },
 
+        getProgramWidth(program){
+            try {
+                const today = new Date();
+                const hh = today.getHours()-1;
+                today.setHours(hh, 0, 0, 0);
+                const endDay = new Date();
+                endDay.setHours(24,0,0,0);
+                //hh è l'ora di inizio dell'epg.
 
+                // timeslot = 30 minuti = 120px = 1minuto = 4px
+                const start = this.utcToLocal(program.start);
+                const stop = this.utcToLocal(program.stop);
+
+                // differenza in millisecondi
+                var diffMs = stop - start; //durata del programma.
+
+                // conversione in minuti
+                var diffMinutes = Math.floor(diffMs / 60000); 
+
+                if(start < today){
+                    //devo togliere i minuti già trascorsi
+                    diffMs = today-start;
+                    diffMinutes = diffMinutes - Math.floor(diffMs / 60000); 
+                }
+                if(stop > endDay){
+                    //devo togliere i minuti oltre le 24
+                    diffMs = stop-endDay;
+                    diffMinutes = diffMinutes - Math.floor(diffMs / 60000); 
+                }
+                
+                return (diffMinutes * 4) + 'px';
+
+            }
+            catch(err){
+                console.log("getProgramWidth; Error: " + err.message);
+                return '120px';
+            }
+        },
+
+        getProgramHeight(program){
+            try {
+                // 30 minuti = 120px
+                // qui si parte dalle 20:00 fino alle 24:00
+                
+                const today = new Date();
+                today.setHours(20, 0, 0, 0);
+                const endDay = new Date();
+                endDay.setHours(24,0,0,0);
+                //hh è l'ora di inizio dell'epg.
+
+                // timeslot = 30 minuti = 120px = 1minuto = 4px
+                const start = this.utcToLocal(program.start);
+                const stop = this.utcToLocal(program.stop);
+
+                // differenza in millisecondi
+                var diffMs = stop - start;
+
+                // se un programma inizia dopo le 20 ma prima delle 24
+                // caso normale, non faccio nulla
+
+                // se un programma è iniziato prima delle 20 ma termina dopo le 20
+                if (start < today & stop > today) {
+                    // differenza di minuti restanti
+                    diffMs = diffMs  - (stop - today);
+                }
+
+                // se un programma inizia prima delle 24 ma termina dopo le 24
+                if (start < endDay & stop > endDay) {
+                    // differenza di minuti visibili
+                    diffMs = diffMs - (endDay - start);
+                }
+
+                // differenza da millisecondi in minuti
+                var diffMinutes = Math.floor(diffMs / 60000);
+
+                // devo l'altezza in pixels: 1 minuto = 4 pixel.
+                var pixels = diffMinutes * 4;
+
+                return pixels + 'px';                
+
+            }
+            catch(err){
+                console.log("getProgramHeight; Error: " + err.message);
+                return '120px';
+            }
+        },
 
         isFavoriteProgramScheduled(favorite){
             // Trova il canale
@@ -414,8 +513,8 @@ const vueApp = createApp({
 
             // Verifica se è attualmente in onda
             const now = new Date();
-            const start = new Date(program.start);
-            const stop = new Date(program.stop);
+            const start = this.utcToLocal(program.start);
+            const stop = this.utcToLocal(program.stop);
 
             return now >= start && now <= stop;
         },
