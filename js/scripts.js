@@ -163,7 +163,7 @@ const vueApp = createApp({
 
         timeSlotsEvening() {
             const slots = [];
-            for (let hour = 20; hour < 24; hour++) {
+            for (let hour = 20; hour <= 24; hour++) {
                 slots.push(`${hour}:00`);
                 slots.push(`${hour}:30`);
             }
@@ -314,23 +314,7 @@ const vueApp = createApp({
             });
         },
 
-        getEveningPrograms(channel) {
-            const today = new Date();
-            const startEvening = new Date();
-            startEvening.setHours(20,0,0,0);
-            const endEvening = new Date();
-            endEvening.setHours(23,59,59,999);
-            return channel.programs.filter(program => {
-                const start = this.utcToLocal(program.start);
-                const stop = this.utcToLocal(program.stop);
-
-                const isSameDay = start.getDate() === today.getDate();
-                const isEvening = (isSameDay && stop > startEvening && start < endEvening);
-                return isEvening;
-                })
-                .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
-        },
-
+       
         getEpgProgramStyle(program) {
             const start = this.utcToLocal(program.start);
             const end = this.utcToLocal(program.stop);
@@ -362,12 +346,28 @@ const vueApp = createApp({
             endDay.setHours(23,59,59,999);
             return channel.programs
                 .filter(program => {
-                    let start = this.utcToLocal(program.start); // questi però sono UTC
-                    let stop = this.utcToLocal(program.stop); //questi però sono UTC
-                    return stop > today && start < endDay;
+                    const start = this.utcToLocal(program.start); // questi però sono UTC
+                    const stop = this.utcToLocal(program.stop); //questi però sono UTC
+                    return (stop > today && start < endDay);
                 })
                 .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
         },
+
+         getEveningPrograms(channel) {
+            const today = new Date();
+            const startEvening = new Date();
+            startEvening.setHours(20,0,0,0);
+            const endEvening = new Date();
+            endEvening.setHours(24,0,0,0);
+            return channel.programs
+                .filter(program => {
+                    const start = this.utcToLocal(program.start);
+                    const stop = this.utcToLocal(program.stop);
+                    return (stop > startEvening && start < endEvening);
+                })
+                .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
+        },
+
 
         calculateProgress(program) {
             const now = new Date();
@@ -412,7 +412,7 @@ const vueApp = createApp({
                 const hh = today.getHours()-1;
                 today.setHours(hh, 0, 0, 0);
                 const endDay = new Date();
-                endDay.setHours(24,0,0,0);
+                endDay.setHours(24, 0, 0, 0);
                 //hh è l'ora di inizio dell'epg.
 
                 // timeslot = 30 minuti = 120px = 1minuto = 4px
@@ -422,19 +422,17 @@ const vueApp = createApp({
                 // differenza in millisecondi
                 var diffMs = stop - start; //durata del programma.
 
+                if(start < today & stop > today){
+                    //devo togliere i minuti già trascorsi
+                    diffMs = stop - toda
+                }
+                if (start < endDay & stop > endDay) {
+                    //devo togliere i minuti oltre le 24
+                    diffMs = endDay - start;
+                }
+
                 // conversione in minuti
                 var diffMinutes = Math.floor(diffMs / 60000); 
-
-                if(start < today){
-                    //devo togliere i minuti già trascorsi
-                    diffMs = today-start;
-                    diffMinutes = diffMinutes - Math.floor(diffMs / 60000); 
-                }
-                if(stop > endDay){
-                    //devo togliere i minuti oltre le 24
-                    diffMs = stop-endDay;
-                    diffMinutes = diffMinutes - Math.floor(diffMs / 60000); 
-                }
                 
                 return (diffMinutes * 4) + 'px';
 
@@ -537,9 +535,15 @@ const vueApp = createApp({
 
         loadFavorites() {
             try {
-                const stored = localStorage.getItem('guidatv_favorites');
+                var stored = localStorage.getItem('guidatv_favorites');
                 if (stored) {
                     this.favorites = JSON.parse(stored);
+                }
+                stored = localStorage.getItem('guidatv_settings');
+                if (stored) {
+                    var settings = JSON.parse(stored);
+                    this.hideAiredMovies = settings.hideAiredMovies;
+                    this.epgOnlyFavoritesChannels = epgOnlyFavoritesChannels;
                 }
             } catch (e) {
                 console.error('Error loading favorites:', e);
@@ -549,6 +553,7 @@ const vueApp = createApp({
         saveFavorites() {
             try {
                 localStorage.setItem('guidatv_favorites', JSON.stringify(this.favorites));
+                localStorage.setItem('guidatv_settings', JSON.stringify({hideAiredMovies:this.hideAiredMovies,epgOnlyFavoritesChannels:this.epgOnlyFavoritesChannels}));
             } catch (e) {
                 console.error('Error saving favorites:', e);
             }

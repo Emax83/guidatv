@@ -89,8 +89,8 @@ body {
   background: #111;
   color: white;
   font-family: sans-serif;
-  max-height: 75vh;
-   scroll-behavior: smooth;
+  /*max-height: 75vh;*/
+  scroll-behavior: smooth;
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -130,6 +130,8 @@ body {
   flex-direction: column;
   min-width: 150px;
   border-right: 1px solid #333;
+  max-width: 300px;
+  overflow: hidden;
 }
 
 .cell {

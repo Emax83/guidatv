@@ -50,7 +50,7 @@
                 <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
                 <span class="d-none d-md-inline">Guida TV</span>
             </span>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="d-flex align-items-center gap-2 flex-nowrap">
                 <button class="btn btn-nav" :class="{'active' : currentSection == 'favorites'}"  @click="currentSection = 'favorites'" title="Preferiti">
                     <i class="bi bi-star"></i>
                     <span class="d-none d-sm-inline ms-1">Preferiti</span>
@@ -192,7 +192,7 @@
                     <div class="column" v-for="channel in epgChannels">
                         <div class="cell header">{{channel.name}}</div>
                         <div class="cell-program" v-for="program in getEveningPrograms(channel)"
-                            :style="'min-height: ' + getProgramHeight(program)"
+                            :style="'height: ' + getProgramHeight(program)"
                             @click="showProgramInModal(channel, program)" :title="program.title">
                             <div class="program-title">{{program.title}}</div>
                             <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}} - {{getDuration(program)}}</div>
