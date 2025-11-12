@@ -367,7 +367,7 @@ const vueApp = createApp({
             const startEvening = new Date();
             startEvening.setHours(20,0,0,0);
             const endEvening = new Date();
-            endEvening.setHours(24,0,0,0);
+            endEvening.setHours(24,30,0,0);
             return channel.programs
                 .filter(program => {
                     const start = this.utcToLocal(program.start);
