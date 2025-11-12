@@ -232,7 +232,7 @@
                             </button>
                         </div>
                         <div class="program-time">
-                            <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} • {{getDuration(movie.program)}}</span>
+                            <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} - {{formatTime(movie.program.stop)}} • {{getDuration(movie.program)}}</span>
                             <span>
                             <a :href="getTmdbLink(movie.program.title)" target="_blank" class="badge bg-success"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
                             </span>
