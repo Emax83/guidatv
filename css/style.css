@@ -6,6 +6,8 @@
     --hover-bg: #252b4a;
     --text-primary: #ffffff;
     --text-secondary: #b0b8c8;
+    --border-color: #0dcaf0;
+    --box-shadow-color: rgba(13, 202, 240, 0.2);
 }
 
 * {
@@ -32,6 +34,9 @@ body {
 .container-fluid{
     max-width: 1024px;
 }
+
+
+
 
 /* Toolbar */
 .toolbar {
@@ -78,12 +83,28 @@ body {
 .scroll-container {
   display: flex;
   overflow-x: auto;
-  border: 1px solid #0a84ff;
+  border: 3px solid #0dcaf0;
+  border-radius: 1rem;
   max-width: 100%;
   background: #111;
   color: white;
   font-family: sans-serif;
-   max-height: 75vh;
+  max-height: 75vh;
+   scroll-behavior: smooth;
+}
+
+.scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
 .fixed-column {
@@ -97,7 +118,11 @@ body {
 }
 
 .scrollable-columns {
-  display: flex;
+    display: flex;
+    /*
+    overflow-y: hidden;
+    max-height: 1028px;
+    */
 }
 
 .column {
@@ -116,8 +141,8 @@ body {
 
 .cell-program{
     padding: 0.2rem 0.5rem;
-    border-right: 1px solid #0a84ff;
-    border-bottom: 1px solid #0a84ff;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
     border-collapse: collapse;
     white-space: nowrap;
     overflow: hidden;
@@ -125,19 +150,34 @@ body {
 }
 
 .header {
-  background: #0a84ff;
-  font-weight: bold;
-    min-height: 60px!important;
+    font-weight: bold;
+    min-height: 60px!important; 
 }
 
 .epg-container {
   display: flex;
   max-width: 100%;
-  border-top: 1px solid #333;
-  background-color: #0b0b0b;
+  border: 3px solid var(--border-color);
+  border-radius: 1rem;
+  background-color: var(--dark-bg);
   color: #fff;
   font-family: sans-serif;
   overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+.epg-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.epg-container::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.epg-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
 /* Colonna canali fissa */
@@ -154,15 +194,15 @@ body {
 .channel-header {
   padding: 10px;
   font-weight: bold;
-  background: #0a84ff;
+  /*background: #0a84ff;*/
   text-align: center;
 }
 
 .channel {
   padding: 10px;
-  border-left: 1px solid #0a84ff;
-  border-bottom: 1px solid #0a84ff;
-  border-right: 1px solid #0a84ff;
+  border-left: 1px solid #333;
+  border-bottom: 1px solid #333;
+  border-right: 1px solid #333;
   height: 120px;
   }
 
@@ -172,7 +212,23 @@ body {
   overflow-y: hidden;
   white-space: nowrap;
   flex: 1;
+  scroll-behavior: smooth;
 }
+
+.epg-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.epg-scroll::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.epg-scroll::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
 
 .epg-row {
   display: flex;
@@ -181,7 +237,7 @@ body {
 }
 
 .epg-header {
-  background: #0a84ff;
+  background: #111111;
   font-weight: bold;
   text-align: left;
   padding-left: 1rem;
@@ -198,8 +254,8 @@ body {
   padding: 5px;
   height: 120px; /* stessa altezza di .channel */
   background: #1a1a1a;
-  border-right: 1px solid #0a84ff;
-  border-bottom: 1px solid #0a84ff;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
   border-collapse: collapse;
   margin-top: -1px;
   flex-shrink: 0;
@@ -650,8 +706,12 @@ body {
     box-shadow: 0 10px 30px rgba(13, 202, 240, 0.3);
 }
 
+.box-shadow{
+    box-shadow: 0 10px 30px var(--box-shadow-color);
+}
+
 .text-shadow{
-    text-shadow: 0 10px 30px rgba(13, 202, 240, 1.0);
+    text-shadow: 0 10px 30px var(--box-shadow-color);
 }
 
 .badge {

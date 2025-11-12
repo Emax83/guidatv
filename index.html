@@ -51,30 +51,30 @@
                 <span class="d-none d-md-inline">Guida TV</span>
             </span>
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button class="btn btn-nav" @click="currentSection = 'favorites'" title="Preferiti">
+                <button class="btn btn-nav" :class="{'active' : currentSection == 'favorites'}"  @click="currentSection = 'favorites'" title="Preferiti">
                     <i class="bi bi-star"></i>
                     <span class="d-none d-sm-inline ms-1">Preferiti</span>
                 </button>
-                <button class="btn btn-nav" @click="currentSection = 'now'" title="Ora in Onda">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'now'}" @click="currentSection = 'now'" title="Ora in Onda">
                     <i class="bi bi-broadcast"></i>
                     <span class="d-none d-sm-inline ms-1">Ora</span>
                 </button>
-                <button class="btn btn-nav" @click="currentSection = 'evening'" title="Stasera">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'evening'}" @click="currentSection = 'evening'" title="Stasera">
                     <i class="bi bi-moon-stars"></i>
                     <span class="d-none d-sm-inline ms-1">Stasera</span>
                 </button>
-                <button class="btn btn-nav" @click="currentSection = 'movies'" title="Film">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'movies'}" @click="currentSection = 'movies'" title="Film">
                     <i class="bi bi-film"></i>
                     <span class="d-none d-sm-inline ms-1">Films</span>
                 </button>
-                <button class="btn btn-nav" @click="currentSection = 'channels'" title="Canali">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'channels'}" @click="currentSection = 'channels'" title="Canali">
                     <i class="bi bi-grid-3x3"></i>
                     <span class="d-none d-sm-inline ms-1">Canali</span>
                 </button>
-                <button class="btn btn-nav" @click="currentSection = 'search'" title="Cerca">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'search'}" @click="currentSection = 'search'" title="Cerca">
                     <i class="bi bi-search"></i>
                 </button>
-                <span class="current-time ms-2" id="currentTime"></span>
+                <span class="current-time ms-2" id="currentTime">{{currentTime}}</span>
             </div>
         </div>
     </nav>
@@ -163,7 +163,7 @@
                             @click="showProgramInModal(channel, program)" :title="program.title">
                             <div class="program-title">{{program.title}}</div>
                             <div class="program-time">
-                                <span>{{formatTime(program.start)}}</span> - <span>{{ getDuration(program)}}</span>
+                                <span>{{formatTime(program.start)}}</span> - <span>{{formatTime(program.stop)}}</span> - <span>{{ getDuration(program)}}</span>
                             </div>
                             <span class="program-genre">{{program.category}}</span>
                         </div>
@@ -192,10 +192,10 @@
                     <div class="column" v-for="channel in epgChannels">
                         <div class="cell header">{{channel.name}}</div>
                         <div class="cell-program" v-for="program in getEveningPrograms(channel)"
-                            :style="'height: ' + getProgramHeight(program)"
+                            :style="'min-height: ' + getProgramHeight(program)"
                             @click="showProgramInModal(channel, program)" :title="program.title">
                             <div class="program-title">{{program.title}}</div>
-                            <div class="program-time">{{formatTime(program.start)}} - {{getDuration(program)}}</div>
+                            <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}} - {{getDuration(program)}}</div>
                             <div class="program-genre">{{program.category}}</div>
                         </div>
                     </div>

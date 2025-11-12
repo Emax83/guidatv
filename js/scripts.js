@@ -27,6 +27,9 @@ const vueApp = createApp({
             cookiesAccepted: false,
 			hideAiredMovies: true,
             epgOnlyFavoritesChannels: false,
+            EPG_EVENING_START: 20,
+            EPG_EVENING_END: 24,
+            EPG_PIXELS_PER_MINUTE: 4,
         }
     },
 
@@ -313,16 +316,20 @@ const vueApp = createApp({
 
         getEveningPrograms(channel) {
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
+            const startEvening = new Date();
+            startEvening.setHours(20,0,0,0);
+            const endEvening = new Date();
+            endEvening.setHours(24,0,0,0);
+
             return channel.programs.filter(program => {
                 const start = this.utcToLocal(program.start);
                 const stop = this.utcToLocal(program.stop);
-                const startH = start.getHours();
-                const stopH = stop.getHours();
-                const isSameDay = start.toDateString() === today.toDateString();
-                return isSameDay && stopH > 20 && startH < 24;
-            });
+
+                const isSameDay = start.getDate() === today.getDate();
+                const isEvening = (isSameDay && stop > startEvening && start < endEvening);
+                return isEvening;
+                })
+                .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
         },
 
         getEpgProgramStyle(program) {
@@ -463,13 +470,13 @@ const vueApp = createApp({
                 // se un programma è iniziato prima delle 20 ma termina dopo le 20
                 if (start < today & stop > today) {
                     // differenza di minuti restanti
-                    diffMs = diffMs  - (stop - today);
+                    diffMs = stop - today;
                 }
 
                 // se un programma inizia prima delle 24 ma termina dopo le 24
                 if (start < endDay & stop > endDay) {
                     // differenza di minuti visibili
-                    diffMs = diffMs - (endDay - start);
+                    diffMs = endDay - start;
                 }
 
                 // differenza da millisecondi in minuti
