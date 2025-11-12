@@ -123,19 +123,14 @@ const vueApp = createApp({
             this.channels.forEach(channel => {
                 channel.programs.forEach(program => {
                     //aggiungi se ora di inizio superiore ad ora
-                    let now = new Date();
-                    let startDate = this.utcToLocal(program.start);
-					let endDate = this.utcToLocal(program.stop);
+                    const now = new Date();
+                    const startDate = this.utcToLocal(program.start);
+					const endDate = this.utcToLocal(program.stop);
 
                     if(program.category?.toLowerCase() === 'film') {
 
-                        // 1) salta i film che iniziano nel futuro
-                        if (startDate && startDate.getTime() > now.getTime()) {
-                            return;
-                        }
-
-                        // 2) se vogliamo nascondere i film già finiti
-                        if (this.hideAiredMovies && endDate && endDate.getTime() <= now.getTime()) {
+                        // nascondo i film già finiti
+                        if (this.hideAiredMovies && endDate && endDate < now) {
                             return;
                         }
 
