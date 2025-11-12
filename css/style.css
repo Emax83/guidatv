@@ -40,10 +40,22 @@ body {
 
 /* Toolbar */
 .toolbar {
+    /*
     background: linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(15, 20, 41, 0.95) 100%);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--primary-color);
+    */
     box-shadow: 0 4px 20px rgba(13, 202, 240, 0.2);
+    /* nuovo stile traslucido*/
+    position: fixed;
+  top: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* per Safari */
+  background: rgba(20, 20, 30, 0.4);   /* colore semitrasparente */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+    
 }
 
 .toolbar .btn {
