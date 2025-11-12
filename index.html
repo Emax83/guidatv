@@ -124,8 +124,8 @@
                             <div class="col-7">
                                 <h5 class="program-title">{{fav.title}}</h5>
                                 <span class="program-genre">{{fav.category}}</span>
-                                <span class="badge bg-warning" v-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
                                 <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
+                                <span class="badge bg-warning" v-else-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
                             </div>
                         </div>
                         

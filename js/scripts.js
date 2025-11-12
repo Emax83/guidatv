@@ -58,7 +58,8 @@ const vueApp = createApp({
                     ...favProg,
                     key: `${favProg.channelName}:${favProg.title}`,
                     channel: channel,
-                    todayProgram: todayProgram ?? false
+                    program: todayProgram,
+                    todayProgram: (todayProgram == null || todayProgram == undefined) ? false : true
                 };
             }).filter(Boolean);
         },
@@ -456,7 +457,6 @@ const vueApp = createApp({
                 this.favorites.channels.push({
                     name: channel.name,
                     logo: channel.logo,
-                    playlist: channel.playlist
                 });
             }
             this.saveFavorites();
@@ -563,7 +563,9 @@ const vueApp = createApp({
                 //this.showChannelSchedule(program.channel);
 
             } else {
-                alert(`"${program.title}" non è programmato oggi su ${program.channelName}`);
+                console.log(program);
+                this.showProgramInModal(program.channel, program.program);
+                //alert(`"${program.title}" non è programmato oggi su ${program.channelName}`);
             }
         },
 

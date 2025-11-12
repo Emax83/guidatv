@@ -280,7 +280,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 15px;
-    padding: 1.5rem;
+    padding: 0.5rem 1rem;
     overflow: auto;
     max-height: 80vh;
     scroll-behavior: smooth;
