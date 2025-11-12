@@ -132,11 +132,13 @@ const vueApp = createApp({
                     if(program.category?.toLowerCase() === 'film') {
 
                         // nascondo i film già finiti
-                        if (this.hideAiredMovies 
-							&& endDate && endDate < now
-						    && startDate < endOfDay) {
+                        if (this.hideAiredMovies && endDate && endDate < now) {
                             return;
                         }
+
+						if (startDate < endOfDay) {
+							return;
+						}
 
                         // altrimenti includi
                         movies.push({
