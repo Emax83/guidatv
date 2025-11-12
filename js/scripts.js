@@ -1,4 +1,11 @@
+function checkIsMobile() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const isLandscape = width > height;
 
+  // mobile fino a 1024px o landscape con altezza ridotta
+  return width <= 1024 || (isLandscape && height <= 768);
+}
 
 const { createApp } = Vue;
 
@@ -30,6 +37,7 @@ const vueApp = createApp({
             EPG_EVENING_START: 20,
             EPG_EVENING_END: 24,
             EPG_PIXELS_PER_MINUTE: 4,
+			isMobile: false
         }
     },
 
@@ -744,10 +752,20 @@ const vueApp = createApp({
                     }
                 }, 500);
             }
-        }
+        },
+		updateDevice() {
+      		this.isMobile = checkIsMobile();
+  	    }
     },
-
     mounted() {
+		this.isMobile = checkIsMobile();
+
+    window.addEventListener('resize', () => {
+      this.isMobile = checkIsMobile();
+    });
+    window.addEventListener('orientationchange', () => {
+      this.isMobile = checkIsMobile();
+    });
         this.loadFavorites();
         this.loadCookieConsent();
         this.loadData();
@@ -755,6 +773,10 @@ const vueApp = createApp({
         setInterval(() => {
             this.updateCurrentTime();
         }, 1000);
-    }
+    },
+	beforeUnmount() {
+    window.removeEventListener('resize', this.updateDevice);
+    window.removeEventListener('orientationchange', this.updateDevice);
+  },
 }).mount('#app');
 
