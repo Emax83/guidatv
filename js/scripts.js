@@ -460,7 +460,7 @@ const vueApp = createApp({
                 const today = new Date();
                 today.setHours(20, 0, 0, 0);
                 const endDay = new Date();
-                endDay.setHours(24,0,0,0);
+                endDay.setHours(24,30,0,0);
                 //hh è l'ora di inizio dell'epg.
 
                 // timeslot = 30 minuti = 120px = 1minuto = 4px
