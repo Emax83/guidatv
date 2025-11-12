@@ -355,7 +355,6 @@ const vueApp = createApp({
         },
 
         getTodayPrograms(channel) {
-            this.loading = true;
             const today = new Date();
             const hh = today.getHours()-1;
             today.setHours(hh, 0, 0, 0);
