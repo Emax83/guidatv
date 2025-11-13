@@ -75,7 +75,9 @@ body {
 }
 
 .logo-image{
-
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 
 .logo-text {
@@ -96,6 +98,7 @@ body {
 .scroll-container {
   display: flex;
   overflow-x: auto;
+  overflow-y: hidden;
   border: 3px solid #0dcaf0;
   border-radius: 1rem;
   max-width: 100%;
@@ -103,6 +106,8 @@ body {
   color: white;
   font-family: sans-serif;
   /*max-height: 75vh;*/
+  height: 1260px;
+  max-height: 1260px;
   scroll-behavior: smooth;
 }
 
@@ -303,6 +308,96 @@ body {
     border-radius: 10px;
 }
 
+
+
+/* EPG MOBILE */
+
+.horizontal-scroll{
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    gap: 0;
+    overflow-y: hidden;
+    overflow-x: auto;
+    border: solid 3px var(--border-color);
+    border-radius: 1rem;
+    scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+.epg-column{
+    position: relative;
+    width: 12rem;
+    text-align: center;
+    padding: 1rem;
+    border-right: solid 1px var(--border-color);
+}
+
+.epg-program-list{
+
+}
+
+.list-group, .list-group-item{
+    background-color: inherit;
+    padding: 0!important;
+}
+
+.epg-channel{
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.epg-channel .logo-image{
+    width: auto;
+    height: 3rem;
+    object-fit: cover;
+}
+
+.epg-program{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    margin-bottom: 2rem;
+    border-bottom: solid 3px var(--border-color);
+}
+
+.epg-program .program-image{
+    height: auto;
+    width: 100%;
+    min-height: 3rem;
+}
+
+.epg-program .logo-image{
+    
+}
+
+.epg-program .program-title{
+    text-align: left;
+    white-space: normal;
+    font-size: 1rem;
+}
+
+.epg-program .program-time{
+    font-size: 1.2rem;
+    color: #fff;
+}
+/* EPG MOBILE FINE */
+
 .channel-card {
     min-width: 140px;
     background: var(--card-bg);
@@ -365,7 +460,7 @@ body {
     gap: 15px;
     padding: 0.5rem 1rem;
     overflow: auto;
-    max-height: 80vh;
+    max-height: 75vh;
     scroll-behavior: smooth;
 }
 
@@ -768,8 +863,8 @@ body {
 
 .movies-grid{
     overflow-x: hidden;
-    overflow-y: auto;
-    max-height: 80vh;
+    /*overflow-y: auto;
+    max-height: 80vh;*/
     scroll-behavior: smooth;
 }
 

@@ -142,7 +142,8 @@
                 </label>
             </div>
             <h2 class="mb-4"><i class="bi bi-broadcast"></i><span class="ms-3 text-shadow">{{ currentDate }}</span></h2>
-            <div id="nowChannels" class="epg-container">
+            
+            <div id="nowChannels" class="epg-container" v-if="isMobile == false">
                 <!-- Colonna fissa con i canali -->
                 <div class="channels-column">
                     <div class="channel-header">Canali</div>
@@ -170,6 +171,30 @@
                     </div>
                 </div>
             </div>
+            <div id="nowChannels" class="" v-if="isMobile == true">
+                <div class="horizontal-scroll  box-shadow">
+                    <div class="epg-column" v-for="channel in epgChannels" :key="channel.id">
+                        <div class="epg-channel">
+                            <img class="logo-image" :src="channel.logo" :alt="channel.name" :title="channel.name" @error="handleImageError(event)" />
+                            <div class="logo-text">{{channel.name}}</div>
+                        </div>
+                        <ul class="epg-program-list list-group list-group-flush">
+                            <li class="list-group-item" v-for="program in channel.programs" :key="program.id">
+                                <div class="epg-program" @click="showProgramInModal(channel, program)">
+                                    <div class="program-image"><img class="logo-image" :src="program.image" :alt="program.title" :title="program.title" @error="handleImageError(event)" /></div>
+                                    <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
+                                    <div class="program-title">{{program.title}}</div>
+                                    <div class="program-genre">
+                                        <span>{{program.category}}</span>
+                                        <span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Stasera Section -->
@@ -180,9 +205,9 @@
                      Favoriti
                 </label>
             </div>
-            <h2 class="mb-4"><i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow">Stasera (20:00 - 23:00)</span></h2>
+            <h2 class="mb-4"><i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow">Stasera</span></h2>
 
-            <div id="eveningChannels" class="scroll-container">
+            <div id="eveningChannels" class="scroll-container" v-if="isMobile == false">
                 <div class="fixed-column">
                     <div class="cell header"><i class="bi bi-moon-stars"></i></div>
                     <div class="cell epg-header" v-for="slot in timeSlotsEvening">{{slot}}</div>
@@ -200,6 +225,29 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+            <div id="eveningChannels" class="" v-if="isMobile == true">
+                <div class="horizontal-scroll box-shadow">
+                    <div class="epg-column" v-for="channel in epgChannels" :key="channel.id">
+                        <div class="epg-channel">
+                            <img class="logo-image" :src="channel.logo" :alt="channel.name" :title="channel.name" @error="handleImageError(event)" />
+                            <div class="logo-text">{{channel.name}}</div>
+                        </div>
+                        <ul class="epg-program-list list-group list-group-flush">
+                            <li class="list-group-item" v-for="program in getEveningPrograms(channel)" :key="program.id">
+                                <div class="epg-program" @click="showProgramInModal(channel, program)">
+                                    <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
+                                    <div class="program-image"><img class="logo-image" :src="program.image" :alt="program.title" :title="program.title" @error="handleImageError(event)"/></div>
+                                    <div class="program-title">{{program.title}}</div>
+                                    <div class="program-genre">
+                                        <span>{{program.category}}</span>
+                                        <span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

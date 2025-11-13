@@ -433,7 +433,7 @@ const vueApp = createApp({
 
                 if(start < today & stop > today){
                     //devo togliere i minuti già trascorsi
-                    diffMs = stop - toda
+                    diffMs = stop - today;
                 }
                 if (start < endDay & stop > endDay) {
                     //devo togliere i minuti oltre le 24
