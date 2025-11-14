@@ -138,7 +138,7 @@ const vueApp = createApp({
                     //aggiungi se ora di inizio superiore ad ora
                     const now = new Date();
 					const endOfDay = new Date();
-					endOfDay.setHours(24,0,0,0);// end of day
+					endOfDay.setHours(this.EPG_EVENING_END,0,0,0);// end of day
                     const startDate = this.utcToLocal(program.start);
 					const endDate = this.utcToLocal(program.stop);
 
@@ -168,7 +168,7 @@ const vueApp = createApp({
         timeSlotsAllDay() {
             const slots = [];
             const startH = new Date().getHours()-1;
-            for (let hour = startH; hour <= 24; hour++) {
+            for (let hour = startH; hour <= this.EPG_EVENING_END; hour++) {
                 slots.push(`${hour}:00`);
                 slots.push(`${hour}:30`);
             }
@@ -177,7 +177,7 @@ const vueApp = createApp({
 
         timeSlotsEvening() {
             const slots = [];
-            for (let hour = 20; hour <= 24; hour++) {
+            for (let hour = this.EPG_EVENING_START; hour <= this.EPG_EVENING_END; hour++) {
                 slots.push(`${hour}:00`);
                 slots.push(`${hour}:30`);
             }
@@ -353,10 +353,10 @@ const vueApp = createApp({
 				var start = new Date();
 				start.setHours(0,0,0,0);
 				if (this.epgOnlyEvening) {
-					start.setHours(20,0,0,0);
+					start.setHours(this.EPG_EVENING_START,0,0,0);
 				}
 				minutes = Math.floor((now - start) / 60000);
-				pixels = this.EPG_PIXELS_PER_MINUTES * minutes;
+				pixels = this.EPG_PIXELS_PER_MINUTE * minutes;
 				timeline.style.left = pixels + 'px';
 			}
 		},
@@ -407,7 +407,7 @@ const vueApp = createApp({
             
             // Base time: 20:00
             const baseTime = new Date(start);
-            baseTime.setHours(20, 0, 0, 0);
+            baseTime.setHours(this.EPG_EVENING_START, 0, 0, 0);
             
             // Calculate minutes from 20:00
             const startMinutes = (start - baseTime) / 1000 / 60;
@@ -442,9 +442,9 @@ const vueApp = createApp({
          getEveningPrograms(channel) {
             const today = new Date();
             const startEvening = new Date();
-            startEvening.setHours(20,0,0,0);
+            startEvening.setHours(this.EPG_EVENING_START,0,0,0);
             const endEvening = new Date();
-            endEvening.setHours(24,30,0,0);
+            endEvening.setHours(this.EPG_EVENING_END,30,0,0);
             return channel.programs
                 .filter(program => {
                     const start = this.utcToLocal(program.start);
@@ -461,7 +461,7 @@ const vueApp = createApp({
                 let startHour = 0;
 
                 if (this.epgOnlyEvening) {
-                    startHour = 20;
+                    startHour = this.EPG_EVENING_START;
                 }
 
                 if (this.epgOnlyOnAir) {
@@ -469,7 +469,7 @@ const vueApp = createApp({
                 }
 
                 // 0..23 (23:30 è l’ultimo slot valido)
-                for (let hour = startHour; hour <= 24; hour++) {
+                for (let hour = startHour; hour <= this.EPG_EVENING_END; hour++) {
                     slots.push(`${hour.toString().padStart(2, '0')}:00`);
                     slots.push(`${hour.toString().padStart(2, '0')}:30`);
                 }
@@ -519,10 +519,10 @@ const vueApp = createApp({
                 const now = new Date();
 
                 const startEvening = new Date();
-                startEvening.setHours(20, 0, 0, 0);
+                startEvening.setHours(this.EPG_EVENING_START, 0, 0, 0);
 
                 const endOfDay = new Date();
-                endOfDay.setHours(24, 0, 0, 0);
+                endOfDay.setHours(this.EPG_EVENING_END, 0, 0, 0);
 
                 const nextHour = new Date(now);
                 nextHour.setHours(now.getHours() + 1, 0, 0, 0);
@@ -613,7 +613,7 @@ const vueApp = createApp({
                 const hh = today.getHours()-1;
                 today.setHours(hh, 0, 0, 0);
                 const endDay = new Date();
-                endDay.setHours(24, 0, 0, 0);
+                endDay.setHours(this.EPG_EVENING_END, 0, 0, 0);
                 //hh è l'ora di inizio dell'epg.
 
                 // timeslot = 30 minuti = 120px = 1minuto = 4px
@@ -650,9 +650,9 @@ const vueApp = createApp({
                 // qui si parte dalle 20:00 fino alle 24:00
                 
                 const today = new Date();
-                today.setHours(20, 0, 0, 0);
+                today.setHours(this.EPG_EVENING_START, 0, 0, 0);
                 const endDay = new Date();
-                endDay.setHours(24,30,0,0);
+                endDay.setHours(this.EPG_EVENING_END,30,0,0);
                 //hh è l'ora di inizio dell'epg.
 
                 // timeslot = 30 minuti = 120px = 1minuto = 4px
