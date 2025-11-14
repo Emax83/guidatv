@@ -310,6 +310,7 @@
                     <div class="epg-row" v-for="channel in getEpgChannels()">
                         <div class="program" v-for="program in getEpgPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
                             @click="showProgramInModal(channel, program)" :title="program.title">
+                            <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
                             <div class="program-title">{{program.title}}</div>
                             <div class="program-time">
                                 <span>{{formatTime(program.start)}}</span> - <span>{{formatTime(program.stop)}}</span> - <span>{{ getDuration(program)}}</span>
