@@ -4,7 +4,7 @@ function checkIsMobile() {
   const isLandscape = width > height;
 
   // mobile fino a 1024px o landscape con altezza ridotta
-  return width <= 1024 || (isLandscape && height <= 768);
+  return width <= 768 || (isLandscape && height <= 768);
 }
 
 const { createApp } = Vue;
