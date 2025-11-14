@@ -352,6 +352,9 @@ const vueApp = createApp({
 				var now = new Date();
 				var start = new Date();
 				start.setHours(0,0,0,0);
+				if (this.epgOnlyOnAir) {
+					start.setHours(now.getHours(),0,0,0);
+				}
 				if (this.epgOnlyEvening) {
 					start.setHours(this.EPG_EVENING_START,0,0,0);
 				}
