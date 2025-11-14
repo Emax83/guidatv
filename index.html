@@ -304,6 +304,10 @@
 
                 <!-- Parte scrollabile -->
                 <div class="epg-scroll">
+
+                    <!-- indicatore orario corrente -->
+                    <div id="currentTimeline" class="epg-current-time">&nbsp;</div>
+                    
                     <!-- RIGA HEADER (slot orari) -->
                     <div class="epg-row">
                         <div class="time-slot epg-header" v-for="slot in getEpgTimeSlots()">{{slot}}</div>
