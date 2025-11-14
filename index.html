@@ -110,7 +110,7 @@
             
             <div id="favoriteChannelsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
-                <div id="favoriteChannels" class="channel-scroll p-3">
+                <div id="favoriteChannels" class="channel-scroll p-3 pb-5">
                     <div class="favorite-card box-shadow" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
                         <img :src="fav.logo ?? 'invalid-url'" :alt="fav.name" class="channel-logo" @error="handleImageError">
                         <div class="channel-name">{{fav.name}}</div>
@@ -120,7 +120,7 @@
             
             <div id="favoriteProgramsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi</h4>
-                <div id="favoritePrograms" class="channel-scroll p-3">
+                <div id="favoritePrograms" class="channel-scroll p-3 pb-5">
                     <div class="favorite-card favorite-card-program box-shadow" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
                         <div class="row mb-2">
                             <div class="col-12 col-md-5">
