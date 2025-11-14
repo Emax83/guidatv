@@ -340,7 +340,15 @@ const vueApp = createApp({
             const minuti = now.getMinutes().toString().padStart(2, '0');
 
             this.currentDate = `${giornoSettimana} ${giorno} ${mese} ${ore}:${minuti}`;
+
+			this.updateEpgTimeline();
         },
+
+		updateEpgTimeline() {
+			if (this.currentSection === 'epg') {
+				const timeline = document.getElementById('currentTimeline');
+			}
+		},
 
         getTmdbLink(title){
             if(!title){
