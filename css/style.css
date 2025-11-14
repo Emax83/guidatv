@@ -34,7 +34,7 @@ body {
 }
 
 .container-fluid{
-    max-width: 1024px;
+    max-width: 90vw;
 }
 
 
@@ -107,8 +107,8 @@ body {
   background: #111;
   color: white;
   font-family: sans-serif;
+  max-height: 80vh;
   /*
-  max-height: 75vh;
   height: 1260px;
   max-height: 1260px;
   */
@@ -238,6 +238,7 @@ body {
   white-space: nowrap;
   flex: 1;
   scroll-behavior: smooth;
+  height:100%;
 }
 
 .epg-scroll::-webkit-scrollbar {
