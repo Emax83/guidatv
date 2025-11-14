@@ -347,6 +347,9 @@ const vueApp = createApp({
 		updateEpgTimeline() {
 			if (this.currentSection === 'epg') {
 				const timeline = document.getElementById('currentTimeline');
+				let pixels = 1000000;
+				// pixels x minutes
+				timeline.style.left = pixels + 'px';
 			}
 		},
 
