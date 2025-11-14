@@ -123,11 +123,11 @@
                 <div id="favoritePrograms" class="channel-scroll p-3">
                     <div class="favorite-card favorite-card-program box-shadow" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
                         <div class="row mb-2">
-                            <div class="col-5">
+                            <div class="col-12 col-md-5">
                                 <img :src="fav.channelLogo ?? 'invalid-url'" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
                                 <div class="channel-name">{{fav.channelName}}</div>
                             </div>
-                            <div class="col-7">
+                            <div class="col-12 col-md-7">
                                 <h5 class="program-title">{{fav.title}}</h5>
                                 <div class="text-nowrap">
                                 <span class="program-genre">{{fav.category}}</span>
