@@ -89,7 +89,7 @@ const vueApp = createApp({
         },
 
         searchResults() {
-            if (this.searchQuery.length < 3) return [];
+            if (this.searchQuery.length < 2) return [];
 
             const results = [];
             const searchLower = this.searchQuery.toLowerCase();
