@@ -533,12 +533,14 @@ const vueApp = createApp({
                         if (!inProgress && !startsNextHour) return false;
                     }
 
+					/*
                     // --- FILTRO: ONLY FAVORITES ---
                     if (this.epgOnlyFavorites && this.favorites.programs.length > 0) {
                         const isFavorite = this.favorites.programs
                             .some(fav => fav.title === program.title);
                         if (!isFavorite) return false;
                     }
+					*/
 
                     return true;
                 });
