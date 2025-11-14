@@ -464,12 +464,30 @@ const vueApp = createApp({
 
         getEpgChannels(){
             try{
-                if(this.epgOnlyFavorites){
+                /*
+				if(this.epgOnlyFavorites){
                     return this.channels.filter(channel => 
                         this.favorites.channels.some(fav => fav.name === channel.name)
                     );
                 }
                 return this.channels;
+				*/
+
+				if (this.epgOnlyFavorites) {
+				    return this.channels.filter(channel => {
+				        const isFavChannel = this.favorites.channels
+				            .some(fav => fav.name === channel.name);
+				
+				        const hasFavPrograms = channel.programs
+				            ?.some(p => this.favorites.programs
+				                ?.some(fp => fp.id === p.id));
+				
+				        return isFavChannel || hasFavPrograms;
+				    });
+				}
+				
+				return this.channels;
+								
             }
             catch(err){
                 console.error('getEpgChannels; Error: ', err);
