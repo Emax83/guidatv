@@ -80,7 +80,7 @@
                 <button class="btn btn-nav":class="{'active' : currentSection == 'search'}" @click="currentSection = 'search'" title="Cerca">
                     <i class="bi bi-search"></i>
                 </button>
-                <span class="current-time ms-2" id="currentTime">{{currentTime}}</span>
+                <span class="current-time mx-2" id="currentTime">{{currentTime}}</span>
             </div>
         </div>
     </nav>
@@ -111,7 +111,7 @@
             <div id="favoriteChannelsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
                 <div id="favoriteChannels" class="channel-scroll p-3">
-                    <div class="favorite-card" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
+                    <div class="favorite-card box-shadow" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
                         <img :src="fav.logo ?? 'invalid-url'" :alt="fav.name" class="channel-logo" @error="handleImageError">
                         <div class="channel-name">{{fav.name}}</div>
                     </div>
@@ -121,7 +121,7 @@
             <div id="favoriteProgramsContainer" class="mb-3" v-if="hasFavorites">
                 <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi</h4>
                 <div id="favoritePrograms" class="channel-scroll p-3">
-                    <div class="favorite-card favorite-card-program" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
+                    <div class="favorite-card favorite-card-program box-shadow" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
                         <div class="row mb-2">
                             <div class="col-5">
                                 <img :src="fav.channelLogo ?? 'invalid-url'" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
@@ -129,9 +129,11 @@
                             </div>
                             <div class="col-7">
                                 <h5 class="program-title">{{fav.title}}</h5>
+                                <div class="text-nowrap">
                                 <span class="program-genre">{{fav.category}}</span>
                                 <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
                                 <span class="badge bg-warning" v-else-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -147,7 +149,7 @@
                      Favoriti
                 </label>
             </div>
-            <h2 class="mb-4"><i class="bi bi-broadcast"></i><span class="ms-3 text-shadow">{{ currentDate }}</span></h2>
+            <h2 class="mb-4"><i class="bi bi-broadcast"></i><span class="mx-1 text-shadow">{{ currentDate }}</span></h2>
             
             <div id="nowChannels" class="epg-container" v-if="isMobile == false">
                 <!-- Colonna fissa con i canali -->
@@ -270,7 +272,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyOnAir"/> 
-                            <i class="bi bi-broadcast"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">In Onda</span></span>
+                            <i class="bi bi-broadcast"></i><span class="ms-3 text-shadow"><span class="text-shadow">In Onda</span></span>
                         </label>
                     </div>
                 </div>
@@ -278,7 +280,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyEvening"/>
-                            <i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">Stasera</span></span>
+                            <i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow"><span class="text-shadow">Sera</span></span>
                         </label>
                     </div>
                 </div>
@@ -286,7 +288,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyFavorites">
-                            <i class="bi bi-star"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">Favoriti</span></span>
+                            <i class="bi bi-star"></i><span class="ms-3 text-shadow"><span class="text-shadow">Fav</span></span>
                         </label>
                     </div>
                 </div>
@@ -351,10 +353,10 @@
          <div id="moviesSection" class="section" v-if="currentSection == 'movies'">
             <div class="float-end form-check">
                 <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi Trasmessi
+                    <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Prossimi
                 </label>
             </div>
-            <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film ({{allMovies.length}})</h2>
+            <h2 class="mb-4"><i class="bi bi-film"></i> Films ({{allMovies.length}})</h2>
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
