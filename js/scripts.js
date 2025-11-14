@@ -347,8 +347,16 @@ const vueApp = createApp({
 		updateEpgTimeline() {
 			if (this.currentSection === 'epg') {
 				const timeline = document.getElementById('currentTimeline');
-				let pixels = 1000000;
-				// pixels x minutes
+				var pixels = 1000000;
+				var minutes = 0;
+				var now = new Date();
+				var start = new Date();
+				start.setHours(0,0,0,0);
+				if (this.epgOnlyEvening) {
+					start.setHours(20,0,0,0);
+				}
+				minutes = Math.floor((now - start) / 60000);
+				pixels = this.EPG_PIXELS_PER_MINUTES * minutes;
 				timeline.style.left = pixels + 'px';
 			}
 		},
