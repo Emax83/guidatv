@@ -406,6 +406,7 @@ body {
 
 .epg-program.active{
     border: 1px solid var(--border-color);
+    box-shadow: 0 10px 20px var(--box-shadow-live);
 }
 
 .epg-program:hover {

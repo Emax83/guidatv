@@ -328,7 +328,7 @@
                         </div>
                         <ul class="epg-program-list list-group list-group-flush">
                             <li class="list-group-item" v-for="program in getEpgPrograms(channel)" :key="program.id">
-                                <div class="epg-program" :class="{'active box-shadow-live' : isProgramLive(program)}" @click="showProgramInModal(channel, program)">
+                                <div class="epg-program" :class="{'active' : isProgramLive(program)}" @click="showProgramInModal(channel, program)">
                                     <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
                                     <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError"/></div>
                                     <div class="program-title">{{program.title}}</div>
