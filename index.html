@@ -55,6 +55,7 @@
                     <i class="bi bi-star"></i>
                     <span class="d-none d-sm-inline ms-1">Preferiti</span>
                 </button>
+                <!--
                 <button class="btn btn-nav":class="{'active' : currentSection == 'now'}" @click="currentSection = 'now'" title="Ora in Onda">
                     <i class="bi bi-broadcast"></i>
                     <span class="d-none d-sm-inline ms-1">Ora</span>
@@ -62,6 +63,11 @@
                 <button class="btn btn-nav":class="{'active' : currentSection == 'evening'}" @click="currentSection = 'evening'" title="Stasera">
                     <i class="bi bi-moon-stars"></i>
                     <span class="d-none d-sm-inline ms-1">Stasera</span>
+                </button>
+                -->
+                <button class="btn btn-nav":class="{'active' : currentSection == 'epg'}" @click="currentSection = 'epg'" title="Programmazione">
+                    <i class="bi bi-calendar2-range"></i>
+                    <span class="d-none d-sm-inline ms-1">Programmazione</span>
                 </button>
                 <button class="btn btn-nav":class="{'active' : currentSection == 'movies'}" @click="currentSection = 'movies'" title="Film">
                     <i class="bi bi-film"></i>
@@ -137,7 +143,7 @@
         <div id="nowSection" class="section" v-if="currentSection == 'now'">
             <div class="form-check float-end">
                 <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
+                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavorites">
                      Favoriti
                 </label>
             </div>
@@ -201,7 +207,7 @@
         <div id="eveningSection" class="section" v-if="currentSection == 'evening'">
             <div class="form-check float-end">
                 <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavoritesChannels">
+                    <input type="checkbox" class="form-check-input" v-model="epgOnlyFavorites">
                      Favoriti
                 </label>
             </div>
@@ -253,11 +259,98 @@
             </div>
         </div>
 
+
+        <!-- Programmazione SECTION -->
+        <div id="epg" class="section" v-if="currentSection == 'epg'">
+            <div class="row text-center">
+                <div class="col-12 col-md-6">
+                    <h2 class="mb-4"><i class="bi bi-calendar2-range"></i><span class="ms-3 text-shadow">{{ currentDate }}</span></h2>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" v-model="epgOnlyOnAir"/> 
+                            <i class="bi bi-broadcast"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">In Onda</span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" v-model="epgOnlyEvening"/>
+                            <i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">Stasera</span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" v-model="epgOnlyFavorites">
+                            <i class="bi bi-star"></i><span class="ms-3 text-shadow"><span class="d-none d-md-inline">Favoriti</span></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="epgDesktop" class="scroll-container" v-if="isMobile == false">
+                <!-- Colonna fissa con i canali -->
+                <div class="channels-column">
+                    <div class="channel-header">Canali</div>
+                    <div class="channel" v-for="channel in epgChannels" @click="showChannelSchedule(channel)">
+                        <img class="channel-logo" :src="channel.logo" :alt="channel.name" :title="channel.name" />
+                    </div>
+                </div>
+
+                <!-- Parte scrollabile -->
+                <div class="epg-scroll">
+                    <!-- RIGA HEADER (slot orari) -->
+                    <div class="epg-row">
+                        <div class="time-slot epg-header" v-for="slot in timeSlotsAllDay">{{slot}}</div>
+                    </div>
+                    <!-- RIGHE PROGRAMMI -->
+                    <div class="epg-row" v-for="channel in epgChannels">
+                        <div class="program" v-for="program in getTodayPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
+                            @click="showProgramInModal(channel, program)" :title="program.title">
+                            <div class="program-title">{{program.title}}</div>
+                            <div class="program-time">
+                                <span>{{formatTime(program.start)}}</span> - <span>{{formatTime(program.stop)}}</span> - <span>{{ getDuration(program)}}</span>
+                            </div>
+                            <span class="program-genre">{{program.category}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="epgMobile" class="" v-if="isMobile == true">
+                <div class="horizontal-scroll box-shadow">
+                    <div class="epg-column box-shadow" v-for="channel in epgChannels" :key="channel.id">
+                        <div class="epg-channel" @click="showChannelSchedule(channel)">
+                            <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
+                            <!--<div class="logo-text">{{channel.name}}</div>-->
+                        </div>
+                        <ul class="epg-program-list list-group list-group-flush">
+                            <li class="list-group-item" v-for="program in getEveningPrograms(channel)" :key="program.id">
+                                <div class="epg-program" @click="showProgramInModal(channel, program)">
+                                    <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
+                                    <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError"/></div>
+                                    <div class="program-title">{{program.title}}</div>
+                                    <div class="program-genre">
+                                        <span>{{program.category}}</span>
+                                        <!--<span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>-->
+                                    </div>
+                                    <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
         <!-- Films Section -->
          <div id="moviesSection" class="section" v-if="currentSection == 'movies'">
             <div class="float-end form-check">
                 <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi trasmessi
+                    <input type="checkbox" class="form-check-input" v-model="hideAiredMovies"/> Nascondi Trasmessi
                 </label>
             </div>
             <h2 class="mb-4"><i class="bi bi-film"></i> Tutti i Film ({{allMovies.length}})</h2>

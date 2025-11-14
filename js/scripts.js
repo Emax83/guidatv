@@ -33,7 +33,9 @@ const vueApp = createApp({
             showCookieBanner: false,
             cookiesAccepted: false,
 			hideAiredMovies: true,
-            epgOnlyFavoritesChannels: false,
+            epgOnlyFavorites: false,
+            epgOnlyOnAir: false,
+            epgOnlyEvening: false,
             EPG_EVENING_START: 20,
             EPG_EVENING_END: 24,
             EPG_PIXELS_PER_MINUTE: 4,
@@ -189,8 +191,23 @@ const vueApp = createApp({
             return this.channels;
         },
 
+    }, // computed
+    watch: {
+        hideAiredMovies: 'saveFilters',
+        epgOnlyFavorites: 'saveFilters',
+        epgOnlyEvening(newVal) {
+            if(newVal == true){
+                this.epgOnlyOnAir = false;
+            }
+            this.saveFilters();
+        },
+        epgOnlyOnAir(newVal) {
+            if(newVal == true){
+                this.epgOnlyEvening = false;
+            }
+            this.saveFilters();
+        }
     },
-
     methods: {
         async loadData() {
             this.loading = true;
@@ -260,6 +277,44 @@ const vueApp = createApp({
 
             this.loading = false;
             this.autoOpenFirstChannel();
+        },
+        saveFilters(){
+            try{
+                const filters = {
+                    hideAiredMovies: this.hideAiredMovies,
+                    epgOnlyFavorites: this.epgOnlyFavorites,
+                    epgOnlyOnAir: this.epgOnlyOnAir,
+                    epgOnlyEvening: this.epgOnlyEvening,
+                };
+
+                localStorage.setItem('guidatv_settings', JSON.stringify(filters));
+            }
+            catch(err){
+                console.error('saveFilters; Error: ', err);
+            }
+        },
+
+        loadFilters(){
+            try{
+                var settings = {
+                    hideAiredMovies: true,
+                    epgOnlyFavorites: false,
+                    epgOnlyOnAir: false,
+                    epgOnlyEvening: false,
+                };
+                const stored = localStorage.getItem('guidatv_settings');
+                if (stored) {
+                    settings = JSON.parse(stored);
+                }
+
+                this.hideAiredMovies = settings.hideAiredMovies;
+                this.epgOnlyFavorites = settings.epgOnlyFavorites;
+                this.epgOnlyOnAir = settings.epgOnlyFavorites;
+                this.epgOnlyEvening = settings.epgOnlyFavorites;
+            }
+            catch(err){
+                console.error('loadFilters; Error: ', err);
+            }
         },
 
         utcToLocal(utcDateStr) {
@@ -551,12 +606,6 @@ const vueApp = createApp({
                 if (stored) {
                     this.favorites = JSON.parse(stored);
                 }
-                stored = localStorage.getItem('guidatv_settings');
-                if (stored) {
-                    var settings = JSON.parse(stored);
-                    this.hideAiredMovies = settings.hideAiredMovies;
-                    this.epgOnlyFavoritesChannels = epgOnlyFavoritesChannels;
-                }
             } catch (e) {
                 console.error('Error loading favorites:', e);
             }
@@ -565,7 +614,6 @@ const vueApp = createApp({
         saveFavorites() {
             try {
                 localStorage.setItem('guidatv_favorites', JSON.stringify(this.favorites));
-                localStorage.setItem('guidatv_settings', JSON.stringify({hideAiredMovies:this.hideAiredMovies,epgOnlyFavoritesChannels:this.epgOnlyFavoritesChannels}));
             } catch (e) {
                 console.error('Error saving favorites:', e);
             }
@@ -750,7 +798,7 @@ const vueApp = createApp({
             if (this.hasFavorites) {
                 this.currentSection = 'favorites';
             } else {
-                this.currentSection = 'now';
+                this.currentSection = 'epg';
                 setTimeout(() => {
                     const firstChannel = this.channelsWithCurrentProgram[0];
                     if (firstChannel) {

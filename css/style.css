@@ -105,9 +105,11 @@ body {
   background: #111;
   color: white;
   font-family: sans-serif;
-  /*max-height: 75vh;*/
+  /*
+  max-height: 75vh;
   height: 1260px;
   max-height: 1260px;
+  */
   scroll-behavior: smooth;
 }
 
@@ -224,7 +226,8 @@ body {
   border-bottom: 1px solid #333;
   border-right: 1px solid #333;
   height: 120px;
-  }
+  cursor: pointer;
+}
 
 /* Sezione scrollabile */
 .epg-scroll {
@@ -412,10 +415,16 @@ body {
   text-align: center;
 }
 
+
+.epg-program .program-image{
+    width: auto;
+    height: 100px;
+}
+
 /* Immagine programma */
-.program-image img {
-  width: 100%;
-  height: auto;
+.epg-program .program-image img {
+  width: auto;
+  height: 100%;
   border-radius: 6px;
   object-fit: cover;
 }
@@ -635,6 +644,7 @@ body {
     margin-bottom: 15px;
     border: 2px solid transparent;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .program-card:hover {
