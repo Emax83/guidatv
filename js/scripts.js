@@ -185,7 +185,7 @@ const vueApp = createApp({
         },
 
         epgChannels() {
-            if (this.epgOnlyFavoritesChannels == true) {
+            if (this.epgOnlyFavorites == true) {
                 return this.favoriteChannels;
             }
             return this.channels;
@@ -435,6 +435,97 @@ const vueApp = createApp({
                 .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
         },
 
+        getEpgTimeSlots() {
+            const slots = [];
+            try {
+                const now = new Date();
+                let startHour = 0;
+
+                if (this.epgOnlyEvening) {
+                    startHour = 20;
+                }
+
+                if (this.epgOnlyOnAir) {
+                    startHour = now.getHours();
+                }
+
+                // 0..23 (23:30 è l’ultimo slot valido)
+                for (let hour = startHour; hour <= 24; hour++) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                    slots.push(`${hour.toString().padStart(2, '0')}:30`);
+                }
+
+            } catch (err) {
+                console.error('getEpgTimeSlots Error:', err);
+            }
+
+            return slots;
+        },
+
+        getEpgChannels(){
+            try{
+                if(this.epgOnlyFavorites){
+                    return this.channels.filter(channel => 
+                        this.favorites.channels.some(fav => fav.name === channel.name)
+                    );
+                }
+                return this.channels;
+            }
+            catch(err){
+                console.error('getEpgChannels; Error: ', err);
+                return [];
+            }
+        },
+
+        getEpgPrograms(channel) {
+            try {
+                const now = new Date();
+
+                const startEvening = new Date();
+                startEvening.setHours(20, 0, 0, 0);
+
+                const endOfDay = new Date();
+                endOfDay.setHours(24, 0, 0, 0);
+
+                return channel.programs.filter(program => {
+                    const start = this.utcToLocal(program.start);
+                    const stop  = this.utcToLocal(program.stop);
+                    const isSameDay = start.getDate() === now.getDate();
+
+                    // --- FILTRO: ONLY EVENING ---
+                    if (this.epgOnlyEvening) {
+                        const isEvening =
+                            isSameDay &&
+                            (
+                                start >= startEvening ||      // inizia dopo le 20
+                                stop  > startEvening          // o è iniziato prima ma ancora in corso dopo le 20
+                            ) &&
+                            stop <= endOfDay;                // non supera la mezzanotte
+
+                        if (!isEvening) return false;
+                    }
+
+                    // --- FILTRO: ONLY ON AIR ---
+                    if (this.epgOnlyOnAir) {
+                        const inProgress = start <= now && stop >= now;
+                        if (!inProgress) return false;
+                    }
+
+                    // --- FILTRO: ONLY FAVORITES ---
+                    if (this.epgOnlyFavorites && this.favorites.programs.length > 0) {
+                        const isFavorite = this.favorites.programs
+                            .some(fav => fav.title === program.title);
+                        if (!isFavorite) return false;
+                    }
+
+                    return true;
+                });
+
+            } catch (err) {
+                console.error('getEpgPrograms Error:', err);
+                return [];
+            }
+        },
 
         calculateProgress(program) {
             const now = new Date();

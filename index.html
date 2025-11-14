@@ -295,7 +295,7 @@
                 <!-- Colonna fissa con i canali -->
                 <div class="channels-column">
                     <div class="channel-header">Canali</div>
-                    <div class="channel" v-for="channel in epgChannels" @click="showChannelSchedule(channel)">
+                    <div class="channel" v-for="channel in getEpgChannels()" @click="showChannelSchedule(channel)">
                         <img class="channel-logo" :src="channel.logo" :alt="channel.name" :title="channel.name" />
                     </div>
                 </div>
@@ -304,11 +304,11 @@
                 <div class="epg-scroll">
                     <!-- RIGA HEADER (slot orari) -->
                     <div class="epg-row">
-                        <div class="time-slot epg-header" v-for="slot in timeSlotsAllDay">{{slot}}</div>
+                        <div class="time-slot epg-header" v-for="slot in getEpgTimeSlots()">{{slot}}</div>
                     </div>
                     <!-- RIGHE PROGRAMMI -->
-                    <div class="epg-row" v-for="channel in epgChannels">
-                        <div class="program" v-for="program in getTodayPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
+                    <div class="epg-row" v-for="channel in getEpgChannels()">
+                        <div class="program" v-for="program in getEpgPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
                             @click="showProgramInModal(channel, program)" :title="program.title">
                             <div class="program-title">{{program.title}}</div>
                             <div class="program-time">
@@ -321,13 +321,13 @@
             </div>
             <div id="epgMobile" class="" v-if="isMobile == true">
                 <div class="horizontal-scroll box-shadow">
-                    <div class="epg-column box-shadow" v-for="channel in epgChannels" :key="channel.id">
+                    <div class="epg-column box-shadow" v-for="channel in getEpgChannels()" :key="channel.id">
                         <div class="epg-channel" @click="showChannelSchedule(channel)">
                             <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
                             <!--<div class="logo-text">{{channel.name}}</div>-->
                         </div>
                         <ul class="epg-program-list list-group list-group-flush">
-                            <li class="list-group-item" v-for="program in getEveningPrograms(channel)" :key="program.id">
+                            <li class="list-group-item" v-for="program in getEpgPrograms(channel)" :key="program.id">
                                 <div class="epg-program" @click="showProgramInModal(channel, program)">
                                     <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
                                     <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError"/></div>
