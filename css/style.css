@@ -100,7 +100,7 @@ body {
 .scroll-container {
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   border: 3px solid #0dcaf0;
   border-radius: 1rem;
   max-width: 100%;
@@ -234,7 +234,7 @@ body {
 /* Sezione scrollabile */
 .epg-scroll {
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   white-space: nowrap;
   flex: 1;
   scroll-behavior: smooth;
@@ -463,6 +463,10 @@ body {
 
 /* Responsive ottimizzato */
 @media (max-width: 768px) {
+
+ .container-fluid{
+    max-width: 95vw;
+ }
   .horizontal-scroll {
     gap: 0.6rem;
     padding: 0.5rem;
