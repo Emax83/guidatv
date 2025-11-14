@@ -480,7 +480,7 @@ const vueApp = createApp({
 				
 				        const hasFavPrograms = channel.programs
 				            ?.some(p => this.favorites.programs
-				                ?.some(fp => fp.id === p.id));
+				                ?.some(fp => fp.title === p.title));
 				
 				        return isFavChannel || hasFavPrograms;
 				    });
