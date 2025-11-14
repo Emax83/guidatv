@@ -239,6 +239,8 @@ body {
   flex: 1;
   scroll-behavior: smooth;
   height:100%;
+    position: relative;
+    z-index: 1;
 }
 
 .epg-scroll::-webkit-scrollbar {
@@ -255,6 +257,14 @@ body {
     border-radius: 10px;
 }
 
+.epg-current-time {
+    position: absolute;
+    top:0;
+    height:100%;
+    width: 3px;
+    z-index: 10;
+    background-color: #ff0000c2;
+}
 
 .epg-row {
   display: flex;
