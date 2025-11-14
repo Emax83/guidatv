@@ -106,7 +106,7 @@
                 <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
                 <div id="favoriteChannels" class="channel-scroll p-3">
                     <div class="favorite-card" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
-                        <img :src="fav.logo" :alt="fav.name" class="channel-logo" @error="handleImageError">
+                        <img :src="fav.logo ?? 'invalid-url'" :alt="fav.name" class="channel-logo" @error="handleImageError">
                         <div class="channel-name">{{fav.name}}</div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                     <div class="favorite-card favorite-card-program" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
                         <div class="row mb-2">
                             <div class="col-5">
-                                <img :src="fav.channelLogo" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
+                                <img :src="fav.channelLogo ?? 'invalid-url'" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
                                 <div class="channel-name">{{fav.channelName}}</div>
                             </div>
                             <div class="col-7">
@@ -173,21 +173,21 @@
             </div>
             <div id="nowChannels" class="" v-if="isMobile == true">
                 <div class="horizontal-scroll  box-shadow">
-                    <div class="epg-column" v-for="channel in epgChannels" :key="channel.id">
+                    <div class="epg-column box-shadow" v-for="channel in epgChannels" :key="channel.id">
                         <div class="epg-channel">
-                            <img class="logo-image" :src="channel.logo" :alt="channel.name" :title="channel.name" @error="handleImageError(event)" />
-                            <div class="logo-text">{{channel.name}}</div>
+                            <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
                         </div>
                         <ul class="epg-program-list list-group list-group-flush">
                             <li class="list-group-item" v-for="program in channel.programs" :key="program.id">
                                 <div class="epg-program" @click="showProgramInModal(channel, program)">
-                                    <div class="program-image"><img class="logo-image" :src="program.image" :alt="program.title" :title="program.title" @error="handleImageError(event)" /></div>
                                     <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
+                                    <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError" /></div>
                                     <div class="program-title">{{program.title}}</div>
                                     <div class="program-genre">
                                         <span>{{program.category}}</span>
-                                        <span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
+                                        <!--<span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>-->
                                     </div>
+                                    <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
                                 </div>
                             </li>
                         </ul>
@@ -229,21 +229,22 @@
             </div>
             <div id="eveningChannels" class="" v-if="isMobile == true">
                 <div class="horizontal-scroll box-shadow">
-                    <div class="epg-column" v-for="channel in epgChannels" :key="channel.id">
+                    <div class="epg-column box-shadow" v-for="channel in epgChannels" :key="channel.id">
                         <div class="epg-channel">
-                            <img class="logo-image" :src="channel.logo" :alt="channel.name" :title="channel.name" @error="handleImageError(event)" />
+                            <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
                             <div class="logo-text">{{channel.name}}</div>
                         </div>
                         <ul class="epg-program-list list-group list-group-flush">
                             <li class="list-group-item" v-for="program in getEveningPrograms(channel)" :key="program.id">
                                 <div class="epg-program" @click="showProgramInModal(channel, program)">
                                     <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
-                                    <div class="program-image"><img class="logo-image" :src="program.image" :alt="program.title" :title="program.title" @error="handleImageError(event)"/></div>
+                                    <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError"/></div>
                                     <div class="program-title">{{program.title}}</div>
                                     <div class="program-genre">
                                         <span>{{program.category}}</span>
-                                        <span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
+                                        <!--<span class="badge bg-danger" v-if="isProgramLive(program)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>-->
                                     </div>
+                                    <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
                                 </div>
                             </li>
                         </ul>
@@ -302,7 +303,7 @@
             <h2 class="mb-4"><i class="bi bi-grid-3x3"></i> Tutti i Canali</h2>
             <div id="channelsGrid" class="channels-grid">
                 <div class="channel-grid-item" v-for="channel in channels" @click="showChannelSchedule(channel)">
-                    <img :src="channel.logo" :alt="channel.name" :title="channel.name" class="channel-logo" @error="handleImageError(event)">
+                    <img :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" class="channel-logo" @error="handleImageError">
                     <div class="channel-name">{{channel.name}}</div>
                 </div>
             </div>
@@ -321,7 +322,7 @@
             <div id="searchResults" class="search-results-list" v-show="searchResults.length > 0">
                 <div v-for="item in searchResults" class="search-result" @click="handleSearchResultClick(item)">
                     <div class="d-flex align-items-center">
-                        <img :src="item.image" class="search-result-image" @error="handleImageError(event)">
+                        <img :src="item.image ?? 'invalid-url'" class="search-result-image" @error="handleImageError">
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{item.title}}</div>
                             <small class="text-light">
@@ -341,12 +342,17 @@
     <div class="bottom-sheet-backdrop" :class="{'show' : showBottomSheet}" v-if="showBottomSheet" id="bottomSheetBackdrop" @click="showBottomSheet = false"></div>
 
     <!-- Bottom Sheet -->
-    <div class="bottom-sheet" :class="{'show' : showBottomSheet}" id="bottomSheet" v-if="showBottomSheet">
+    <div class="bottom-sheet" :class="{'show' : showBottomSheet}" id="bottomSheet" v-if="showBottomSheet"
+        ref="modal"
+            @touchstart="startDrag"
+            @touchmove="onDrag"
+            @touchend="endDrag">
+        
         <div class="bottom-sheet-handle"></div>
         <div class="p-4" id="bottomSheetContent">
             <div class="text-center mb-3">
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
-                    <img :src="selectedChannel.logo" :alt="selectedChannel.name" :title="selectedChannel.name" @error="handleImageError(event)">
+                    <img :src="selectedChannel.logo ?? 'invalid-url'" :alt="selectedChannel.name" :title="selectedChannel.name" @error="handleImageError">
                     <h4 class="mx-3">{{selectedChannel.name}}</h4>
                     <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
                         <i class="bi bi-star"></i>
@@ -354,7 +360,7 @@
                 </div>
             </div>
             <div class="program-card" v-if="selectedProgram">
-                <img :src="selectedProgram.image" class="program-image" @error="handleImageError(event)">
+                <img :src="selectedProgram.image ?? 'invalid-url'" class="program-image" @error="handleImageError">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                         <h3 class="program-title">{{selectedProgram.title}}</h3>
                         <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(selectedChannel, selectedProgram)}" 
@@ -367,7 +373,8 @@
                     <i class="bi bi-clock"></i> {{formatTime(selectedProgram.start)}} • {{getDuration(selectedProgram)}}
                 </div>
                 <span class="program-genre">{{selectedProgram.category}}</span>
-                <span class="badge bg-danger" v-if="isProgramLive(selectedProgram)" >IN ONDA</span>
+                <!--<span class="badge bg-danger" v-if="isProgramLive(selectedProgram)" >IN ONDA</span>-->
+                <div class="badge-live" v-if="isProgramLive(selectedProgram)"><i class="bi bi-circle-fill"></i></div>
 
                 <p class="mt-3">{{selectedProgram.description}}</p>
                 <div class="mt-3" v-if="isProgramLive(selectedProgram)">
@@ -386,7 +393,8 @@
                 </div>
                 
             </div>
-        </div>
+        
+    </div>
     </div>
 
     <!-- Channel Schedule Modal -->
@@ -394,7 +402,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
-                    <img :src="selectedChannel.logo" :alt="selectedChannel.name" @error="handleImageError(event)">
+                    <img :src="selectedChannel.logo ?? 'invalid-url'" :alt="selectedChannel.name" @error="handleImageError">
                     <h5 class="modal-title me-5" id="scheduleChannelName">{{selectedChannel.name}}</h5>
 
                     <button class="favorite-btn" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
@@ -420,7 +428,8 @@
                                     <i class="bi bi-clock"></i> {{ formatTime(program.start)}} • {{getDuration(program)}}
                                 </div>
                         <span class="program-genre">{{program.category}}</span>
-                        <span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>
+                        <!--<span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>-->
+                        <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
                         <p class="mt-2 mb-0 small">{{program.description}}</p>
                     </div>
                 </div>

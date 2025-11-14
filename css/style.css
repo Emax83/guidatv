@@ -311,90 +311,154 @@ body {
 
 
 /* EPG MOBILE */
-
-.horizontal-scroll{
-    display: flex;
-    flex-direction: row;
-    white-space: nowrap;
-    gap: 0;
-    overflow-y: hidden;
-    overflow-x: auto;
-    border: solid 3px var(--border-color);
-    border-radius: 1rem;
-    scroll-behavior: smooth;
+/* Contenitore scrollabile orizzontalmente */
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 1rem 0.5rem;
+  gap: 1rem;
 }
-
+/* Scrollbar sottile e discreta */
 .horizontal-scroll::-webkit-scrollbar {
-    height: 8px;
+  height: 6px;
 }
-
 .horizontal-scroll::-webkit-scrollbar-track {
-    background: var(--card-bg);
-    border-radius: 10px;
+  background: transparent;
 }
-
 .horizontal-scroll::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 10px;
+  background: rgba(0, 191, 255, 0.4);
+  border-radius: 3px;
 }
 
-.epg-column{
-    position: relative;
-    width: 12rem;
-    text-align: center;
-    padding: 1rem;
-    border-right: solid 1px var(--border-color);
+/* Singola colonna canale */
+.epg-column {
+  flex: 0 0 auto;
+  width: 300px;
+  scroll-snap-align: start;
+  background: rgba(10, 20, 40, 0.92);
+  border: 1px solid #00bfff;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #fff;
+  backdrop-filter: blur(6px);
+  position: relative;
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.15);
 }
 
-.epg-program-list{
-
+/* Sezione logo e nome canale (sticky) */
+.epg-channel {
+  position: sticky;
+  top: 0;
+  background: rgba(5, 10, 25, 0.95);
+  border-bottom: 1px solid rgba(0, 191, 255, 0.4);
+  text-align: center;
+  padding: 0.7rem 0.3rem;
+  z-index: 10;
+  backdrop-filter: blur(8px);
 }
 
-.list-group, .list-group-item{
-    background-color: inherit;
-    padding: 0!important;
+/* Logo canale */
+.logo-image {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
-.epg-channel{
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    height: auto;
+/* Nome canale */
+.logo-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00bfff;
+  margin-top: 0.3rem;
 }
 
-.epg-channel .logo-image{
-    width: auto;
-    height: 3rem;
-    object-fit: cover;
+/* Lista programmi */
+.epg-program-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.epg-program{
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    margin-bottom: 2rem;
-    border-bottom: solid 3px var(--border-color);
+.list-group-item{
+    background-color: inherit!important;
+    border-bottom: solid 1px var(--card-bg);
+}
+/* Card programma */
+.epg-program {
+  position: relative;
+  background: rgba(15, 25, 45, 0.7);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  border-radius: 1rem;
+  margin: 0.5rem;
+  padding: 0.7rem;
+  cursor: pointer;
+  transition: background 0.25s ease;
 }
 
-.epg-program .program-image{
-    height: auto;
-    width: 100%;
-    min-height: 3rem;
+.epg-program:hover {
+  background: rgba(20, 40, 80, 0.85);
 }
 
-.epg-program .logo-image{
-    
+/* Orari */
+.epg-program .program-time {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #b0dfff;
+  margin-bottom: 0.4rem;
+  text-align: center;
 }
 
-.epg-program .program-title{
-    text-align: left;
-    white-space: normal;
-    font-size: 1rem;
+/* Immagine programma */
+.program-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
-.epg-program .program-time{
-    font-size: 1.2rem;
-    color: #fff;
+/* Titolo e categoria */
+.program-title {
+  color: #00bfff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.4rem;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.program-genre {
+  font-size: 0.8rem;
+  color: #8fb6ff;
+  text-align: center;
+  margin-top: 0.2rem;
+}
+
+
+
+
+/* Responsive ottimizzato */
+@media (max-width: 768px) {
+  .horizontal-scroll {
+    gap: 0.6rem;
+    padding: 0.5rem;
+  }
+
+  .epg-column {
+    width: 85%;
+    min-width: 290px;
+  }
+
+  .logo-image {
+    width: 100px;
+  }
+
+  .program-title {
+    font-size: 0.9rem;
+  }
 }
 /* EPG MOBILE FINE */
 
@@ -938,4 +1002,39 @@ body {
 
 input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     cursor: pointer!important;
+}
+
+/* Badge rosso lampeggiante */
+.badge-live {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background-color: #dc3545; /* rosso */
+  color: #dc3545;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 1rem;
+  animation: pulse 1.5s infinite ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+/* Effetto lampeggio */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.05);
+  }
+}
+
+/* Icona dentro al badge (facoltativa) */
+.badge-live i {
+  font-size: 0.8rem;
 }

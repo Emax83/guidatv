@@ -37,7 +37,10 @@ const vueApp = createApp({
             EPG_EVENING_START: 20,
             EPG_EVENING_END: 24,
             EPG_PIXELS_PER_MINUTE: 4,
-			isMobile: false
+			isMobile: false,
+            startY: 0,
+            currentY: 0,
+            isDragging: false,
         }
     },
 
@@ -737,7 +740,10 @@ const vueApp = createApp({
         },
 
         handleImageError(event) {
-            event.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%231a1f3a' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' font-size='14' fill='%230dcaf0' text-anchor='middle' dy='.3em'%3ETV%3C/text%3E%3C/svg%3E";
+            const fallback = "/img/placeholder.png";
+            if (event.target.src.includes(fallback)) return;
+            event.target.src = fallback;
+            //event.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%231a1f3a' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' font-size='14' fill='%230dcaf0' text-anchor='middle' dy='.3em'%3ETV%3C/text%3E%3C/svg%3E";
         },
 
         autoOpenFirstChannel() {
@@ -755,7 +761,36 @@ const vueApp = createApp({
         },
 		updateDevice() {
       		this.isMobile = checkIsMobile();
-  	    }
+  	    },
+        startDrag(event) {
+            this.isDragging = true;
+            this.startY = event.touches[0].clientY;
+        },
+        onDrag(event) {
+            if (!this.isDragging) return;
+            this.currentY = event.touches[0].clientY;
+            const diff = this.currentY - this.startY;
+            if (diff > 0) {
+            this.$refs.modal.style.transform = `translateY(${diff}px)`;
+            this.$refs.modal.style.transition = "none";
+            }
+        },
+        endDrag() {
+            this.isDragging = false;
+            const diff = this.currentY - this.startY;
+
+            // Se trascinata abbastanza, chiudi
+            if (diff > 100) {
+                this.showBottomSheet=false;
+            } else {
+            // Ritorna alla posizione originale
+            this.$refs.modal.style.transition = "transform 0.3s ease";
+            this.$refs.modal.style.transform = "translateY(0)";
+            }
+
+            this.startY = 0;
+            this.currentY = 0;
+        },
     },
     mounted() {
 		this.isMobile = checkIsMobile();
