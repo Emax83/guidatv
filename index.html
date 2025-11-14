@@ -321,14 +321,14 @@
             </div>
             <div id="epgMobile" class="" v-if="isMobile == true">
                 <div class="horizontal-scroll box-shadow">
-                    <div class="epg-column box-shadow" v-for="channel in getEpgChannels()" :key="channel.id">
+                    <div class="epg-column " v-for="channel in getEpgChannels()" :key="channel.id">
                         <div class="epg-channel" @click="showChannelSchedule(channel)">
                             <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
                             <!--<div class="logo-text">{{channel.name}}</div>-->
                         </div>
                         <ul class="epg-program-list list-group list-group-flush">
                             <li class="list-group-item" v-for="program in getEpgPrograms(channel)" :key="program.id">
-                                <div class="epg-program" @click="showProgramInModal(channel, program)">
+                                <div class="epg-program" :class="{'active box-shadow-live' : isProgramLive(program)}" @click="showProgramInModal(channel, program)">
                                     <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
                                     <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError"/></div>
                                     <div class="program-title">{{program.title}}</div>

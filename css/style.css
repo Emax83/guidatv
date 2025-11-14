@@ -7,7 +7,9 @@
     --text-primary: #ffffff;
     --text-secondary: #b0b8c8;
     --border-color: #0dcaf0;
+    --border-color-dark: #272d50;;
     --box-shadow-color: rgba(13, 202, 240, 0.2);
+    --box-shadow-live: rgb(240 13 13 / 36%);
 }
 
 * {
@@ -394,7 +396,7 @@ body {
 .epg-program {
   position: relative;
   background: rgba(15, 25, 45, 0.7);
-  border: 1px solid rgba(0, 191, 255, 0.2);
+  border: 1px solid var(--border-color-dark);
   border-radius: 1rem;
   margin: 0.5rem;
   padding: 0.7rem;
@@ -402,8 +404,12 @@ body {
   transition: background 0.25s ease;
 }
 
+.epg-program.active{
+    border: 1px solid var(--border-color);
+}
+
 .epg-program:hover {
-  background: rgba(20, 40, 80, 0.85);
+  background: var(--hover-bg);
 }
 
 /* Orari */
@@ -419,6 +425,8 @@ body {
 .epg-program .program-image{
     width: auto;
     height: 100px;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 /* Immagine programma */
@@ -892,6 +900,10 @@ body {
 
 .box-shadow{
     box-shadow: 0 10px 30px var(--box-shadow-color);
+}
+
+.box-shadow-live{
+    box-shadow: 0 10px 30px var(--box-shadow-live);
 }
 
 .text-shadow{

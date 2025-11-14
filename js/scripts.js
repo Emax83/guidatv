@@ -487,11 +487,14 @@ const vueApp = createApp({
                 const endOfDay = new Date();
                 endOfDay.setHours(24, 0, 0, 0);
 
+                const nextHour = new Date(now);
+                nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+
                 return channel.programs.filter(program => {
                     const start = this.utcToLocal(program.start);
                     const stop  = this.utcToLocal(program.stop);
                     const isSameDay = start.getDate() === now.getDate();
-
+                    
                     // --- FILTRO: ONLY EVENING ---
                     if (this.epgOnlyEvening) {
                         const isEvening =
@@ -507,8 +510,9 @@ const vueApp = createApp({
 
                     // --- FILTRO: ONLY ON AIR ---
                     if (this.epgOnlyOnAir) {
+                        const startsNextHour = start >= now && start < nextHour;
                         const inProgress = start <= now && stop >= now;
-                        if (!inProgress) return false;
+                        if (!inProgress && !startsNextHour) return false;
                     }
 
                     // --- FILTRO: ONLY FAVORITES ---
