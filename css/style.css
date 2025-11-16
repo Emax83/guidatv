@@ -1273,7 +1273,7 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     bottom: 0;
     width: 100%;
     padding: 10px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    background: linear-gradient(to top, rgb(0 0 0), #000000a1);
     color: white;
 }
 
