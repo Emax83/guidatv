@@ -435,8 +435,8 @@
                     <div class="text-center mb-3">
                         <div class="d-flex justify-content-center align-items-center gap-2 mt-2" >
                             <div @click="showChannelSchedule(movie.channelName)">
-                                <img :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
-                                <h4 class="mx-3">{{movie.channelName}}</h4>
+                                <img class="d-inline-block logo-image" :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
+                                <h4 class="d-inline-block mx-3">{{movie.channelName}}</h4>
                             </div>
                             <button class="favorite-btn float-end" 
                             :class="{'active' : isFavoriteChannel(movie.channelName)}" 
