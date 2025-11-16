@@ -463,12 +463,10 @@ body {
 
 .epg-program .program-genre {
   font-size: 0.8rem;
-  color: #8fb6ff;
+  /*color: #8fb6ff;*/
   text-align: center;
   margin-top: 0.2rem;
 }
-
-
 
 
 /* Responsive ottimizzato */
@@ -1047,14 +1045,15 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 /* Badge rosso lampeggiante */
 .badge-live {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 1rem;
+  right: 1rem;
   background-color: #dc3545; /* rosso */
   color: #dc3545;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 1rem;
+  border: solid 1px #ff0019; 
   animation: pulse 1.5s infinite ease-in-out;
   display: flex;
   align-items: center;
@@ -1110,13 +1109,16 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 }
 
 .fav-card {
-    min-width: 110px;
+    position: relative;
+    width: 30vw;
+    height: 25vh;
     text-align: center;
-    padding: 16px 10px;
+    padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(6px);
-    border-radius: 14px;
-    border: 1px solid rgba(0, 140, 255, 0.4);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color-dark);
+    overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 140, 255, 0.3);
 }
 
@@ -1129,9 +1131,20 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 }
 
 .fav-card .logo img {
-    max-height: 100%;
-    width: auto;
+    height: auto;
+    width: 100%;
     object-fit: cover;
+}
+
+.fav-card-channel-logo{
+position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+}
+.fav-card-channel-logo img{
+
 }
 
 .fav-card p {
@@ -1276,12 +1289,24 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     object-fit: cover;
 }
 
+.tv-carousel-item-channel-logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 5rem;
+    /* background-color: #00000052;*/
+}
+
+.tv-carousel-item-channel-logo img {
+    
+}
+
 /* OVERLAY basso */
 .tv-carousel-overlay {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 10px;
+    padding: 0.5rem;
     background: linear-gradient(to top, rgb(0 0 0), #000000a1);
     color: white;
 }

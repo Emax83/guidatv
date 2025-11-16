@@ -47,7 +47,7 @@
     <nav class="navbar navbar-expand toolbar fixed-top">
         <div class="container-fluid">
             <span class="navbar-brand logo-text mb-0 h1">
-                <button class="btn btn-nav" @click="currentSection = 'homepage'" title="Homepage">
+                <button class="btn btn-nav p-0" @click="currentSection = 'homepage'" title="Homepage">
                 <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
                     <span class="d-none d-sm-inline">Guida TV</span>
                 </button>
@@ -104,7 +104,8 @@
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
 
             <section class="greetings mb-3">
-                <h1 class="greeting">{{greetingsTime}}, {{greetingsName}}</h1>
+                <button class="float-end btn btn-dark"><i class="bi bi-eraser-fill" @click="greetingsName='straniero'"></i></button>
+                <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
                     <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
                     <div class="input-group">
@@ -128,10 +129,13 @@
                     <div class="tv-carousel" id="tv_carousel" ref="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll">
                         
                         <div class="tv-carousel-item" v-for="program in carouselOnAirPrograms" @click="showProgramInModal(program.channel, program)">
-                            <img :src="program.image || '/img/placeholder.png'" :alt="program.title" :title="program.title">
+                            <div class="tv-carousel-item-channel-logo">
+                                <img :src="program.channelLogo" :alt="program.channelName" :title="program.channelName">    
+                            </div>
+                            <img :src="program.image" :alt="program.title" :title="program.title">
                             <div class="tv-carousel-overlay">
                                 <h2>{{program.title}}</h2>
-                                <p>{{program.category}} — {{program.channelName}}</p>
+                                <p>{{program.category}}</p>
                             </div>
                         </div>
 
@@ -151,11 +155,17 @@
                         <p>{{channel.name}}</p>
                     </div>
 
-                    <div class="fav-card" v-for="program in favoriteProgramsWithInfo">
-                        <div class="logo"><img :alt="program.title" :title="program.title" :src="program.image || '/img/placeholder.png'" loading="lazy" /></div>
-                        <p>{{program.title}}</p>
-                        <p>{{program.category}}</p>
-                        <p>{{program.channel.name}}</p>
+                    <div class="fav-card" v-for="fav in favoriteProgramsWithInfo">
+                        <div class="fav-card-channel-logo">
+                            <img :alt="fav.channelName" :title="fav.channelName" :src="fav.channelLogo" loading="lazy" />
+                        </div>
+                        <div class="logo"><img :alt="fav.program.title" :title="fav.program.title" :src="fav.program.image || '/img/placeholder.png'" loading="lazy" /></div>
+                        <div class="tv-carousel-overlay">
+                            <p>{{fav.program.title}}</p>
+                            <p>{{fav.program.category}}</p>
+                            <p>{{fav.channelName}}</p>
+                        </div>
+                        
                     </div>
 
                 </div>
@@ -164,7 +174,7 @@
             <!-- TAGS -->
             <section class="tags mb-3">
                 <h2 class="section-title">Tag</h2>
-                <div class="tag-list">
+                <div class="tag-list p-2">
                     <button class="tag" v-for="tag in tagList" @click="searchQuery=tag; currentSection='search'">
                         {{tag}}
                     </button>
@@ -222,7 +232,7 @@
                         <ul class="epg-program-list list-group list-group-flush">
                             <li class="list-group-item" v-for="program in channel.programs" :key="program.id">
                                 <div class="epg-program" @click="showProgramInModal(channel, program)">
-                                    <div class="program-time">{{formatTime(program.start)}} - {{formatTime(program.stop)}}</div>
+                                    <div class="program-time">{{program.startTime}} - {{program.stopTime}}</div>
                                     <div class="program-image"><img class="logo-image" :src="program.image ?? 'invalid-url'" :alt="program.title" :title="program.title" @error="handleImageError" /></div>
                                     <div class="program-title">{{program.title}}</div>
                                     <div class="program-genre">
@@ -306,7 +316,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyOnAir"/> 
-                            <i class="bi bi-broadcast"></i><span class="ms-3 text-shadow"><span class="text-shadow">Live</span></span>
+                            <span class="text-shadow"><i class="bi bi-broadcast"></i> Live</span>
                         </label>
                     </div>
                 </div>
@@ -314,7 +324,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyEvening"/>
-                            <i class="bi bi-moon-stars"></i><span class="ms-3 text-shadow"><span class="text-shadow">Sera</span></span>
+                            <span class="text-shadow"><i class="bi bi-moon-stars"></i>Sera</span>
                         </label>
                     </div>
                 </div>
@@ -322,7 +332,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyFavorites">
-                            <i class="bi bi-star"></i><span class="ms-3 text-shadow"><span class="text-shadow">Fav</span></span>
+                            <span class="text-shadow"><i class="bi bi-star"></i> Fav</span>
                         </label>
                     </div>
                 </div>
@@ -372,6 +382,12 @@
                 <div class="horizontal-scroll box-shadow">
                     <div class="epg-column " v-for="channel in getEpgChannels()" :key="channel.id">
                         <div class="epg-channel" @click="showChannelSchedule(channel)">
+                            <button class="favorite-btn float-end" 
+                                    :class="{'active' : isFavoriteChannel(channel)}" 
+                                    @click="toggleFavoriteChannel(channel)" 
+                                    title="Aggiungi canale ai preferiti">
+                                        <i class="bi bi-star"></i>
+                            </button>
                             <img class="logo-image" :src="channel.logo ?? 'invalid-url'" :alt="channel.name" :title="channel.name" @error="handleImageError" />
                             <!--<div class="logo-text">{{channel.name}}</div>-->
                         </div>
@@ -379,7 +395,9 @@
                             <li class="list-group-item" v-for="program in getEpgPrograms(channel)" :key="program.id">
                                 <div class="epg-program" :class="{'active' : isProgramLive(program) || isFavoriteProgram(channel, program)}" 
                                     @click="showProgramInModal(channel, program)">
+
                                     
+
                                     <div class="badge-live" v-if="isProgramLive(program)"><i class="bi bi-circle-fill"></i></div>
                                     <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(channel, program)}" @click="toggleFavoriteProgram(channel,program)" title="Aggiungi programma ai preferiti">
                                         <i class="bi bi-star"></i>
@@ -414,32 +432,37 @@
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
                         <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
-                            <img :src="movie.channel.logo" :alt="movie.channel.name" :title="movie.channel.name">
-                            <h4 class="mx-3">{{movie.channel.name}}</h4>
-                            <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(movie.channel)}" @click="toggleFavoriteChannel(movie.channel)" title="Aggiungi canale ai preferiti">
+                            <img :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
+                            <h4 class="mx-3">{{movie.channelName}}</h4>
+                            <button class="favorite-btn float-end" 
+                            :class="{'active' : isFavoriteChannel(movie.channelName)}" 
+                            @click="toggleFavoriteChannel(movie.channelName)" 
+                            title="Aggiungi canale ai preferiti">
                                 <i class="bi bi-star"></i>
                             </button>
                         </div>
                     </div>
                     <div class="program-card">
-                        <div class="badge-live" v-if="isProgramLive(movie.program)"><i class="bi bi-circle-fill"></i></div>
-                        <img :src="movie.program.image" :alt="movie.program.title" class="program-image">
+                        <div class="badge-live" v-if="isProgramLive(movie)"><i class="bi bi-circle-fill"></i></div>
+                        <img :src="movie.image" :alt="movie.title" class="program-image">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h3 class="program-title">{{movie.program.title}}</h3>
-                            <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(movie.channel, movie.program)}" @click="toggleFavoriteProgram(movie.channel, movie.program)" title="Aggiungi programma ai preferiti">
+                            <h3 class="program-title">{{movie.title}}</h3>
+                            <button class="favorite-btn float-end" 
+                            :class="{'active' : isFavoriteProgram(movie.channelName, movie.title)}" 
+                            @click="toggleFavoriteProgram(movie.channelName, movie.title)" title="Aggiungi programma ai preferiti">
                                 <i class="bi bi-star"></i>
                             </button>
                         </div>
                         <div class="program-time">
-                            <span><i class="bi bi-clock"></i> {{formatTime(movie.program.start)}} - {{formatTime(movie.program.stop)}} • {{getDuration(movie.program)}}</span>
+                            <span><i class="bi bi-clock"></i> {{movie.startTime}} - {{movie.stopTime}} • {{movie.duration}}</span>
                             <span>
-                            <a :href="getTmdbLink(movie.program.title)" target="_blank" class="badge bg-success"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
+                            <a :href="movie.tmdbLink" target="_blank" class="badge bg-success"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
                             </span>
                         </div>
-                        <p class="mt-3 program-description">{{movie.program.description}}</p>
+                        <p class="mt-3 program-description">{{movie.description}}</p>
 
                         <div class="border-top mt-2" >
-                                <a class="btn btn-primary mt-3 w-100" :href="movie.channel.externalUrl" target="_blank" >
+                                <a class="btn btn-primary mt-3 w-100" :href="movie.channelLink" target="_blank" >
                                     <i class="bi bi-play-fill"></i> Guarda Online
                                 </a>
                         </div>

@@ -16,7 +16,7 @@ const vueApp = createApp({
             channels: [],
             loading: true,
             error: null,
-            currentSection: 'favorites',
+            currentSection: 'homepage',
             currentTime: '',
             currentDate: '',
             favorites: {
@@ -160,8 +160,20 @@ const vueApp = createApp({
 
                         // altrimenti includi
                         movies.push({
-                            channel: JSON.parse(JSON.stringify(channel)),
-                            program: JSON.parse(JSON.stringify(program)),
+                            key: channel.id + '-' + program.id,
+                            title: program.title,
+                            image: program.image,
+                            tmdbLink: this.getTmdbLink(program.title),
+                            duration: program.duration,
+                            start: program.start,
+                            stop: program.stop,
+                            startTime: program.startTime,
+                            stopTime: program.stopTime,
+                            description: program.description,
+                            shortDescription: program.shortDescription,
+                            channelName: channel.name,
+                            channelLogo: channel.logo,
+                            channelLink: channel.externalUrl,
                         });
                         
                     }
@@ -285,6 +297,7 @@ const vueApp = createApp({
                 throw new Error('Impossibile caricare i dati');
             }
 
+            var programId = 0;
             const now = new Date();
             const jsonData = await response.json();
             this.tagList = [];
@@ -296,9 +309,12 @@ const vueApp = createApp({
                 playlist: item.m3uLink,
                 externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
                 programs: item.programs.map(program => ({
-                    start: program.start,
-                    stop: program.end,
-                    duration: ((this.utcToLocal(program.stop) - this.utcToLocal(program.start)) / 60000),
+                    id: item.id + '-' + programId++,
+                    start: this.utcToLocal(program.start),
+                    stop: this.utcToLocal(program.end),
+                    startTime: this.formatTime(program.start),
+                    stopTime: this.formatTime(program.end),
+                    durationMin: ((this.utcToLocal(program.end) - this.utcToLocal(program.start)) / 60000),
                     isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
                     isSameDay: (this.utcToLocal(program.start).getDate() == now.getDate()),
                     //isOnAir: now >= this.utcToLocal(program.start) && now < this.utcToLocal(program.stop),
@@ -307,7 +323,7 @@ const vueApp = createApp({
                     shortDescription: (program.description || '').substring(0, 50),
                     category: program.category || '',
                     image: program.poster || '/img/placeholder.png',
-                    channeName: item.name,
+                    channelName: item.name,
                     channelLogo: item.logo || '/img/placeholder.png',
                 }))
             }));
@@ -427,7 +443,7 @@ const vueApp = createApp({
                     minutes = Math.floor((now - start) / 60000);
                     pixels = this.EPG_PIXELS_PER_MINUTE * minutes;
                     timeline.style.left = pixels + 'px';
-                    timeline.scrollIntoView();
+                    //timeline.scrollIntoView(); //non mi permette di visualizzare la guida!
                 }
 			}
 		},
@@ -1046,11 +1062,16 @@ const vueApp = createApp({
             this.currentY = 0;
         },
         scrollNext() {
-            this.$refs.carousel.scrollBy({ left: 280, behavior: 'smooth' });
+            if(this.currentSection == 'homepage'){
+                this.$refs.carousel.scrollBy({ left: 280, behavior: 'smooth' });
+            }
         },
 
         scrollPrev() {
-            this.$refs.carousel.scrollBy({ left: -280, behavior: 'smooth' });
+            if(this.currentSection == 'homepage'){
+                this.$refs.carousel.scrollBy({ left: -280, behavior: 'smooth' });
+            }
+            
         },
 
         startAutoScroll() {
