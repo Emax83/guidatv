@@ -1282,7 +1282,7 @@ position: absolute;
 .tv-carousel-item {
     position: relative;
     min-width: 260px;
-    height: 160px;
+    height: 40vw;
     border-radius: 14px;
     overflow: hidden;
     flex-shrink: 0;
