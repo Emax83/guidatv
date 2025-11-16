@@ -162,10 +162,12 @@
                         <div class="logo"><img :alt="fav.program.title" :title="fav.program.title" :src="fav.program.image || '/img/placeholder.png'" loading="lazy" /></div>
                         <div class="tv-carousel-overlay">
                             <p>{{fav.program.title}}</p>
-                            <p>{{fav.program.category}}</p>
-                            <p>{{fav.channelName}}</p>
+                            <p>
+                                <span class="program-genre">{{fav.program.category}}</span>
+                                <span v-if="isFavoriteProgramScheduled(fav)" class="badge bg-warning"><i class="bi bi-clock"></i></span>
+                                <span v-if="isFavoriteProgramLive(fav)" class="badge-live"><i class="bi bi-broadcast"></i></span>
+                            </p>
                         </div>
-                        
                     </div>
 
                 </div>
@@ -216,7 +218,7 @@
                             @click="showProgramInModal(channel, program)" :title="program.title">
                             <div class="program-title">{{program.title}}</div>
                             <div class="program-time">
-                                <span>{{formatTime(program.start)}}</span> - <span>{{formatTime(program.stop)}}</span> - <span>{{ getDuration(program)}}</span>
+                                <span>{{program.startTime}}</span> - <span>{{program.stopTime}}</span> - <span>{{program.duration}}</span>
                             </div>
                             <span class="program-genre">{{program.category}}</span>
                         </div>
@@ -431,7 +433,7 @@
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
-                        <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+                        <div class="d-flex justify-content-center align-items-center gap-2 mt-2" @click="showChannelSchedule(movie.channelName)">
                             <img :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
                             <h4 class="mx-3">{{movie.channelName}}</h4>
                             <button class="favorite-btn float-end" 
@@ -456,7 +458,7 @@
                         <div class="program-time">
                             <span><i class="bi bi-clock"></i> {{movie.startTime}} - {{movie.stopTime}} • {{movie.duration}}</span>
                             <span>
-                            <a :href="movie.tmdbLink" target="_blank" class="badge bg-success"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
+                            <a :href="movie.tmdbLink" target="_blank" class="badge-tmdb-link"><i class="bi bi-box-arrow-up-right"></i> TMDB</a>
                             </span>
                         </div>
                         <p class="mt-3 program-description">{{movie.description}}</p>
@@ -575,7 +577,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
-                    <img :src="selectedChannel.logo ?? 'invalid-url'" :alt="selectedChannel.name" @error="handleImageError">
+                    <img  class="channel-logo" :src="selectedChannel.logo" :alt="selectedChannel.name">
                     <h5 class="modal-title me-5" id="scheduleChannelName">{{selectedChannel.name}}</h5>
 
                     <button class="favorite-btn" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
@@ -598,7 +600,7 @@
                                 </button>
                         </div>
                         <div class="program-time">
-                                    <i class="bi bi-clock"></i> {{ formatTime(program.start)}} • {{getDuration(program)}}
+                                    <i class="bi bi-clock"></i> {{ program.startTime}} • {{program.duration}}
                                 </div>
                         <span class="program-genre">{{program.category}}</span>
                         <!--<span class="badge bg-danger" v-if="isProgramLive(program)" >IN ONDA</span>-->
