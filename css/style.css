@@ -1123,6 +1123,15 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 .fav-card .logo {
     font-size: 2rem;
     margin-bottom: 8px;
+    max-height: 5rem;
+    max-width: 12rem;
+    overflow: hidden;
+}
+
+.fav-card .logo img {
+    max-height: 100%;
+    width: auto;
+    object-fit: cover;
 }
 
 .fav-card p {
