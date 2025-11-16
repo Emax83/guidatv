@@ -90,7 +90,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container-fluid px-3 py-5">
+    <div class="container-fluid px-3 py-3">
         
         <!-- Loading -->
         <div id="loading" class="text-center py-5" v-if="loading == true">
@@ -104,7 +104,7 @@
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
 
             <section class="greetings mb-3">
-                <button class="float-end btn btn-dark"><i class="bi bi-eraser-fill" @click="greetingsName='straniero'"></i></button>
+                <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
                 <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
                     <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
@@ -115,7 +115,6 @@
                         </button>
                     </div>
                 </div>
-                <div v-else><button class="btn btn-link" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button></div> 
             </section>
 
             <!-- HERO -->

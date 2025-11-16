@@ -1063,15 +1063,22 @@ const vueApp = createApp({
         },
         scrollNext() {
             if(this.currentSection == 'homepage'){
-                this.$refs.carousel.scrollBy({ left: 280, behavior: 'smooth' });
+                let pixels = 280;
+                if(this.isMobile){
+                    pixels = 560;
+                }
+                this.$refs.carousel.scrollBy({ left: pixels, behavior: 'smooth' });
             }
         },
 
         scrollPrev() {
             if(this.currentSection == 'homepage'){
-                this.$refs.carousel.scrollBy({ left: -280, behavior: 'smooth' });
+                let pixels = -280;
+                if(this.isMobile){
+                    pixels = -560;
+                }
+                this.$refs.carousel.scrollBy({ left: pixels, behavior: 'smooth' });
             }
-            
         },
 
         startAutoScroll() {
