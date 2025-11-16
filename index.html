@@ -433,9 +433,11 @@
             <div id="moviesGrid" class="movies-grid">
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
-                        <div class="d-flex justify-content-center align-items-center gap-2 mt-2" @click="showChannelSchedule(movie.channelName)">
-                            <img :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
-                            <h4 class="mx-3">{{movie.channelName}}</h4>
+                        <div class="d-flex justify-content-center align-items-center gap-2 mt-2" >
+                            <div @click="showChannelSchedule(movie.channelName)">
+                                <img :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
+                                <h4 class="mx-3">{{movie.channelName}}</h4>
+                            </div>
                             <button class="favorite-btn float-end" 
                             :class="{'active' : isFavoriteChannel(movie.channelName)}" 
                             @click="toggleFavoriteChannel(movie.channelName)" 
