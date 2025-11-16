@@ -33,6 +33,10 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+[v-cloak] {
+    display: none;
+ }
+
 .container-fluid{
     max-width: 1280px;
 }

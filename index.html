@@ -101,7 +101,7 @@
         </div>
 
         <!-- Homepage -->
-        <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
+        <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'" v-cloak>
 
             <section class="greetings mb-3">
                 <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
