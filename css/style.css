@@ -1055,6 +1055,7 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 1rem;
+  border: solid 1px #f00;
   animation: pulse 1.5s infinite ease-in-out;
   display: flex;
   align-items: center;
