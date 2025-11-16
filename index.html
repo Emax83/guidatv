@@ -47,9 +47,13 @@
     <nav class="navbar navbar-expand toolbar fixed-top">
         <div class="container-fluid">
             <span class="navbar-brand logo-text mb-0 h1">
+<<<<<<< HEAD
                 <button class="btn btn-nav p-0" @click="currentSection = 'homepage'" title="Homepage">
+=======
+                <button class="btn btn-link p-0" @click="currentSection = 'homepage'" title="Homepage">
+>>>>>>> e2d965da05e1be64a5ef3f250a882dd54bdac4f2
                 <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
-                    <span class="d-none d-sm-inline">Guida TV</span>
+                    <span class="d-none d-sm-inline fw-bold">Guida TV</span>
                 </button>
             </span>
             <div class="d-flex align-items-center gap-2 flex-nowrap">
@@ -90,7 +94,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container-fluid px-3 py-4">
+    <div class="container-fluid px-3 py-5">
         
         <!-- Loading -->
         <div id="loading" class="text-center py-5" v-if="loading == true">
@@ -104,8 +108,12 @@
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
 
             <section class="greetings mb-3">
+<<<<<<< HEAD
                 <button class="float-end btn btn-dark"><i class="bi bi-eraser-fill" @click="greetingsName='straniero'"></i></button>
                 <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
+=======
+                <h3 class="greeting">{{greetingsTime}}, {{greetingsName}}</h3>
+>>>>>>> e2d965da05e1be64a5ef3f250a882dd54bdac4f2
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
                     <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
                     <div class="input-group">
@@ -115,6 +123,7 @@
                         </button>
                     </div>
                 </div>
+                <div v-else><button class="btn btn-link" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button></div> 
             </section>
 
             <!-- HERO -->
@@ -324,7 +333,11 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" v-model="epgOnlyEvening"/>
+<<<<<<< HEAD
                             <span class="text-shadow"><i class="bi bi-moon-stars"></i>Sera</span>
+=======
+                            <span class="text-shadow"><i class="bi bi-moon-stars"></i> Sera</span
+>>>>>>> e2d965da05e1be64a5ef3f250a882dd54bdac4f2
                         </label>
                     </div>
                 </div>
