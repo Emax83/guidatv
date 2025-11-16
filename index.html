@@ -49,7 +49,7 @@
             <span class="navbar-brand logo-text mb-0 h1">
                 <button class="btn btn-link p-0" @click="currentSection = 'homepage'" title="Homepage">
                 <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
-                    <span class="d-none d-sm-inline">Guida TV</span>
+                    <span class="d-none d-sm-inline fw-bold">Guida TV</span>
                 </button>
             </span>
             <div class="d-flex align-items-center gap-2 flex-nowrap">
@@ -104,7 +104,7 @@
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
 
             <section class="greetings mb-3">
-                <h1 class="greeting">{{greetingsTime}}, {{greetingsName}}</h1>
+                <h3 class="greeting">{{greetingsTime}}, {{greetingsName}}</h3>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
                     <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
                     <div class="input-group">
