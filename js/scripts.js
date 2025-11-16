@@ -301,7 +301,7 @@ const vueApp = createApp({
                     duration: ((this.utcToLocal(program.stop) - this.utcToLocal(program.start)) / 60000),
                     isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
                     isSameDay: (this.utcToLocal(program.start).getDate() == now.getDate()),
-                    isOnAir: now >= this.utcToLocal(program.start) && now < this.utcToLocal(program.stop),
+                    //isOnAir: now >= this.utcToLocal(program.start) && now < this.utcToLocal(program.stop),
                     title: program.title,
                     description: program.description || '',
                     shortDescription: (program.description || '').substring(0, 50),
