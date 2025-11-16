@@ -103,7 +103,7 @@
         <!-- Homepage -->
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'" v-cloak>
 
-            <section class="greetings mb-3">
+            <section class="greetings mb-3" v-cloak>
                 <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
                 <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
@@ -118,7 +118,7 @@
             </section>
 
             <!-- HERO -->
-            <section class="hero mb-3">
+            <section class="hero mb-3" v-if="!loading">
 
                 <h2 class="section-title"><div class="badge-live text-light" style="position:relative;display: inline-block; top:0; left: 0;height: 2rem;
     width: 2rem; padding: 9px;"> <i class="bi bi-broadcast"></i></div> On Air</h2>
@@ -147,25 +147,32 @@
             </section>
 
             <!-- FAVORITI -->
-            <section class="favorites mb-3">
+            <section class="favorites mb-3" v-if="!loading">
                 <h2 class="section-title">I tuoi preferiti</h2>
                 <div class="fav-list" v-if="hasFavorites">
+
                     <div class="fav-card" v-for="channel in favoriteChannels" @click="showChannelSchedule(channel)">
-                        <div class="logo"><img :alt="channel.name" :title="channel.name" :src="channel.logo || '/img/placeholder.png'" loading="lazy" /></div>
-                        <p>{{channel.name}}</p>
+                        <div class="pt-3 d-flex">
+                            <img class="logo-image" :alt="channel.name" :title="channel.name" :src="channel.logo || '/img/placeholder.png'" loading="lazy" />
+                        </div>
+                        <div class="logo-text">{{channel.name}}</div>
                     </div>
 
                     <div class="fav-card" v-for="fav in favoriteProgramsWithInfo">
-                        <div class="fav-card-channel-logo">
+                        
+                        <div v-if="isFavoriteProgramLive(fav)" class="badge-live"><i class="bi bi-broadcast"></i></div>
+
+                        <div class="fav-card-channel-logo" @click="showChannelSchedule(fav.channelName)">
                             <img :alt="fav.channelName" :title="fav.channelName" :src="fav.channelLogo" loading="lazy" />
                         </div>
                         <div class="logo"><img :alt="fav.program.title" :title="fav.program.title" :src="fav.program.image || '/img/placeholder.png'" loading="lazy" /></div>
-                        <div class="tv-carousel-overlay">
-                            <p>{{fav.program.title}}</p>
+                        <div class="tv-carousel-overlay" @click="showProgramInModal(fav.channelName, fav.program)">
+                            <p class="program-title">{{fav.program.title}}</p>
+                            <p>{{fav.program.startTime}} - {{fav.program.duration}}min</p>
                             <p>
                                 <span class="program-genre">{{fav.program.category}}</span>
-                                <span v-if="isFavoriteProgramScheduled(fav)" class="badge bg-warning"><i class="bi bi-clock"></i></span>
-                                <span v-if="isFavoriteProgramLive(fav)" class="badge-live"><i class="bi bi-broadcast"></i></span>
+                                <span v-if="isFavoriteProgramScheduled(fav)" class="badge bg-warning"><i class="bi bi-clock"></i> Oggi</span>
+                                
                             </p>
                         </div>
                     </div>
@@ -174,7 +181,7 @@
             </section>
 
             <!-- TAGS -->
-            <section class="tags mb-3">
+            <section class="tags mb-3" v-if="!loading">
                 <h2 class="section-title">Tag</h2>
                 <div class="tag-list p-2">
                     <button class="tag" v-for="tag in tagList" @click="searchQuery=tag; currentSection='search'">
@@ -529,17 +536,19 @@
         <div class="p-4" id="bottomSheetContent">
             <div class="text-center mb-3">
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
-                    <img :src="selectedChannel.logo ?? 'invalid-url'" :alt="selectedChannel.name" :title="selectedChannel.name" @error="handleImageError">
+                    <img class="logo-image" :src="selectedChannel.logo" :alt="selectedChannel.name" :title="selectedChannel.name">
                     <h4 class="mx-3">{{selectedChannel.name}}</h4>
+
                     <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(selectedChannel)}" @click="toggleFavoriteChannel(selectedChannel)" title="Aggiungi canale ai preferiti">
                         <i class="bi bi-star"></i>
                     </button>
                 </div>
             </div>
             <div class="program-card" v-if="selectedProgram">
-                <img :src="selectedProgram.image ?? 'invalid-url'" class="program-image" @error="handleImageError">
+                <img :src="selectedProgram.image" class="program-image">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                         <h3 class="program-title">{{selectedProgram.title}}</h3>
+                        
                         <button class="favorite-btn float-end" :class="{'active' : isFavoriteProgram(selectedChannel, selectedProgram)}" 
                         @click="toggleFavoriteProgram(selectedChannel, selectedProgram)" title="Aggiungi programma ai preferiti">
                             <i class="bi bi-star"></i>
@@ -547,7 +556,7 @@
                 </div>
                 
                 <div class="program-time">
-                    <i class="bi bi-clock"></i> {{formatTime(selectedProgram.start)}} • {{getDuration(selectedProgram)}}
+                    <i class="bi bi-clock"></i> {{selectedProgram.startTime}} • {{selectedProgram.duration}}min
                 </div>
                 <span class="program-genre">{{selectedProgram.category}}</span>
                 <!--<span class="badge bg-danger" v-if="isProgramLive(selectedProgram)" >IN ONDA</span>-->

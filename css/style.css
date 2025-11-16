@@ -1122,8 +1122,8 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 
 .fav-card {
     position: relative;
-    width: 20vw;
-    min-width: 15vw;
+    width: 25vw;
+    min-width: 25vw;
     height: 25vh;
     text-align: center;
     background: rgba(255, 255, 255, 0.03);
@@ -1332,7 +1332,7 @@ position: absolute;
     left: 0;
     width: 100%;
     padding: 0.5rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.507), #000000a1);
+    background: linear-gradient(to top, rgb(0 0 0 / 99%), #000000a1);
     color: white;
 }
 
