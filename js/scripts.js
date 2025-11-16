@@ -285,7 +285,7 @@ const vueApp = createApp({
                 throw new Error('Impossibile caricare i dati');
             }
 
-            const today = new Date();
+            const now = new Date();
             const jsonData = await response.json();
             this.tagList = [];
             this.channels = jsonData.map(item => ({
@@ -298,13 +298,17 @@ const vueApp = createApp({
                 programs: item.programs.map(program => ({
                     start: program.start,
                     stop: program.end,
-                    duration: (this.utcToLocal(program.stop) - this.utcToLocal(program.start) / 60000),
+                    duration: ((this.utcToLocal(program.stop) - this.utcToLocal(program.start)) / 60000),
                     isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
-                    isSameDay: (this.utcToLocal(program.start).getDate() == today.getDate()),
+                    isSameDay: (this.utcToLocal(program.start).getDate() == now.getDate()),
+                    isOnAir: now >= this.utcToLocal(program.start) && now < this.utcToLocal(program.stop),
                     title: program.title,
-                    description: program.description,
-                    category: program.category,
+                    description: program.description || '',
+                    shortDescription: (program.description || '').substring(0, 50),
+                    category: program.category || '',
                     image: program.poster || '/img/placeholder.png',
+                    channeName: item.name,
+                    channelLogo: item.logo || '/img/placeholder.png',
                 }))
             }));
 
