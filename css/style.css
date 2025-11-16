@@ -1174,6 +1174,7 @@ position: absolute;
     .tv-carousel-item{
         height: 30vh;
         min-height: 30vh;
+        width:80vw;
     }
 }
 
