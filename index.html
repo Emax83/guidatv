@@ -47,15 +47,19 @@
     <nav class="navbar navbar-expand toolbar fixed-top">
         <div class="container-fluid">
             <span class="navbar-brand logo-text mb-0 h1">
+                <button class="btn btn-nav" @click="currentSection = 'homepage'" title="Homepage">
                 <img src="img/favicon-transparent.png" alt="Guida TV" title="Guida TV" style="width: 48px;" />
-                <span class="d-none d-md-inline">Guida TV</span>
+                    <span class="d-none d-sm-inline">Guida TV</span>
+                </button>
             </span>
             <div class="d-flex align-items-center gap-2 flex-nowrap">
+
+                <!--
                 <button class="btn btn-nav" :class="{'active' : currentSection == 'favorites'}"  @click="currentSection = 'favorites'" title="Preferiti">
                     <i class="bi bi-star"></i>
                     <span class="d-none d-sm-inline ms-1">Preferiti</span>
                 </button>
-                <!--
+                
                 <button class="btn btn-nav":class="{'active' : currentSection == 'now'}" @click="currentSection = 'now'" title="Ora in Onda">
                     <i class="bi bi-broadcast"></i>
                     <span class="d-none d-sm-inline ms-1">Ora</span>
@@ -96,50 +100,80 @@
             <p class="mt-3">Caricamento...</p>
         </div>
 
-        <!-- Preferiti Section -->
-        <div id="favoritesSection" class="section" v-if="currentSection == 'favorites'">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="bi bi-star-fill"></i> I Miei Preferiti</h2>
-            </div>
-            
-            <div id="favoritesEmpty" class="text-center py-5" v-if="!hasFavorites">
-                <i class="bi bi-star" style="font-size: 4rem; color: var(--text-secondary);"></i>
-                <p class="text-light mt-3">Nessun preferito salvato</p>
-                <p class="text-light">Aggiungi canali o programmi ai preferiti per vederli qui!</p>
-            </div>
-            
-            <div id="favoriteChannelsContainer" class="mb-3" v-if="hasFavorites">
-                <h4 class="mb-3"><i class="bi bi-tv"></i> Canali</h4>
-                <div id="favoriteChannels" class="channel-scroll p-3 pb-5">
-                    <div class="favorite-card box-shadow" v-for="fav in favoriteChannels" @click="handleFavoriteChannelClick(fav)">
-                        <img :src="fav.logo ?? 'invalid-url'" :alt="fav.name" class="channel-logo" @error="handleImageError">
-                        <div class="channel-name">{{fav.name}}</div>
+        <!-- Homepage -->
+        <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'">
+
+            <section class="greetings mb-3">
+                <h1 class="greeting">{{greetingsTime}}, {{greetingsName}}</h1>
+                <div v-if="greetingsName == 'straniero' || !greetingsName">
+                    <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-light" v-model="newGreetingsName" placeholder="Inserisci il tuo nome o soprannome" />
+                        <button type="button" class="btn btn-primary" @click="greetingsName = newGreetingsName;saveFilters()">
+                            <i class="bi bi-save">Salva</i>
+                        </button>
                     </div>
                 </div>
-            </div>
-            
-            <div id="favoriteProgramsContainer" class="mb-3" v-if="hasFavorites">
-                <h4 class="mb-3"><i class="bi bi-collection-play"></i> Programmi</h4>
-                <div id="favoritePrograms" class="channel-scroll p-3 pb-5">
-                    <div class="favorite-card favorite-card-program box-shadow" v-for="fav in favoriteProgramsWithInfo" @click="handleFavoriteProgramClick(fav)">
-                        <div class="row mb-2">
-                            <div class="col-12 col-md-5">
-                                <img :src="fav.channelLogo ?? 'invalid-url'" :alt="fav.channelName" class="channel-logo" @error="handleImageError">
-                                <div class="channel-name">{{fav.channelName}}</div>
-                            </div>
-                            <div class="col-12 col-md-7">
-                                <h5 class="program-title">{{fav.title}}</h5>
-                                <div class="text-nowrap">
-                                <span class="program-genre">{{fav.category}}</span>
-                                <span class="badge bg-danger" v-if="isFavoriteProgramLive(fav)"><i class="bi bi-play-circle-fill"></i> IN ONDA</span>
-                                <span class="badge bg-warning" v-else-if="isFavoriteProgramScheduled(fav)" ><i class="bi bi-check-circle"></i> OGGI</span>
-                                </div>
+            </section>
+
+            <!-- HERO -->
+            <section class="hero mb-3">
+
+                <h2 class="section-title"><div class="badge-live text-light" style="position:relative;display: inline-block; top:0; left: 0;height: 2rem;
+    width: 2rem; padding: 9px;"> <i class="bi bi-broadcast"></i></div> On Air</h2>
+
+                <div class="tv-carousel-wrapper">
+                    <button class="tv-carousel-arrow left" id="tv_prev"  @click="scrollPrev" >&#10094;</button>
+
+                    <div class="tv-carousel" id="tv_carousel" ref="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll">
+                        
+                        <div class="tv-carousel-item" v-for="program in carouselOnAirPrograms" @click="showProgramInModal(program.channel, program)">
+                            <img :src="program.image || '/img/placeholder.png'" :alt="program.title" :title="program.title">
+                            <div class="tv-carousel-overlay">
+                                <h2>{{program.title}}</h2>
+                                <p>{{program.category}} — {{program.channelName}}</p>
                             </div>
                         </div>
+
                     </div>
+
+                    <button class="tv-carousel-arrow right" id="tv_next" @click="scrollNext">&#10095;</button>
                 </div>
-            </div>
+                
+            </section>
+
+            <!-- FAVORITI -->
+            <section class="favorites mb-3">
+                <h2 class="section-title">I tuoi preferiti</h2>
+                <div class="fav-list" v-if="hasFavorites">
+                    <div class="fav-card" v-for="channel in favoriteChannels" @click="showChannelSchedule(channel)">
+                        <div class="logo"><img :alt="channel.name" :title="channel.name" :src="channel.logo || '/img/placeholder.png'" loading="lazy" /></div>
+                        <p>{{channel.name}}</p>
+                    </div>
+
+                    <div class="fav-card" v-for="program in favoriteProgramsWithInfo">
+                        <div class="logo"><img :alt="program.title" :title="program.title" :src="program.image || '/img/placeholder.png'" loading="lazy" /></div>
+                        <p>{{program.title}}</p>
+                        <p>{{program.category}}</p>
+                        <p>{{program.channel.name}}</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TAGS -->
+            <section class="tags mb-3">
+                <h2 class="section-title">Tag</h2>
+                <div class="tag-list">
+                    <button class="tag" v-for="tag in tagList" @click="searchQuery=tag; currentSection='search'">
+                        {{tag}}
+                    </button>
+                </div>
+
+            </section>
+
         </div>
+        
 
         <!-- Ora in Onda Section -->
         <div id="nowSection" class="section" v-if="currentSection == 'now'">

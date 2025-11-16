@@ -43,6 +43,11 @@ const vueApp = createApp({
             startY: 0,
             currentY: 0,
             isDragging: false,
+            newGreetingsName:'',
+            greetingsName:'straniero',
+            greetingsTime: 'Salve',
+            tagList:[],
+            autoScrollTimer: null
         }
     },
 
@@ -191,6 +196,30 @@ const vueApp = createApp({
             return this.channels;
         },
 
+        // recupero solo i programmi attualmente in onda
+        carouselOnAirPrograms(){
+            const now = new Date();
+            const onAir = [];
+            let index = 0;
+            this.channels.forEach(channel => {
+                channel.programs.forEach(program => {
+                    const start = this.utcToLocal(program.start);
+                    const stop  = this.utcToLocal(program.stop);
+
+                    if (start <= now && now <= stop) {
+                        program.channelName = channel.name;
+                        program.duration = ((stop - start) / 60000);
+                        program.index = index;
+                        program.channel = channel;
+                        onAir.push(program);
+                        index++;
+                    }
+                });
+            });
+
+            return onAir;
+        }
+
     }, // computed
     watch: {
         hideAiredMovies: 'saveFilters',
@@ -256,28 +285,44 @@ const vueApp = createApp({
                 throw new Error('Impossibile caricare i dati');
             }
 
+            const today = new Date();
             const jsonData = await response.json();
-            
+            this.tagList = [];
             this.channels = jsonData.map(item => ({
                 id: item.id,
                 name: item.name,
                 epgName: item.epgName,
-                logo: item.logo,
+                logo: item.logo || '/img/placeholder.png',
                 playlist: item.m3uLink,
                 externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
                 programs: item.programs.map(program => ({
                     start: program.start,
                     stop: program.end,
+                    duration: (this.utcToLocal(program.stop) - this.utcToLocal(program.start) / 60000),
+                    isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
+                    isSameDay: (this.utcToLocal(program.start).getDate() == today.getDate()),
                     title: program.title,
                     description: program.description,
                     category: program.category,
-                    image: program.poster
+                    image: program.poster || '/img/placeholder.png',
                 }))
             }));
+
+            // creo la lista tag
+            this.channels.forEach(channel => { 
+                channel.programs.forEach(program => {
+                    const cat = program.category?.trim();
+                    if (cat && !this.tagList.includes(cat)) {
+                        this.tagList.push(cat);
+                    }
+                });
+            });
+                        
 
             this.loading = false;
             this.autoOpenFirstChannel();
         },
+
         saveFilters(){
             try{
                 const filters = {
@@ -285,6 +330,7 @@ const vueApp = createApp({
                     epgOnlyFavorites: this.epgOnlyFavorites,
                     epgOnlyOnAir: this.epgOnlyOnAir,
                     epgOnlyEvening: this.epgOnlyEvening,
+                    greetingsName: this.greetingsName,
                 };
 
                 localStorage.setItem('guidatv_settings', JSON.stringify(filters));
@@ -301,6 +347,7 @@ const vueApp = createApp({
                     epgOnlyFavorites: false,
                     epgOnlyOnAir: false,
                     epgOnlyEvening: false,
+                    greetingsName: 'straniero'
                 };
                 const stored = localStorage.getItem('guidatv_settings');
                 if (stored) {
@@ -311,9 +358,23 @@ const vueApp = createApp({
                 this.epgOnlyFavorites = settings.epgOnlyFavorites;
                 this.epgOnlyOnAir = settings.epgOnlyFavorites;
                 this.epgOnlyEvening = settings.epgOnlyFavorites;
+                this.greetingsName = settings.greetingsName || 'straniero';
             }
             catch(err){
                 console.error('loadFilters; Error: ', err);
+            }
+        },
+
+        loadGreetings(){
+            const now = new Date();
+            if(now.getHours() < 12){
+                this.greetingsTime = 'Buongiorno';
+            }
+            else if(now.getHours() < 18){
+                this.greetingsTime = 'Buon pomeriggio';
+            }
+            else if (now.getHours() < 24){
+                this.greetingsTime = 'Buonasera';
             }
         },
 
@@ -347,20 +408,23 @@ const vueApp = createApp({
 		updateEpgTimeline() {
 			if (this.currentSection === 'epg') {
 				const timeline = document.getElementById('currentTimeline');
-				var pixels = 1000000;
-				var minutes = 0;
-				var now = new Date();
-				var start = new Date();
-				start.setHours(0,0,0,0);
-				if (this.epgOnlyOnAir) {
-					start.setHours(now.getHours(),0,0,0);
-				}
-				if (this.epgOnlyEvening) {
-					start.setHours(this.EPG_EVENING_START,0,0,0);
-				}
-				minutes = Math.floor((now - start) / 60000);
-				pixels = this.EPG_PIXELS_PER_MINUTE * minutes;
-				timeline.style.left = pixels + 'px';
+                if(timeline){
+                    var pixels = 1000000;
+                    var minutes = 0;
+                    var now = new Date();
+                    var start = new Date();
+                    start.setHours(0,0,0,0);
+                    if (this.epgOnlyOnAir) {
+                        start.setHours(now.getHours(),0,0,0);
+                    }
+                    if (this.epgOnlyEvening) {
+                        start.setHours(this.EPG_EVENING_START,0,0,0);
+                    }
+                    minutes = Math.floor((now - start) / 60000);
+                    pixels = this.EPG_PIXELS_PER_MINUTE * minutes;
+                    timeline.style.left = pixels + 'px';
+                    timeline.scrollIntoView();
+                }
 			}
 		},
 
@@ -429,14 +493,14 @@ const vueApp = createApp({
 
         getTodayPrograms(channel) {
             const today = new Date();
-            const hh = today.getHours()-1;
+            const hh = today.getHours();
             today.setHours(hh, 0, 0, 0);
             const endDay = new Date();
             endDay.setHours(23,59,59,999);
             return channel.programs
                 .filter(program => {
-                    const start = this.utcToLocal(program.start); // questi però sono UTC
-                    const stop = this.utcToLocal(program.stop); //questi però sono UTC
+                    const start = this.utcToLocal(program.start); 
+                    const stop = this.utcToLocal(program.stop); 
                     return (stop > today && start < endDay);
                 })
                 .sort((a, b) => this.utcToLocal(a.start) - this.utcToLocal(b.start));
@@ -933,7 +997,7 @@ const vueApp = createApp({
 
         autoOpenFirstChannel() {
             if (this.hasFavorites) {
-                this.currentSection = 'favorites';
+                this.currentSection = 'homepage';
             } else {
                 this.currentSection = 'epg';
                 setTimeout(() => {
@@ -942,6 +1006,7 @@ const vueApp = createApp({
                         this.showNowPlaying(firstChannel);
                     }
                 }, 500);
+                this.updateEpgTimeline();
             }
         },
 		updateDevice() {
@@ -976,27 +1041,53 @@ const vueApp = createApp({
             this.startY = 0;
             this.currentY = 0;
         },
+        scrollNext() {
+            this.$refs.carousel.scrollBy({ left: 280, behavior: 'smooth' });
+        },
+
+        scrollPrev() {
+            this.$refs.carousel.scrollBy({ left: -280, behavior: 'smooth' });
+        },
+
+        startAutoScroll() {
+            this.autoScrollTimer = setInterval(() => {
+                this.scrollNext();
+            }, 3000);
+        },
+
+        pauseAutoScroll() {
+            clearInterval(this.autoScrollTimer);
+        },
+
+        resumeAutoScroll() {
+            this.startAutoScroll();
+        }
     },
     mounted() {
 		this.isMobile = checkIsMobile();
 
-    window.addEventListener('resize', () => {
-      this.isMobile = checkIsMobile();
-    });
-    window.addEventListener('orientationchange', () => {
-      this.isMobile = checkIsMobile();
-    });
-        this.loadFavorites();
+        window.addEventListener('resize', () => {
+        this.isMobile = checkIsMobile();
+        });
+        window.addEventListener('orientationchange', () => {
+        this.isMobile = checkIsMobile();
+        });
+        
         this.loadCookieConsent();
+        this.loadFavorites();
+        this.loadFilters();
         this.loadData();
+        this.loadGreetings();
+        this.startAutoScroll();
         this.updateCurrentTime();
         setInterval(() => {
             this.updateCurrentTime();
         }, 1000);
     },
 	beforeUnmount() {
-    window.removeEventListener('resize', this.updateDevice);
-    window.removeEventListener('orientationchange', this.updateDevice);
+        clearInterval(this.autoScrollTimer);
+        window.removeEventListener('resize', this.updateDevice);
+        window.removeEventListener('orientationchange', this.updateDevice);
   },
 }).mount('#app');
 

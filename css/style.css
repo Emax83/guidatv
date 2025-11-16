@@ -1078,3 +1078,212 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 .badge-live i {
   font-size: 0.8rem;
 }
+
+
+/* HOMEPAGE */
+.home-screen {
+    padding: 20px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    margin: 20px 0 10px;
+}
+
+/* --- HERO --- */
+.hero .greeting {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+
+/* --- FAVORITI --- */
+.fav-list {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.fav-card {
+    min-width: 110px;
+    text-align: center;
+    padding: 16px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+    border: 1px solid rgba(0, 140, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 140, 255, 0.3);
+}
+
+.fav-card .logo {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.fav-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+/* --- TAG BUTTONS --- */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255, 0, 200, 0.5);
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(255, 0, 200, 0.4);
+    transition: 0.2s;
+}
+
+.tag:hover {
+    background: rgba(255, 0, 200, 0.25);
+    box-shadow: 0 0 16px rgba(255, 0, 200, 0.7);
+}
+
+/* --- KEYFRAMES --- */
+@keyframes neon-pulse-blue {
+    0%   { box-shadow: 0 0 10px rgba(0, 170, 255, 0.4); }
+    50%  { box-shadow: 0 0 18px rgba(0, 170, 255, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(0, 170, 255, 0.4); }
+}
+
+@keyframes neon-pulse-pink {
+    0%   { box-shadow: 0 0 10px rgba(255, 0, 200, 0.4); }
+    50%  { box-shadow: 0 0 18px rgba(255, 0, 200, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(255, 0, 200, 0.4); }
+}
+
+@keyframes glow-hover {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.03); }
+}
+
+.fav-card {
+    animation: neon-pulse-blue 3.5s infinite;
+}
+.tag {
+    animation: neon-pulse-pink 4s infinite;
+}
+.carousel-item:hover {
+    transform: scale(1.03);
+    transition: 0.25s ease;
+    box-shadow: 0 0 22px rgba(0, 170, 255, 0.9);
+}
+.fav-card:hover {
+    transform: scale(1.05);
+    transition: 0.25s ease;
+    box-shadow: 0 0 22px rgba(0, 140, 255, 0.9);
+}
+.tag:hover {
+    animation: glow-hover 0.25s forwards;
+    box-shadow: 0 0 22px rgba(255, 0, 200, 1);
+    background: rgba(255, 0, 200, 0.35);
+}
+
+
+/* --- CAROUSEL (scoped per evitare conflitti con Bootstrap) --- */
+/* WRAPPER */
+.tv-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* FRECCE */
+.tv-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    font-size: 34px;
+    background: rgba(0,0,0,0.4);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+}
+.tv-carousel-arrow.left { left: 10px; }
+.tv-carousel-arrow.right { right: 10px; }
+
+/* CAROUSEL */
+.tv-carousel {
+    display: flex;
+    gap: 2rem;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    padding: 1rem;
+}
+
+/* ITEM */
+.tv-carousel-item {
+    position: relative;
+    min-width: 260px;
+    height: 160px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); /* glow basso */
+}
+
+/* Hover: zoom + glow più intenso + leggero lift */
+.tv-carousel-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(0, 255, 255, 0.55), 
+                0 0 30px rgba(0, 200, 255, 0.35);
+    cursor: pointer;
+}
+@keyframes tvPulseGlow {
+    0%   { box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); }
+    50%  { box-shadow: 0 0 14px rgba(0, 255, 255, 0.35); }
+    100% { box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); }
+}
+
+.tv-carousel-item {
+    animation: tvPulseGlow 3.5s ease-in-out infinite;
+}
+
+.tv-carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* OVERLAY basso */
+.tv-carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: white;
+}
+
+.tv-carousel-overlay h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.tv-carousel-overlay p {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin: 4px 0 0 0;
+}
