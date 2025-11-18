@@ -163,7 +163,7 @@ const vueApp = createApp({
                             key: channel.id + '-' + program.id,
                             title: program.title,
                             image: program.image,
-                            tmdbLink: this.getTmdbLink(program.title),
+                            tmdbLink: this.getTmdbLink(program.cleanTitle),
                             duration: program.duration,
                             start: program.start,
                             stop: program.stop,
@@ -253,72 +253,100 @@ const vueApp = createApp({
         async loadData() {
             this.loading = true;
             this.error = null;
-            const originalUrl = 'https://www.emax83dev.it/api/epg';
-            var response;
 
-            try {
-                // fetch local file
-                response = await fetch('/data/channels.json');
-                if (!response.ok) throw new Error('Direct fetch failed');
-                
-                this.officialLinks = await response.json();
-
-            } catch (err) {
-                console.error('Errore nel caricamento officialLinks:', err);
-                this.officialLinks = [];
-            }
+            const now = new Date();
+            var jsonData;
+            var item = localStorage.getItem("epgData");
+            var data = {};
+            var loadFromInternet = false;
             
-            try {
-
-                response = await fetch(originalUrl);
-                if (!response.ok) throw new Error('Direct fetch failed');
-
-            } catch (directError) {
-
-                const corsProxies = [
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(originalUrl)}`,
-                    `https://cors-anywhere.herokuapp.com/${originalUrl}`,
-                    '/api/epg', //local serverless function
-                    '/data/list.json' //local static file
-                ];
-                
-                for (const proxyUrl of corsProxies) {
-                    try {
-                        response = await fetch(proxyUrl);
-                        if (response.ok) break;
-                    } catch (e) {
-                        console.log('Proxy failed:', e);
-                    }
+            if(!item){
+                //non è presente localstorage
+                loadFromInternet = true;
+            }
+            else{
+                data = JSON.parse(item);
+                //localstorage non è aggiornato
+                if(data.date.getDate() != now.getDate()){
+                    loadFromInternet = true;
+                }
+                else{
+                    jsonData = data.channels;
+                    this.officialLinks = data.officialLinks;
                 }
             }
+            
+            if(loadFromInternet){
+                const originalUrl = 'https://www.emax83dev.it/api/epg';
+                var response;
 
-            if (!response || !response.ok) {
-                throw new Error('Impossibile caricare i dati');
+                try {
+                    // fetch local file
+                    response = await fetch('/data/channels.json');
+                    if (!response.ok) throw new Error('Direct fetch failed');
+                    
+                    this.officialLinks = await response.json();
+
+                } catch (err) {
+                    console.error('Errore nel caricamento officialLinks:', err);
+                    this.officialLinks = [];
+                }
+                
+                try {
+
+                    response = await fetch(originalUrl);
+                    if (!response.ok) throw new Error('Direct fetch failed');
+
+                } catch (directError) {
+
+                    const corsProxies = [
+                        `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`,
+                        `https://corsproxy.io/?${encodeURIComponent(originalUrl)}`,
+                        `https://cors-anywhere.herokuapp.com/${originalUrl}`,
+                        '/api/epg', //local serverless function
+                        '/data/list.json' //local static file
+                    ];
+                    
+                    for (const proxyUrl of corsProxies) {
+                        try {
+                            response = await fetch(proxyUrl);
+                            if (response.ok) break;
+                        } catch (e) {
+                            console.log('Proxy failed:', e);
+                        }
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error('Impossibile caricare i dati');
+                }
+
+                jsonData = await response.json();
+
             }
-
+            
             var programId = 0;
-            const now = new Date();
-            const jsonData = await response.json();
             this.tagList = [];
             this.channels = jsonData.map(item => ({
                 id: item.id,
                 name: item.name,
                 epgName: item.epgName,
                 logo: item.logo || '/img/placeholder.png',
-                playlist: item.m3uLink,
                 externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
                 programs: item.programs.map(program => ({
                     id: item.id + '-' + programId++,
                     start: this.utcToLocal(program.start),
                     stop: this.utcToLocal(program.end),
+                    end: this.utcToLocal(program.end),//per retro compatiblità..
                     startTime: this.formatTime(program.start),
                     stopTime: this.formatTime(program.end),
                     durationMin: ((this.utcToLocal(program.end) - this.utcToLocal(program.start)) / 60000),
+                    pixels: (this.EPG_PIXELS_PER_MINUTE * ((this.utcToLocal(program.end) - this.utcToLocal(program.start)) / 60000)),
                     isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
                     isSameDay: (this.utcToLocal(program.start).getDate() == now.getDate()),
-                    //isOnAir: now >= this.utcToLocal(program.start) && now < this.utcToLocal(program.stop),
+                    isOnAir: false,
                     title: program.title,
+                    cleanTitle: this.cleanTitle(program.title),
                     description: program.description || '',
                     shortDescription: (program.description || '').substring(0, 50),
                     category: program.category || '',
@@ -337,10 +365,16 @@ const vueApp = createApp({
                     }
                 });
             });
-                        
+            
+            data = { date: now, channels: jsonData, officialLinks: this.officialLinks };
+            localStorage.setItem('epgData', JSON.stringify(data));
 
             this.loading = false;
-            this.autoOpenFirstChannel();
+            
+        },
+        
+        cleanTitle(title) {
+              return title.replace(/\s*\(.*?\).*$/, "").trim();
         },
 
         saveFilters(){
@@ -423,6 +457,15 @@ const vueApp = createApp({
             this.currentDate = `${giornoSettimana} ${giorno} ${mese} ${ore}:${minuti}`;
 
 			this.updateEpgTimeline();
+        },
+
+        updateIsOnAir(){
+            const now = new Date();
+            for (const channel of this.channels) {
+                for (const p of channel.programs) {
+                    p.isOnAir = (now >= p.start && now < p.end);
+                }
+            }
         },
 
 		updateEpgTimeline() {
@@ -1008,27 +1051,12 @@ const vueApp = createApp({
             }
         },
 
-        handleImageError(event) {
+        /* handleImageError(event) {
             const fallback = "/img/placeholder.png";
             if (event.target.src.includes(fallback)) return;
             event.target.src = fallback;
             //event.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%231a1f3a' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' font-size='14' fill='%230dcaf0' text-anchor='middle' dy='.3em'%3ETV%3C/text%3E%3C/svg%3E";
-        },
-
-        autoOpenFirstChannel() {
-            if (this.hasFavorites) {
-                this.currentSection = 'homepage';
-            } else {
-                this.currentSection = 'epg';
-                setTimeout(() => {
-                    const firstChannel = this.channelsWithCurrentProgram[0];
-                    if (firstChannel) {
-                        this.showNowPlaying(firstChannel);
-                    }
-                }, 500);
-                this.updateEpgTimeline();
-            }
-        },
+        }, */
 		updateDevice() {
       		this.isMobile = checkIsMobile();
   	    },
@@ -1114,6 +1142,7 @@ const vueApp = createApp({
         this.updateCurrentTime();
         setInterval(() => {
             this.updateCurrentTime();
+            this.updateIsOnAir();
         }, 1000);
     },
 	beforeUnmount() {
