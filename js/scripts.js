@@ -36,6 +36,7 @@ const vueApp = createApp({
             epgOnlyFavorites: false,
             epgOnlyOnAir: false,
             epgOnlyEvening: false,
+            EPG_START_DAY: 6,
             EPG_EVENING_START: 20,
             EPG_EVENING_END: 24,
             EPG_PIXELS_PER_MINUTE: 4,
@@ -167,7 +168,7 @@ const vueApp = createApp({
                     //aggiungi se ora di inizio superiore ad ora
                     const now = new Date();
 					const endOfDay = new Date();
-					endOfDay.setHours(this.EPG_EVENING_END,0,0,0);// end of day
+					endOfDay.setHours(this.EPG_EVENING_END,30 ,0 ,0);// end of day
 
                     if(program.category?.toLowerCase() === 'film') {
 
@@ -361,7 +362,7 @@ const vueApp = createApp({
                                 cleanTitle: this.cleanTitle(program.title),
                                 tmdbLink: '',
                                 description: program.description || '',
-                                shortDescription: (program.description?.substring(0, 50) + "..." || ''),
+                                shortDescription: (program.description?.substring(0, 100) + "..." || ''),
                                 category: program.category || '',
                                 image: program.poster || '/img/placeholder.png',
                                 channelName: item.name,
@@ -509,7 +510,8 @@ const vueApp = createApp({
                     var minutes = 0;
                     var now = new Date();
                     var start = new Date();
-                    start.setHours(0,0,0,0);
+                    start.setHours(this.EPG_START_DAY,0,0,0);
+
                     if (this.epgOnlyOnAir) {
                         start.setHours(now.getHours(),0,0,0);
                     }
@@ -625,7 +627,7 @@ const vueApp = createApp({
             const slots = [];
             try {
                 const now = new Date();
-                let startHour = 0;
+                let startHour = this.EPG_START_DAY;
 
                 if (this.epgOnlyEvening) {
                     startHour = this.EPG_EVENING_START;
@@ -685,14 +687,17 @@ const vueApp = createApp({
             try {
                 const now = new Date();
 
+                const startDay = new Date();
+                startDay.setHours(this.EPG_START_DAY, 0, 0 , 0);
+
+                const nextHour = new Date();
+                nextHour.setHours(now.getHours() +1, 0, 0, 0);
+
                 const startEvening = new Date();
                 startEvening.setHours(this.EPG_EVENING_START, 0, 0, 0);
 
                 const endOfDay = new Date();
-                endOfDay.setHours(this.EPG_EVENING_END, 0, 0, 0);
-
-                const nextHour = new Date(now);
-                nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+                endOfDay.setHours(this.EPG_EVENING_END, 30, 0, 0);
 
                 return channel.programs.filter(program => {
 
@@ -710,10 +715,15 @@ const vueApp = createApp({
                     }
 
                     // --- FILTRO: ONLY ON AIR ---
-                    if (this.epgOnlyOnAir) {
+                    else if (this.epgOnlyOnAir) {
                         const startsNextHour = program.start >= now && program.start < nextHour;
                         const inProgress = program.start <= now && program.stop >= now;
                         if (!inProgress && !startsNextHour) return false;
+                    }
+
+                    else {
+                        // default: tutti i programmi dall'orario di inizio epg in avanti
+                        return (program.stop > startDay);
                     }
 
 					/*
@@ -769,32 +779,30 @@ const vueApp = createApp({
         getProgramWidth(program){
             try {
                 const today = new Date();
-                const hh = today.getHours()-1;
-                today.setHours(hh, 0, 0, 0);
+
+                const startDay = new Date();
+                startDay.setHours(this.EPG_START_DAY, 0, 0, 0);
+
                 const endDay = new Date();
-                endDay.setHours(this.EPG_EVENING_END, 0, 0, 0);
+                endDay.setHours(this.EPG_EVENING_END, 30, 0, 0);
                 //hh è l'ora di inizio dell'epg.
 
-                // timeslot = 30 minuti = 120px = 1minuto = 4px
-                const start = this.utcToLocal(program.start);
-                const stop = this.utcToLocal(program.stop);
-
                 // differenza in millisecondi
-                var diffMs = stop - start; //durata del programma.
+                var diffMs = program.stop - program.start; //durata del programma.
 
-                if(start < today & stop > today){
+                if(program.start < startDay & program.stop > startDay){
                     //devo togliere i minuti già trascorsi
-                    diffMs = stop - today;
+                    diffMs = program.stop - startDay;
                 }
-                if (start < endDay & stop > endDay) {
+                if (program.start < endDay & program.stop > endDay) {
                     //devo togliere i minuti oltre le 24
-                    diffMs = endDay - start;
+                    diffMs = endDay - program.start;
                 }
 
                 // conversione in minuti
                 var diffMinutes = Math.floor(diffMs / 60000); 
                 
-                return (diffMinutes * 4) + 'px';
+                return (diffMinutes * this.EPG_PIXELS_PER_MINUTE) + 'px';
 
             }
             catch(err){
@@ -1152,7 +1160,7 @@ const vueApp = createApp({
           this.pauseAutoScroll();
             this.autoScrollTimer = setInterval(() => {
                 this.scrollNext();
-              this.checkLoop();
+                this.checkLoop();
             }, 3000);
         },
 
@@ -1163,29 +1171,29 @@ const vueApp = createApp({
         resumeAutoScroll() {
             this.startAutoScroll();
         },
-       checkLoop(){
-          const el = this.$refs.carousel;
-         if(!el) return;
-         const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 5;
-         if(atEnd){
-           setTimeout(()=> el.scrollTo({left:0,behavior: 'smooth'}),300);
-         }
-       },
-      setupTouch(){
-        const el = this.$refs.carousel;
-        if(!el) return;
-        let startX = 0;
-        el.addEventListener("touchstart", e => {
-          startX = e.touches[0].clientXM
-        });
-        el.addEventListener("toucheend", e =>{
-          const endX = e.changedTouches[0].clientX;
-          const delta = endX - startX;
-          if(Math.abs(delta) < 50) return;
-          if(delta < 0) this.scrollNext();
-          else this.scrollPrev();
-        });
-      }
+        checkLoop(){
+            const el = this.$refs.carousel;
+            if(!el) return;
+            const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 5;
+            if(atEnd){
+            setTimeout(()=> el.scrollTo({left:0,behavior: 'smooth'}),300);
+            }
+        },
+        setupTouch(){
+            const el = this.$refs.carousel;
+            if(!el) return;
+            let startX = 0;
+            el.addEventListener("touchstart", e => {
+                startX = e.touches[0].clientXM
+            });
+            el.addEventListener("toucheend", e =>{
+                const endX = e.changedTouches[0].clientX;
+                const delta = endX - startX;
+                if(Math.abs(delta) < 50) return;
+                if(delta < 0) this.scrollNext();
+                else this.scrollPrev();
+            });
+        }
     },
     mounted() {
 		this.isMobile = checkIsMobile();

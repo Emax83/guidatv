@@ -1095,9 +1095,7 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 
 /* HOMEPAGE */
 .home-screen {
-    padding: 20px;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
+    
 }
 
 .section-title {
@@ -1126,6 +1124,7 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+    margin-bottom: 2rem;
 }
 
 .fav-list::-webkit-scrollbar {
@@ -1277,6 +1276,8 @@ position: absolute;
 .tv-carousel-arrow.left { left: 0px; }
 .tv-carousel-arrow.right { right: 0px; }
 
+
+
 /* CAROUSEL */
 .tv-carousel {
     display: flex;
@@ -1309,6 +1310,21 @@ position: absolute;
     max-height: 400px;
 }
 
+@media (max-width: 600px){
+    .tv-carousel-wrapper{
+        margin: 0;
+        padding: 0;
+    }
+    .tv-carousel-arrow{
+        padding: 0;
+        margin: 0;
+        width: 3rem;
+    }
+    .tv-carousel-item .channel-logo{
+        width: 5rem!important;
+        max-height: 3rem!important;
+    }
+}
 @media (min-width: 600px){
   .tv-carousel-item {
     flex: 0 0 50%;
@@ -1367,7 +1383,7 @@ position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 8rem;
+    height: 7rem;
     padding: 0.5rem 1rem;
     background: linear-gradient(to top, rgb(0 0 0 / 99%), #000000a1);
     color: white;
@@ -1375,7 +1391,7 @@ position: absolute;
 
 .tv-carousel-overlay h2 {
     font-size: 1.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .tv-carousel-overlay p {

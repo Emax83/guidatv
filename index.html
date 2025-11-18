@@ -207,7 +207,7 @@
         </div>
         
 
-        <!-- Ora in Onda Section -->
+        <!-- Ora in Onda Section
         <div id="nowSection" class="section" v-if="currentSection == 'now'">
             <div class="form-check float-end">
                 <label class="form-check-label">
@@ -218,7 +218,7 @@
             <h2 class="mb-4"><i class="bi bi-broadcast"></i><span class="mx-1 text-shadow">{{ currentDate }}</span></h2>
             
             <div id="nowChannels" class="epg-container" v-if="isMobile == false">
-                <!-- Colonna fissa con i canali -->
+                
                 <div class="channels-column">
                     <div class="channel-header">Canali</div>
                     <div class="channel" v-for="channel in epgChannels">
@@ -226,13 +226,13 @@
                     </div>
                 </div>
 
-                <!-- Parte scrollabile -->
+                
                 <div class="epg-scroll">
-                    <!-- RIGA HEADER (slot orari) -->
+                    
                     <div class="epg-row">
                         <div class="time-slot epg-header" v-for="slot in timeSlotsAllDay">{{slot}}</div>
                     </div>
-                    <!-- RIGHE PROGRAMMI -->
+                    
                     <div class="epg-row" v-for="channel in epgChannels">
                         <div class="program" v-for="program in getTodayPrograms(channel)" :style="'width: ' + getProgramWidth(program)" 
                             @click="showProgramInModal(channel, program)" :title="program.title">
@@ -269,8 +269,9 @@
             </div>
 
         </div>
+        -->
 
-        <!-- Stasera Section -->
+        <!-- Stasera Section 
         <div id="eveningSection" class="section" v-if="currentSection == 'evening'">
             <div class="form-check float-end">
                 <label class="form-check-label">
@@ -324,7 +325,7 @@
                 </div>
             </div>
         </div>
-
+        -->
 
         <!-- Programmazione SECTION -->
         <div id="epg" class="section" v-if="currentSection == 'epg'">
