@@ -1198,13 +1198,13 @@ position: absolute;
 .tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .tag {
     padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 0.85rem;
+    border-radius: 2rem;
+    font-size: 1rem;
     border: 1px solid rgba(255, 0, 200, 0.5);
     background: rgba(255, 255, 255, 0.03);
     color: #fff;
