@@ -1258,6 +1258,7 @@ END:VCALENDAR`;
         this.startAutoScroll();
         this.setupTouch();
         this.updateCurrentTime();
+		this.updateIsOnAir();
         setInterval(() => {
             this.updateCurrentTime();
             this.updateIsOnAir();
