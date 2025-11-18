@@ -47,7 +47,8 @@ const vueApp = createApp({
             greetingsName:'straniero',
             greetingsTime: 'Salve',
             tagList:[],
-            autoScrollTimer: null
+            autoScrollTimer: null,
+            scrolled: false,
         }
     },
 
@@ -489,8 +490,6 @@ const vueApp = createApp({
             const minuti = now.getMinutes().toString().padStart(2, '0');
 
             this.currentDate = `${giornoSettimana} ${giorno} ${mese} ${ore}:${minuti}`;
-
-			this.updateEpgTimeline();
         },
 
         updateIsOnAir(){
@@ -503,7 +502,7 @@ const vueApp = createApp({
         },
 
 		updateEpgTimeline() {
-			if (this.currentSection === 'epg') {
+			if (this.currentSection === 'epg' && this.isMobile == false) {
 				const timeline = document.getElementById('currentTimeline');
                 if(timeline){
                     var pixels = 1000000;
@@ -518,9 +517,13 @@ const vueApp = createApp({
                         start.setHours(this.EPG_EVENING_START,0,0,0);
                     }
                     minutes = Math.floor((now - start) / 60000);
-                    pixels = this.EPG_PIXELS_PER_MINUTE * minutes;
+                    pixels = (this.EPG_PIXELS_PER_MINUTE * minutes);
                     timeline.style.left = pixels + 'px';
-                    //timeline.scrollIntoView(); //non mi permette di visualizzare la guida!
+                    if(this.scrolled == false){
+                        timeline.scrollIntoView(); //non mi permette di visualizzare la guida!
+                        this.scrolled=true;
+                    }
+                    
                 }
 			}
 		},
@@ -1205,7 +1208,8 @@ const vueApp = createApp({
         setInterval(() => {
             this.updateCurrentTime();
             this.updateIsOnAir();
-        }, 1000);
+            this.updateEpgTimeline();
+        }, 60000);
     },
 	beforeUnmount() {
         clearInterval(this.autoScrollTimer);

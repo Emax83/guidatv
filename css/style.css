@@ -475,7 +475,9 @@ body {
 }
 
 .epg-program.mobile .badge-live {
-
+    right: auto;
+    left: 0.7rem;
+    top: 0.7rem;
 }
 
 /* Responsive ottimizzato */
@@ -965,8 +967,10 @@ body {
 
 .movies-grid{
     overflow-x: hidden;
-    /*overflow-y: auto;
-    max-height: 80vh;*/
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     scroll-behavior: smooth;
 }
 
@@ -991,14 +995,16 @@ body {
     border-radius: 1rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 20px rgba(13, 202, 240, 0.2);
+    width: 45%;
 }
 
-@media (max-width: 600px){
+@media (max-width: 768px){
     .movies-grid{
         margin: 1rem -0.5rem;
     }
   .movie-card  {
     margin: 1rem 0rem;
+    width: 90%;
   }
 }
 

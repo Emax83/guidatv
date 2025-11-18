@@ -69,7 +69,7 @@
                     <span class="d-none d-sm-inline ms-1">Stasera</span>
                 </button>
                 -->
-                <button class="btn btn-nav":class="{'active' : currentSection == 'epg'}" @click="currentSection = 'epg'" title="Programmazione">
+                <button class="btn btn-nav":class="{'active' : currentSection == 'epg'}" @click="currentSection = 'epg';updateEpgTimeline()" title="Programmazione">
                     <i class="bi bi-calendar2-range"></i>
                     <span class="d-none d-sm-inline ms-1">Programmazione</span>
                 </button>
@@ -90,7 +90,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container-fluid px-3 py-3">
+    <div class="container-fluid">
         
         <!-- Loading -->
         <div id="loading" class="text-center py-5" v-if="loading == true">
