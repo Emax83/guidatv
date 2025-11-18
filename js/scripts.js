@@ -20,8 +20,8 @@ const vueApp = createApp({
             currentTime: '',
             currentDate: '',
             favorites: {
-                channels: [],
-                programs: []
+                channels: [], // array di stringhe
+                programs: []  // array di oggetti "program"
             },
             selectedChannel: null,
             selectedProgram: null,
@@ -57,41 +57,58 @@ const vueApp = createApp({
         },
 
         favoriteChannels() {
-            return this.channels.filter(channel => 
-                this.favorites.channels.some(fav => fav.name === channel.name)
+            return this.channels.filter(channel =>
+                this.favorites.channels.includes(channel.name)
             );
         },
 
-        favoriteProgramsWithInfo() {
-            return this.favorites.programs.map(favProg => {
-                const channel = this.channels.find(c => c.name === favProg.channelName);
-                if (!channel) return null;
+        favoritePrograms() {
+            const now = new Date();
+            const today = now.toDateString();
 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                const todayProgram = channel.programs.find(p => {
-                    const start = this.utcToLocal(p.start);
-                    return p.title === favProg.title && start.toDateString() === today.toDateString();
-                });
+            return this.favorites.programs.map(p => {
+                let isOnAir = false;
+                let isScheduled = false;
+
+                // scansiona tutti i canali
+                for (const channel of this.channels) {
+                    // trova se c'è un programma con lo stesso cleanTitle
+                    const prog = channel.programs.find(pr => pr.cleanTitle === p.cleanTitle);
+
+                    if (prog) {
+                        // programma trovato nella lista corrente
+                        // aggiorna isScheduled se il programma è programmato oggi
+                        const progDate = prog.start.toDateString();
+                        if (progDate === today) {
+                            isScheduled = true;
+                        }
+
+                        // aggiorna isOnAir se il programma è in onda ora
+                        if (prog.isOnAir) {
+                            isOnAir = true;
+                        }
+                    }
+
+                    // se entrambi già veri, possiamo uscire dal ciclo
+                    if (isOnAir && isScheduled) break;
+                }
 
                 return {
-                    ...favProg,
-                    key: `${favProg.channelName}:${favProg.title}`,
-                    channel: channel,
-                    program: todayProgram,
-                    todayProgram: (todayProgram == null || todayProgram == undefined) ? false : true
+                    ...p,
+                    isOnAir,
+                    isScheduled,
+                    isFavorite: true,
                 };
-            }).filter(Boolean);
+            });
         },
 
-        channelsWithCurrentProgram() {
+        /*channelsWithCurrentProgram() {
             return this.channels.filter(channel => this.getCurrentProgram(channel) !== null);
         },
 
         channelsWithEveningPrograms() {
             return this.channels.filter(channel => this.getEveningPrograms(channel).length > 0);
-        },
+        },*/
 
         searchResults() {
             if (this.searchQuery.length < 2) return [];
@@ -136,6 +153,12 @@ const vueApp = createApp({
             return results;
         },
 
+        allMoviesChannels(){
+            let channels = [];
+
+            return channels;
+        },
+
         allMovies() {
             let movies = [];
             this.channels.forEach(channel => {
@@ -144,37 +167,22 @@ const vueApp = createApp({
                     const now = new Date();
 					const endOfDay = new Date();
 					endOfDay.setHours(this.EPG_EVENING_END,0,0,0);// end of day
-                    const startDate = this.utcToLocal(program.start);
-					const endDate = this.utcToLocal(program.stop);
 
                     if(program.category?.toLowerCase() === 'film') {
 
                         // nascondo i film già finiti
-                        if (this.hideAiredMovies && endDate && endDate < now) {
+                        if (this.hideAiredMovies && program.stop < now) {
                             return;
                         }
 
-						if (startDate > endOfDay) { //nascondo quelli che iniziano dopo mezzanotte
+						if (program.start > endOfDay) { //nascondo quelli che iniziano dopo mezzanotte
 							return;
 						}
 
                         // altrimenti includi
-                        movies.push({
-                            key: channel.id + '-' + program.id,
-                            title: program.title,
-                            image: program.image,
-                            tmdbLink: this.getTmdbLink(program.cleanTitle),
-                            duration: program.duration,
-                            start: program.start,
-                            stop: program.stop,
-                            startTime: program.startTime,
-                            stopTime: program.stopTime,
-                            description: program.description,
-                            shortDescription: program.shortDescription,
-                            channelName: channel.name,
-                            channelLogo: channel.logo,
-                            channelLink: channel.externalUrl,
-                        });
+                        program.showFullDescription = !this.isMobile;
+                        program.tmdbLink = this.getTmdbLink(program.cleanTitle);
+                        movies.push(program);
                         
                     }
                 });
@@ -212,23 +220,13 @@ const vueApp = createApp({
         carouselOnAirPrograms(){
             const now = new Date();
             const onAir = [];
-            let index = 0;
             this.channels.forEach(channel => {
                 channel.programs.forEach(program => {
-                    const start = this.utcToLocal(program.start);
-                    const stop  = this.utcToLocal(program.stop);
-
-                    if (start <= now && now <= stop) {
-                        program.channelName = channel.name;
-                        program.duration = ((stop - start) / 60000);
-                        program.index = index;
-                        program.channel = channel;
+                    if(program.isOnAir){
                         onAir.push(program);
-                        index++;
                     }
                 });
             });
-
             return onAir;
         }
 
@@ -266,12 +264,15 @@ const vueApp = createApp({
             }
             else{
                 data = JSON.parse(item);
+                
+                const saved = new Date(data.date);
                 //localstorage non è aggiornato
-                if(data.date.getDate() != now.getDate()){
+                if (saved.toDateString() !== now.toDateString()) {
                     loadFromInternet = true;
                 }
                 else{
-                    jsonData = data.channels;
+                    // dati già pronti.
+                    this.channels = data.channels;
                     this.officialLinks = data.officialLinks;
                 }
             }
@@ -322,43 +323,64 @@ const vueApp = createApp({
                 }
 
                 jsonData = await response.json();
-
+                var programId = 0;
+                var channelId = 0;
+                // creo la lista arrichita.
+                this.channels = jsonData.map(item => {
+                    channelId++;
+                    return {
+                        id: channelId,
+                        name: item.name,
+                        epgName: item.epgName,
+                        logo: item.logo || '/img/placeholder.png',
+                        externalUrl:
+                            this.officialLinks.find(link => link.epgName === item.name)?.externalUrl ||
+                            "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
+                        isFavorite: false,
+                        programs: item.programs.map(program => {
+                            const startLocal = this.utcToLocal(program.start);
+                            const endLocal = this.utcToLocal(program.end);
+                            programId++;
+                            return {
+                                id: channelId + '-' + programId,
+                                start: startLocal,
+                                stop: endLocal,
+                                end: endLocal, // retrocompatibilità
+                                startTime: this.formatTime(program.start),
+                                stopTime: this.formatTime(program.end),
+                                endTime: this.formatTime(program.end), //retrocompatibilità
+                                durationMin: Math.round((endLocal - startLocal) / 60000),
+                                pixels: this.EPG_PIXELS_PER_MINUTE * ((endLocal - startLocal) / 60000),
+                                isEvening: startLocal.getHours() >= this.EPG_EVENING_START,
+                                isSameDay: startLocal.toDateString() === now.toDateString(),
+                                isOnAir: (endLocal > now && now >= startLocal), // si aggiornarà nella funzione updateIsOnAir
+                                isFavorite: false, // verrà impostato.
+                                isScheduled: true, // essendo nella guida è true
+                                title: program.title,
+                                cleanTitle: this.cleanTitle(program.title),
+                                tmdbLink: '',
+                                description: program.description || '',
+                                shortDescription: (program.description?.substring(0, 50) + "..." || ''),
+                                category: program.category || '',
+                                image: program.poster || '/img/placeholder.png',
+                                channelName: item.name,
+                                channelLogo: item.logo || '/img/placeholder.png',
+                            };
+                        })
+                    };
+                });
             }
             
-            var programId = 0;
-            this.tagList = [];
-            this.channels = jsonData.map(item => ({
-                id: item.id,
-                name: item.name,
-                epgName: item.epgName,
-                logo: item.logo || '/img/placeholder.png',
-                externalUrl: this.officialLinks.find(link => link.epgName === item.name)?.externalUrl || "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
-                programs: item.programs.map(program => ({
-                    id: item.id + '-' + programId++,
-                    start: this.utcToLocal(program.start),
-                    stop: this.utcToLocal(program.end),
-                    end: this.utcToLocal(program.end),//per retro compatiblità..
-                    startTime: this.formatTime(program.start),
-                    stopTime: this.formatTime(program.end),
-                    durationMin: ((this.utcToLocal(program.end) - this.utcToLocal(program.start)) / 60000),
-                    pixels: (this.EPG_PIXELS_PER_MINUTE * ((this.utcToLocal(program.end) - this.utcToLocal(program.start)) / 60000)),
-                    isEvening: (this.utcToLocal(program.start).getHours() >= this.EPG_EVENING_START),
-                    isSameDay: (this.utcToLocal(program.start).getDate() == now.getDate()),
-                    isOnAir: false,
-                    title: program.title,
-                    cleanTitle: this.cleanTitle(program.title),
-                    description: program.description || '',
-                    shortDescription: (program.description || '').substring(0, 50),
-                    category: program.category || '',
-                    image: program.poster || '/img/placeholder.png',
-                    channelName: item.name,
-                    channelLogo: item.logo || '/img/placeholder.png',
-                }))
-            }));
+            
 
             // creo la lista tag
+            this.tagList = [];
             this.channels.forEach(channel => { 
                 channel.programs.forEach(program => {
+                    //ritrasformo in date in quanto se recupero da localStorage, le date sono diventate stringhe.
+                    program.start = new Date(program.start);
+                    program.stop = new Date(program.stop);
+                    program.end = new Date(program.stop);
                     const cat = program.category?.trim();
                     if (cat && !this.tagList.includes(cat)) {
                         this.tagList.push(cat);
@@ -366,13 +388,25 @@ const vueApp = createApp({
                 });
             });
             
-            data = { date: now, channels: jsonData, officialLinks: this.officialLinks };
-            localStorage.setItem('epgData', JSON.stringify(data));
+            data = {
+                date: now.toISOString(),
+                channels: this.channels,
+                officialLinks: this.officialLinks
+            };
+            localStorage.setItem("epgData", JSON.stringify(data));
 
             this.loading = false;
             
         },
         
+        isNullOrWhiteSpace(input){
+            // controlla null o undefined
+            if (input === null || input === undefined) return true;
+
+            // controlla tipo stringa e se, tolti gli spazi, è vuota
+            return typeof input === 'string' && input.trim().length === 0;
+        },
+
         cleanTitle(title) {
               return title.replace(/\s*\(.*?\).*$/, "").trim();
         },
@@ -463,7 +497,7 @@ const vueApp = createApp({
             const now = new Date();
             for (const channel of this.channels) {
                 for (const p of channel.programs) {
-                    p.isOnAir = (now >= p.start && now < p.end);
+                    p.isOnAir = (now >= p.start && now < p.stop);
                 }
             }
         },
@@ -658,27 +692,24 @@ const vueApp = createApp({
                 nextHour.setHours(now.getHours() + 1, 0, 0, 0);
 
                 return channel.programs.filter(program => {
-                    const start = this.utcToLocal(program.start);
-                    const stop  = this.utcToLocal(program.stop);
-                    const isSameDay = start.getDate() === now.getDate();
-                    
+
                     // --- FILTRO: ONLY EVENING ---
                     if (this.epgOnlyEvening) {
                         const isEvening =
-                            isSameDay &&
+                            program.isSameDay &&
                             (
-                                start >= startEvening ||      // inizia dopo le 20
-                                stop  > startEvening          // o è iniziato prima ma ancora in corso dopo le 20
+                                program.start >= startEvening ||      // inizia dopo le 20
+                                program.stop  > startEvening          // o è iniziato prima ma ancora in corso dopo le 20
                             ) &&
-                            stop <= endOfDay;                // non supera la mezzanotte
+                            program.start <= endOfDay;                // non supera la mezzanotte
 
                         if (!isEvening) return false;
                     }
 
                     // --- FILTRO: ONLY ON AIR ---
                     if (this.epgOnlyOnAir) {
-                        const startsNextHour = start >= now && start < nextHour;
-                        const inProgress = start <= now && stop >= now;
+                        const startsNextHour = program.start >= now && program.start < nextHour;
+                        const inProgress = program.start <= now && program.stop >= now;
                         if (!inProgress && !startsNextHour) return false;
                     }
 
@@ -709,12 +740,12 @@ const vueApp = createApp({
             return Math.min(100, Math.max(0, (elapsed / total) * 100));
         },
 
-        getDuration(program) {
+        /*getDuration(program) {
             const start = this.utcToLocal(program.start);
             const end = this.utcToLocal(program.stop);
             const minutes = Math.round((end - start) / 60000);
             return `${minutes} min`;
-        },
+        },*/
 
         getProgress(program){
             if(!program) return 0;
@@ -730,11 +761,6 @@ const vueApp = createApp({
             const total = stop - start;
             const elapsed = now - start;
             return (elapsed / total) * 100;
-        },
-
-        isCurrentProgram(channel, program) {
-            const current = this.getCurrentProgram(channel);
-            return current?.title === program.title;
         },
 
         getProgramWidth(program){
@@ -822,7 +848,7 @@ const vueApp = createApp({
             }
         },
 
-        isFavoriteProgramScheduled(favorite){
+        /*isFavoriteProgramScheduled(favorite){
             // Trova il canale
             const channel = this.channels.find(ch => ch.name === favorite.channelName);
             if (!channel || !channel.programs) return false;
@@ -852,7 +878,7 @@ const vueApp = createApp({
             const stop = this.utcToLocal(program.stop);
 
             return now >= start && now <= stop;
-        },
+        },*/
 
         isProgramLive(program) {
             if (program){
@@ -883,57 +909,38 @@ const vueApp = createApp({
             }
         },
 
-        toggleFavoriteChannel(channel) {
-            const index = this.favorites.channels.findIndex(c => c.name === channel.name);
+        isFavoriteChannel(channelName) {
+            return this.favorites.channels.includes(channelName);
+        },
+
+        toggleFavoriteChannel(channelName) {
+            const index = this.favorites.channels.indexOf(channelName);
             if (index > -1) {
+                // rimuove il canale dai preferiti
                 this.favorites.channels.splice(index, 1);
             } else {
-                this.favorites.channels.push({
-                    name: channel.name,
-                    logo: channel.logo,
-                });
+                // aggiunge il canale ai preferiti
+                this.favorites.channels.push(channelName);
             }
+
             this.saveFavorites();
         },
 
-        toggleFavoriteProgram(channel, program) {
-            const key = `${channel.name}:${program.title}`;
-            const index = this.favorites.programs.findIndex(p => 
-                `${p.channelName}:${p.title}` === key
-            );
-            
+        isFavoriteProgram(programTitle) {
+            return this.favorites.programs.some(p => p.cleanTitle === programTitle);
+        },
+
+        toggleFavoriteProgram(program) {
+            const index = this.favorites.programs.findIndex(p => p.cleanTitle === program.cleanTitle);
             if (index > -1) {
+                // rimuove il programma dai preferiti
                 this.favorites.programs.splice(index, 1);
             } else {
-                this.favorites.programs.push({
-                    channelName: channel.name,
-                    channelLogo: channel.logo,
-                    title: program.title,
-                    category: program.category
-                });
+                // aggiunge il programma ai preferiti
+                this.favorites.programs.push(program);
             }
+
             this.saveFavorites();
-        },
-
-        removeFavoriteProgram(prog) {
-            const index = this.favorites.programs.findIndex(p => 
-                p.channelName === prog.channelName && p.title === prog.title
-            );
-            if (index > -1) {
-                this.favorites.programs.splice(index, 1);
-                this.saveFavorites();
-            }
-        },
-
-        isFavoriteChannel(channel) {
-            return this.favorites.channels.some(c => c.name === channel.name);
-        },
-
-        isFavoriteProgram(channel, program) {
-            const key = `${channel.name}:${program.title}`;
-            return this.favorites.programs.some(p => 
-                `${p.channelName}:${p.title}` === key
-            );
         },
 
         showNowPlaying(channel) {
@@ -951,8 +958,8 @@ const vueApp = createApp({
         },
 
         showProgramInModal(channel, program) {
-            this.selectedChannel = channel;
             this.selectedProgram = program;
+            this.selectedChannel = channel || this.channels.find(c => c.name === program.channelName);
             this.showScheduleModal = false;
             this.showProgramDetailModal = true;
             this.showBottomSheet = true;
@@ -963,6 +970,34 @@ const vueApp = createApp({
             this.selectedProgram = null;
             this.showScheduleModal = true;
             this.showProgramDetailModal = false;
+            //scroll programs finchè non trova quello della ora corrente
+            
+            this.$nextTick(() => {
+                // ottieni il container dello scroll
+                const el = document.getElementById('scheduleContent');
+                if (el) {
+                    // ottieni tutti gli elementi dei programmi
+                    const programs = el.querySelectorAll('.program-card');
+
+                    // trova il programma attualmente on-air
+                    const program = channel.programs.find(p => p.isOnAir);
+
+                    if (program) {
+                        // trova l'elemento corrispondente nella lista DOM
+                        const programEl = Array.from(programs).find(
+                            card => card.dataset.programId === program.id
+                        );
+
+                        // se esiste, scrolla fino ad esso
+                        if (programEl) {
+                            programEl.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                }
+            });
         },
 
         openChannelDetail(channel) {
@@ -987,18 +1022,17 @@ const vueApp = createApp({
         },
 
         handleFavoriteProgramClick(program) {
-            if (program.todayProgram) {
-                const sameTitlePrograms = program.channel.programs.filter(
-                    item => item.title === program.title
+            const channel = JSON.parse(JSON.stringify(this.channels.find(c => c.name === program.channelName))); 
+            if (program.isScheduled) {
+                const sameTitlePrograms = channel.programs.filter(
+                    item => item.cleanTitle === program.cleanTitle
                 );
-                var channel = program.channel;
                 channel.programs = sameTitlePrograms;
                 this.showChannelSchedule(channel);
                 //this.showChannelSchedule(program.channel);
 
             } else {
-                console.log(program);
-                this.showProgramInModal(program.channel, program.program);
+                this.showProgramInModal(channel, program);
                 //alert(`"${program.title}" non è programmato oggi su ${program.channelName}`);
             }
         },
@@ -1089,29 +1123,33 @@ const vueApp = createApp({
             this.startY = 0;
             this.currentY = 0;
         },
-        scrollNext() {
+         getCardWidth(){
+       const first = this.$refs.carousel?.querySelector('.tv-carousel-item');
+       return first ? first.clientWidth : 300;
+     },
+       scrollNext() {
             if(this.currentSection == 'homepage'){
-                let pixels = 280;
-                if(this.isMobile){
-                    pixels = 560;
-                }
-                this.$refs.carousel.scrollBy({ left: pixels, behavior: 'smooth' });
+                const el = this.$refs.carousel;
+                if(!el) return;
+                const w = this.getCardWidth();
+                el.scrollBy({ left: w, behavior: 'smooth' });
             }
         },
 
         scrollPrev() {
             if(this.currentSection == 'homepage'){
-                let pixels = -280;
-                if(this.isMobile){
-                    pixels = -560;
-                }
-                this.$refs.carousel.scrollBy({ left: pixels, behavior: 'smooth' });
+                const el = this.$refs.carousel;
+                if(!el) return;
+                const w = this.getCardWidth();
+                el.scrollBy({ left: -w, behavior: 'smooth' });
             }
         },
 
         startAutoScroll() {
+          this.pauseAutoScroll();
             this.autoScrollTimer = setInterval(() => {
                 this.scrollNext();
+              this.checkLoop();
             }, 3000);
         },
 
@@ -1121,7 +1159,30 @@ const vueApp = createApp({
 
         resumeAutoScroll() {
             this.startAutoScroll();
-        }
+        },
+       checkLoop(){
+          const el = this.$refs.carousel;
+         if(!el) return;
+         const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 5;
+         if(atEnd){
+           setTimeout(()=> el.scrollTo({left:0,behavior: 'smooth'}),300);
+         }
+       },
+      setupTouch(){
+        const el = this.$refs.carousel;
+        if(!el) return;
+        let startX = 0;
+        el.addEventListener("touchstart", e => {
+          startX = e.touches[0].clientXM
+        });
+        el.addEventListener("toucheend", e =>{
+          const endX = e.changedTouches[0].clientX;
+          const delta = endX - startX;
+          if(Math.abs(delta) < 50) return;
+          if(delta < 0) this.scrollNext();
+          else this.scrollPrev();
+        });
+      }
     },
     mounted() {
 		this.isMobile = checkIsMobile();
@@ -1139,6 +1200,7 @@ const vueApp = createApp({
         this.loadData();
         this.loadGreetings();
         this.startAutoScroll();
+        this.setupTouch();
         this.updateCurrentTime();
         setInterval(() => {
             this.updateCurrentTime();
