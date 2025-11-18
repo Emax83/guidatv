@@ -954,6 +954,11 @@ const vueApp = createApp({
             this.saveFavorites();
         },
 
+		clearFavorites() {
+			this.favorites.channels=[];
+			this.favorites.programs=[];
+		},
+
         showNowPlaying(channel) {
             const currentProgram = this.getCurrentProgram(channel);
             if (!currentProgram) return;
@@ -1193,16 +1198,49 @@ const vueApp = createApp({
                 if(delta < 0) this.scrollNext();
                 else this.scrollPrev();
             });
+        },
+		addToCalendar(program) {
+    const title = `${program.channelName} - ${program.title}`;
+    const start = this.formatICSDate(program.start);
+    const end = this.formatICSDate(program.stop);
+
+    const icsContent =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//GuidaTV//EN
+BEGIN:VEVENT
+UID:${program.id}@guidatv
+DTSTAMP:${this.formatICSDate(new Date())}
+DTSTART:${start}
+DTEND:${end}
+SUMMARY:${title}
+DESCRIPTION:${program.description || ''}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${program.cleanTitle}.ics`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+        },
+		formatICSDate(date) {
+             const d = new Date(date);
+             return d.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
         }
     },
     mounted() {
 		this.isMobile = checkIsMobile();
 
         window.addEventListener('resize', () => {
-        this.isMobile = checkIsMobile();
+             this.isMobile = checkIsMobile();
         });
         window.addEventListener('orientationchange', () => {
-        this.isMobile = checkIsMobile();
+             this.isMobile = checkIsMobile();
         });
         
         this.loadCookieConsent();
