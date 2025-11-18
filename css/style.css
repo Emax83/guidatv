@@ -1073,11 +1073,6 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
   }
 }
 
-/* Icona dentro al badge (facoltativa) */
-.badge-live i {
-  font-size: 0.8rem;
-}
-
 .badge-tmdb-link{
     background-color: #198754;
     color: #fff;
@@ -1108,48 +1103,69 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 
 
 /* --- FAVORITI --- */
+/* --- FAVORITI --- */
 .fav-list {
+    background-color: #000;
     display: flex;
     gap: 2rem;
     overflow-x: auto;
     padding: 1rem;
     cursor: pointer;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
 
 .fav-card {
     position: relative;
-    width: 25vw;
-    min-width: 25vw;
-    height: 25vh;
-    text-align: center;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(6px);
     border-radius: 1rem;
     border: 1px solid var(--border-color-dark);
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 140, 255, 0.3);
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    height: 10rem;
 }
 
-.fav-card .logo {
-    width: 100%;
-    height: 100%;
+.fav-card.channel{
+  flex: 0 0 40%;
+  max-width: 200px;
 }
 
-.fav-card .logo img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
+.fav-card.program{
+  flex: 0 0 80%;
+  height: 20rem;
+  max-width: 500px;
+}
+
+@media (min-width: 600px){
+  ..fav-card {
+    flex: 0 0 45%;
+    height: 60vh;
+  }
 }
 
 .fav-card-channel-logo{
 position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    overflow: hidden;
+  top: 1rem;
+  left: 1rem;
+  width: auto;
+  height: 5rem;
+  overflow: hidden;
+  background-color: #00000080;
+  border: solid 1px #01b8ff;
+  border-radius:1rem;
+ overflow:hidden;
+  z-index:10;
 }
-.fav-card-channel-logo img{
 
+.fav-card img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .fav-card p {
@@ -1158,20 +1174,25 @@ position: absolute;
     opacity: 0.85;
 }
 
-@media (max-width: 768px) {
-
-    .fav-card{
-        width: 60vw;
-        min-width: 60vw;
-        height: 30vh;
-        min-height: 30vh;
-    }
-
-    .tv-carousel-item{
-        height: 30vh;
-        min-height: 30vh;
-    }
+.fav-card:hover {
+    transform: scale(1.05);
+    transition: 0.25s ease;
+    box-shadow: 0 0 22px rgba(0, 140, 255, 0.9);
 }
+
+.fav-card-program-overlay {
+    position: absolute;
+    width: 100%;
+    height: 8rem;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    background-color: #000000a3;
+    padding: 1rem 2rem;
+}
+/* END FAVORITES */
+
+
 
 /* --- TAG BUTTONS --- */
 .tag-list {
@@ -1197,7 +1218,149 @@ position: absolute;
     box-shadow: 0 0 16px rgba(255, 0, 200, 0.7);
 }
 
-/* --- KEYFRAMES --- */
+
+
+
+/* --- CAROUSEL (scoped per evitare conflitti con Bootstrap) --- */
+/* WRAPPER */
+.tv-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: #000;
+}
+
+/* FRECCE */
+.tv-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    height:100%;
+    width:5rem;
+    transform: translateY(-50%);
+    z-index: 20;
+    font-size: 34px;
+    background: rgba(0,0,0,0.4);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 0;
+    cursor: pointer;
+    user-select: none;
+}
+.tv-carousel-arrow.left { left: 0px; }
+.tv-carousel-arrow.right { right: 0px; }
+
+/* CAROUSEL */
+.tv-carousel {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    padding: 1rem;
+    scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tv-carousel::-webkit-scrollbar {
+  display:none;
+}
+
+/* ITEM */
+.tv-carousel-item {
+    background-color: #000;
+    position: relative;
+    min-width: 260px;
+    height: 40vh;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 15px 20px 5px rgba(0, 200, 255, 0.5); /* glow basso */
+    flex: 0 0 100%;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    max-height: 400px;
+}
+
+@media (min-width: 600px){
+  .tv-carousel-item {
+    flex: 0 0 50%;
+    height: 60vh;
+  }
+}
+
+@media (min-width: 1024px){
+  .tv-carousel-item {
+    flex: 0 0 33%;
+    height: 60vh;
+  }
+}
+/* Hover: zoom + glow più intenso + leggero lift */
+.tv-carousel-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px 10px rgba(0, 255, 255, 0.55), 
+                0 0 30px 10px rgba(0, 200, 255, 0.35);
+    cursor: pointer;
+}
+@keyframes tvPulseGlow {
+    0%   { box-shadow: 0 0 10px 5px rgba(0, 200, 255, 0.25); }
+    50%  { box-shadow: 0 0 18px 5px rgba(0, 255, 255, 0.35); }
+    100% { box-shadow: 0 0 10px 5px rgba(0, 200, 255, 0.25); }
+}
+
+.tv-carousel-item {
+    animation: tvPulseGlow 3.5s ease-in-out infinite;
+}
+
+.tv-carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tv-carousel-item .channel-logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 10rem;
+    max-height: 10rem;
+    background-color: #00000052;
+    border: solid 2px #00caff;
+    border-radius: 8px;
+  overflow:hidden;
+}
+
+.tv-carousel-item-channel-logo img {
+    
+}
+
+/* OVERLAY basso */
+.tv-carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 6rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(to top, rgb(0 0 0 / 99%), #000000a1);
+    color: white;
+}
+
+.tv-carousel-overlay h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.tv-carousel-overlay p {
+    font-size: 1rem;
+    opacity: 0.85;
+    margin: 4px 0 0 0;
+}
+/* END CAROUSEL */
+
+
+
+/* --- ANIMAZIONI --- */
 @keyframes neon-pulse-blue {
     0%   { box-shadow: 0 0 10px rgba(0, 170, 255, 0.4); }
     50%  { box-shadow: 0 0 18px rgba(0, 170, 255, 0.7); }
@@ -1221,11 +1384,7 @@ position: absolute;
 .tag {
     animation: neon-pulse-pink 4s infinite;
 }
-.carousel-item:hover {
-    transform: scale(1.03);
-    transition: 0.25s ease;
-    box-shadow: 0 0 22px rgba(0, 170, 255, 0.9);
-}
+
 .fav-card:hover {
     transform: scale(1.05);
     transition: 0.25s ease;
@@ -1236,109 +1395,4 @@ position: absolute;
     box-shadow: 0 0 22px rgba(255, 0, 200, 1);
     background: rgba(255, 0, 200, 0.35);
 }
-
-
-/* --- CAROUSEL (scoped per evitare conflitti con Bootstrap) --- */
-/* WRAPPER */
-.tv-carousel-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-}
-
-/* FRECCE */
-.tv-carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 20;
-    font-size: 34px;
-    background: rgba(0,0,0,0.4);
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    user-select: none;
-}
-.tv-carousel-arrow.left { left: 10px; }
-.tv-carousel-arrow.right { right: 10px; }
-
-/* CAROUSEL */
-.tv-carousel {
-    display: flex;
-    gap: 2rem;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-    white-space: nowrap;
-    padding: 1rem;
-}
-
-/* ITEM */
-.tv-carousel-item {
-    position: relative;
-    min-width: 260px;
-    height: 160px;
-    border-radius: 14px;
-    overflow: hidden;
-    flex-shrink: 0;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); /* glow basso */
-}
-
-/* Hover: zoom + glow più intenso + leggero lift */
-.tv-carousel-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.55), 
-                0 0 30px rgba(0, 200, 255, 0.35);
-    cursor: pointer;
-}
-@keyframes tvPulseGlow {
-    0%   { box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); }
-    50%  { box-shadow: 0 0 14px rgba(0, 255, 255, 0.35); }
-    100% { box-shadow: 0 0 10px rgba(0, 200, 255, 0.25); }
-}
-
-.tv-carousel-item {
-    animation: tvPulseGlow 3.5s ease-in-out infinite;
-}
-
-.tv-carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.tv-carousel-item-channel-logo {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    width: 5rem;
-    /* background-color: #00000052;*/
-}
-
-.tv-carousel-item-channel-logo img {
-    
-}
-
-/* OVERLAY basso */
-.tv-carousel-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 0.5rem;
-    background: linear-gradient(to top, rgb(0 0 0 / 99%), #000000a1);
-    color: white;
-}
-
-.tv-carousel-overlay h2 {
-    font-size: 1rem;
-    margin: 0;
-}
-
-.tv-carousel-overlay p {
-    font-size: 0.8rem;
-    opacity: 0.85;
-    margin: 4px 0 0 0;
-}
+/* --- ANIMAZIONI --- */

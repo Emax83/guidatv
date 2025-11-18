@@ -120,64 +120,182 @@
             <!-- HERO -->
             <section class="hero mb-3" v-if="!loading">
 
-                <h2 class="section-title"><div class="badge-live text-light" style="position:relative;display: inline-block; top:0; left: 0;height: 2rem;
-    width: 2rem; padding: 9px;"> <i class="bi bi-broadcast"></i></div> On Air</h2>
+                <h2 class="section-title">
+                    <div class="badge-live text-light" style="position:relative;display: inline-block; top:0; left: 0;height: 2rem;
+                    width: 2rem; padding: 9px;"> <i class="bi bi-broadcast"></i>
+                    </div> 
+                    On Air
+                </h2>
 
                 <div class="tv-carousel-wrapper">
-                    <button class="tv-carousel-arrow left" id="tv_prev"  @click="scrollPrev" >&#10094;</button>
-
+                    <button class="tv-carousel-arrow left" id="tv_prev" @click="scrollPrev"><i class="bi bi-chevron-left"></i></button>
                     <div class="tv-carousel" id="tv_carousel" ref="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll">
-                        
-                        <div class="tv-carousel-item" v-for="program in carouselOnAirPrograms" @click="showProgramInModal(program.channel, program)">
-                            <div class="tv-carousel-item-channel-logo">
-                                <img :src="program.channelLogo" :alt="program.channelName" :title="program.channelName">    
-                            </div>
-                            <img :src="program.image" :alt="program.title" :title="program.title">
-                            <div class="tv-carousel-overlay">
-                                <p class="program-title">{{program.title}}</h2>
-                                <p class="program-genre">{{program.category}}</p>
-                            </div>
+                    
+                    <div class="tv-carousel-item">
+                        <div class="channel-logo">
+                        <img src="https://api.superguidatv.it/v1/channels/217/logo?width=120" 
+                            alt="Rai 1" title="Rai 1" class="logo-image" />
                         </div>
-
+                        <img src="https://api.superguidatv.it/v1/programs/1443570197/backdrops/1?width=320" 
+                            alt="Storie Italiane" title="Storie Italiane" class="program-image" />
+                        <div class="tv-carousel-overlay">
+                        <h2 class="program-title">TG2 Italia Europa</h2>
+                        <div>
+                            <span class="program-genre">Notizie</span>
+                            <span class="program-time">10:00 - 10min</span>
+                        </div>
+                        </div>
                     </div>
-
-                    <button class="tv-carousel-arrow right" id="tv_next" @click="scrollNext">&#10095;</button>
+                    
+                    <div class="tv-carousel-item">
+                        <div class="channel-logo">
+                        <img src="https://api.superguidatv.it/v1/channels/218/logo?width=120" 
+                            alt="Rai 2" title="Rai 2" class="logo-image" />
+                        </div>
+                        <img src="https://api.superguidatv.it/v1/programs/1219400798/backdrops/1?width=320" 
+                            alt="Storie Italiane" title="Storie Italiane" class="program-image" />
+                        <div class="tv-carousel-overlay">
+                        <h2 class="program-title">TG2 Italia Europa</h2>
+                        <div>
+                            <span class="program-genre">Notizie</span>
+                            <span class="program-time">10:00 - 10min</span>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tv-carousel-item">
+                        <div class="channel-logo">
+                        <img src="https://api.superguidatv.it/v1/channels/219/logo?width=120" 
+                            alt="Rai 3" title="Rai 3" class="logo-image" />
+                        </div>
+                        <img src="https://api.superguidatv.it/v1/programs/1219400798/backdrops/1?width=320" 
+                            alt="Storie Italiane" title="Storie Italiane" class="program-image" />
+                        <div class="tv-carousel-overlay">
+                        <h2 class="program-title">TG2 Italia Europa</h2>
+                        <div>
+                            <span class="program-genre">Notizie</span>
+                            <span class="program-time">10:00 - 10min</span>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tv-carousel-item">
+                        <div class="channel-logo" @click.stop="openChannelSchedule('')">
+                        <img src="https://api.superguidatv.it/v1/channels/220/logo?width=120" 
+                            alt="Rai 4" title="Rai 4" class="logo-image" />
+                        </div>
+                        <img src="https://api.superguidatv.it/v1/programs/1219400798/backdrops/1?width=320" 
+                            alt="Storie Italiane" title="Storie Italiane" class="program-image" />
+                        <div class="tv-carousel-overlay" @click="openProgramDetail('channelname','programname')">
+                        <h2 class="program-title">TG2 Italia Europa</h2>
+                        <div>
+                            <span class="program-genre">Notizie</span>
+                            <span class="program-time">10:00 - 10min</span>
+                        </div>
+                        </div>
+                    </div>   
+                    
+                    <div class="tv-carousel-item">
+                        <div class="channel-logo">
+                        <img src="https://api.superguidatv.it/v1/channels/221/logo?width=120" 
+                            alt="Rai 5" title="Rai 5" class="logo-image" />
+                        </div>
+                        <img src="https://api.superguidatv.it/v1/programs/1219400798/backdrops/1?width=320" 
+                            alt="Storie Italiane" title="Storie Italiane" class="program-image" />
+                        <div class="tv-carousel-overlay">
+                        <h2 class="program-title">TG2 Italia Europa</h2>
+                        <div>
+                            <span class="program-genre">Notizie</span>
+                            <span class="program-time">10:00 - 10min</span>
+                        </div>
+                        </div>
+                    </div>   
+                    
+                    </div>
+                    <button class="tv-carousel-arrow right" id="tv_next" @click="scrollNext"><i class="bi bi-chevron-right"></i></button>
                 </div>
+                
                 
             </section>
 
             <!-- FAVORITI -->
             <section class="favorites mb-3" v-if="!loading">
                 <h2 class="section-title">I tuoi preferiti</h2>
-                <div class="fav-list" v-if="hasFavorites">
-
-                    <div class="fav-card" v-for="channel in favoriteChannels" @click="showChannelSchedule(channel)">
+                
+                <div class="fav-list">
+                    <div class="fav-card channel" >
                         <div class="pt-3 d-flex">
-                            <img class="logo-image" :alt="channel.name" :title="channel.name" :src="channel.logo || '/img/placeholder.png'" loading="lazy" />
+                        <img class="logo-image" alt="Rai 1" title="Rai 1" src="https://api.superguidatv.it/v1/channels/217/logo?width=120&theme=light" loading="lazy" />
                         </div>
-                        <div class="logo-text">{{channel.name}}</div>
+                        <div class="logo-text">Rai 1</div>
                     </div>
+                    
+                    <div class="fav-card channel" >
+                        <div class="pt-3 d-flex">
+                        <img class="logo-image" alt="Rai 2" title="Rai 1" src="https://api.superguidatv.it/v1/channels/218/logo?width=120&theme=light" loading="lazy" />
+                        </div>
+                        <div class="logo-text">Rai 2</div>
+                    </div>
+                    
+                    <div class="fav-card channel" @click="openScheduleChannel()" >
+                        <div class="pt-3 d-flex">
+                        <img class="logo-image" alt="Rai 2" title="Rai 1" src="https://api.superguidatv.it/v1/channels/219/logo?width=120&theme=light" loading="lazy" />
+                        </div>
+                        <div class="logo-text">Rai 3</div>
+                    </div>
+                    
+                    <div class="fav-card channel" @click="openScheduleChannel()">
+                        <div class="pt-3 d-flex">
+                        <img class="logo-image" alt="Rai 4" title="Rai 4" src="https://api.superguidatv.it/v1/channels/220/logo?width=120&theme=light" loading="lazy" />
+                        </div>
+                        <div class="logo-text">Rai 4</div>
+                    </div>
+                    
+                    </div>
+                    <div class="fav-list">
+                    <div class="fav-card program">
 
-                    <div class="fav-card" v-for="fav in favoriteProgramsWithInfo">
+                        <div class="badge-live"><i class="bi bi-broadcast"></i></div>
+
+                        <div class="fav-card-channel-logo" @click.stop="openScheduleChannel()">
+                        <img alt="TV8" title="TV8" src="https://api.superguidatv.it/v1/channels/237/logo?width=120&theme=light" loading="lazy" />
+                        </div>
+                        <img alt="Alessandro Borghese" title="Alessandro Borghese: 4 ristoranti" 
+                            src="https://api.superguidatv.it/v1/programs/90981928/backdrops/1?width=320" loading="lazy" />
                         
-                        <div v-if="isFavoriteProgramLive(fav)" class="badge-live"><i class="bi bi-broadcast"></i></div>
-
-                        <div class="fav-card-channel-logo" @click="showChannelSchedule(fav.channelName)">
-                            <img :alt="fav.channelName" :title="fav.channelName" :src="fav.channelLogo" loading="lazy" />
+                        <div class="fav-card-program-overlay" @click="openProgramDetail()">
+                        <div class="program-title">Alessandro Borghese: 4 ristoranti</div>
+                        <div class="program-time">20:00 - 45min</div>
+                        <div class="d-flex">
+                            <span class="program-genre">LifeStyle</span>
+                            <span class="badge bg-warning"><i class="bi bi-clock"></i> Oggi</span>
                         </div>
-                        <div class="logo"><img :alt="fav.program.title" :title="fav.program.title" :src="fav.program.image || '/img/placeholder.png'" loading="lazy" /></div>
-                        <div class="tv-carousel-overlay" @click="showProgramInModal(fav.channelName, fav.program)">
-                            <p class="program-title">{{fav.program.title}}</p>
-                            <p>{{fav.program.startTime}} - {{fav.program.duration}}min</p>
-                            <p>
-                                <span class="program-genre">{{fav.program.category}}</span>
-                                <span v-if="isFavoriteProgramScheduled(fav)" class="badge bg-warning"><i class="bi bi-clock"></i> Oggi</span>
-                                
-                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="fav-card program">
+
+                        <div class="badge-live"><i class="bi bi-broadcast"></i></div>
+
+                        <div class="fav-card-channel-logo" @click.stop="openScheduleChannel()">
+                        <img alt="NOVE" title="NOVE" src="https://api.superguidatv.it/v1/channels/238/logo?width=120&theme=light" loading="lazy" />
+                        </div>
+                        
+                        <img alt="Alessandro Borghese" title="Alessandro Borghese: 4 ristoranti" 
+                            src="https://api.superguidatv.it/v1/programs/1124580973/backdrops/1?width=320" loading="lazy" />
+                        
+                        <div class="fav-card-program-overlay" @click="openProgramDetail()">
+                        <div class="program-title">Foodish: Milano </div>
+                        <div class="program-time">20:00 - 45min</div>
+                        <div class="d-flex">
+                            <span class="program-genre">LifeStyle</span>
+                            <span class="badge bg-warning"><i class="bi bi-clock"></i> Oggi</span>
+                        </div>
                         </div>
                     </div>
 
-                </div>
+                    </div>
+
             </section>
 
             <!-- TAGS -->
