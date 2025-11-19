@@ -669,7 +669,7 @@ const vueApp = createApp({
 				if (this.epgOnlyFavorites) {
 				    return this.channels.filter(channel => {
 				        const isFavChannel = this.favorites.channels
-				            .some(fav => fav.name === channel.name);
+				            .some(fav => fav === channel.name);
 				
 				        const hasFavPrograms = channel.programs
 				            ?.some(p => this.favorites.programs
