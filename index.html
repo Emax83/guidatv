@@ -104,8 +104,10 @@
         <div id="homepage" class="section home-screen" v-if="currentSection == 'homepage'" v-cloak>
 
             <section class="greetings mb-3" v-cloak>
-                <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
-                <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
+                <div>
+                    <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
+                    <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
+                </div>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
                     <p>Vogliamo conoscerci meglio? Come ti posso chiamare?</p>
                     <div class="input-group">
@@ -156,9 +158,10 @@
             
             <!-- FAVORITI -->
             <section class="favorites mb-3" v-if="!loading && hasFavorites">
-                <button class="btn btn-dark float-end" @click="clearFavorites"><i class="bi bi-eraser"></i></button>
-                <h2 class="section-title">I tuoi preferiti</h2>
-
+                <div>
+                    <button class="btn btn-dark float-end" @click="clearFavorites"><i class="bi bi-eraser"></i></button>
+                    <h2 class="section-title">I tuoi preferiti</h2>
+                </div>
                 <div class="fav-list" >
                     <div class="fav-card channel" v-for="channel in favoriteChannels" @click="handleFavoriteChannelClick(channel)">
                         <div class="pt-3 d-flex">
@@ -181,7 +184,7 @@
                         <div class="fav-card-program-overlay" >
                         <div class="program-title">{{program.cleanTitle}}</div>
                         <div class="program-time d-none">{{program.startTime}} - {{program.durationMin}}</div>
-                        <div class="d-flex">
+                        <div class="d-flex" style="flex-flow: wrap;">
                             <span class="program-genre">{{program.category}}</span>
                             <span class="badge bg-warning" v-if="program.isScheduled"><i class="bi bi-clock"></i> Oggi</span>
                         </div>
@@ -587,14 +590,18 @@
                         <div class="progress-bar" role="progressbar" :style="{ width: getProgress(selectedProgram) + '%' }"></div>
                     </div>
                     <small class="text-muted">{{getProgress(selectedProgram)}} completato</small>
-                    <div class="border-top mt-2">
-                        <a class="btn btn-primary mt-3 w-100" :href="selectedChannel.externalUrl" target="_blank">
+                    <div class="border-top mt-2 pt-2">
+                        <a class="btn btn-primary w-100" :href="selectedChannel.externalUrl" target="_blank">
                             <i class="bi bi-play-fill"></i> Guarda Online
                         </a>
                     </div>
                 </div>
                 <div v-else>
-                    <!-- aggiungi a calendario -->
+                    <div class="border-top mt-2 pt-2">
+                        <button type="button" class="btn btn-primary w-100" @click="addToCalendar(selectedProgram)">
+                            <i class="bi bi-calendar-plus"></i> Aggiungi a Calendario
+                        </button>
+                    </div>
                 </div>
                 
             </div>
@@ -633,13 +640,19 @@
                                 </button>
                         </div>
                         <div class="program-time">
-                                    <i class="bi bi-clock"></i> {{ program.startTime}} • {{program.durationMin}}
-                                </div>
-                        <span class="program-genre">{{program.category}}</span>
-                        
-                        
-
-                        <p class="mt-2 mb-0 small">{{program.description}}</p>
+                            <i class="bi bi-clock"></i> {{ program.startTime}} • {{program.durationMin}}
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <span class="program-genre">{{program.category}}</span>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary btn-sm" @click="addToCalendar(program)">
+                                    <i class="bi bi-calendar-plus"></i> Calendario
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-0 small">{{program.description}}</div>
                     </div>
                 </div>
                 <div class="modal-footer">

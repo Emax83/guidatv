@@ -372,9 +372,16 @@ const vueApp = createApp({
                         })
                     };
                 });
+
+
+                // salvo su localStorage
+                 data = {
+                    date: now.toISOString(),
+                    channels: this.channels,
+                    officialLinks: this.officialLinks
+                };
+                localStorage.setItem("epgData", JSON.stringify(data));
             }
-            
-            
 
             // creo la lista tag
             this.tagList = [];
@@ -390,13 +397,6 @@ const vueApp = createApp({
                     }
                 });
             });
-            
-            data = {
-                date: now.toISOString(),
-                channels: this.channels,
-                officialLinks: this.officialLinks
-            };
-            localStorage.setItem("epgData", JSON.stringify(data));
 
             this.loading = false;
             
@@ -458,14 +458,20 @@ const vueApp = createApp({
 
         loadGreetings(){
             const now = new Date();
-            if(now.getHours() < 12){
+            if(now.getHours() < 8){
+                this.greetingsTime = 'Già sveglio';
+            }
+            if(now.getHours() < 13){
                 this.greetingsTime = 'Buongiorno';
             }
             else if(now.getHours() < 18){
                 this.greetingsTime = 'Buon pomeriggio';
             }
-            else if (now.getHours() < 24){
+            else if (now.getHours() < 22){
                 this.greetingsTime = 'Buonasera';
+            }
+            else {
+                this.greetingsTime = 'Ora della nanna';
             }
         },
 
@@ -1200,41 +1206,42 @@ const vueApp = createApp({
                 else this.scrollPrev();
             });
         },
+
 		addToCalendar(program) {
-    const title = `${program.channelName} - ${program.title}`;
-    const start = this.formatICSDate(program.start);
-    const end = this.formatICSDate(program.stop);
+            const title = `${program.channelName} - ${program.title}`;
+            const start = this.formatICSDate(program.start);
+            const end = this.formatICSDate(program.stop);
 
-    const icsContent =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//GuidaTV//EN
-BEGIN:VEVENT
-UID:${program.id}@guidatv
-DTSTAMP:${this.formatICSDate(new Date())}
-DTSTART:${start}
-DTEND:${end}
-SUMMARY:${title}
-DESCRIPTION:${program.description || ''}
+            const icsContent =
+            `BEGIN:VCALENDAR
+            VERSION:2.0
+            PRODID:-//GuidaTV//EN
+            BEGIN:VEVENT
+            UID:${program.id}@guidatv
+            DTSTAMP:${this.formatICSDate(new Date())}
+            DTSTART:${start}
+            DTEND:${end}
+            SUMMARY:${title}
+            DESCRIPTION:${program.description || ''}
 
-BEGIN:VALARM
-TRIGGER:-PT10M
-ACTION:DISPLAY
-DESCRIPTION:Promemoria
-END:VALARM
+            BEGIN:VALARM
+            TRIGGER:-PT10M
+            ACTION:DISPLAY
+            DESCRIPTION:Promemoria
+            END:VALARM
 
-END:VEVENT
-END:VCALENDAR`;
+            END:VEVENT
+            END:VCALENDAR`;
 
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${program.cleanTitle}.ics`;
-    a.click();
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${program.cleanTitle}.ics`;
+            a.click();
 
-    URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url);
         },
 		formatICSDate(date) {
              const d = new Date(date);
