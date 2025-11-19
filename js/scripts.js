@@ -689,6 +689,26 @@ const vueApp = createApp({
         },
 
         getEpgPrograms(channel) {
+            
+            // c'è un problema, se non ci sono programmi, mi lascia una riga vuota e non funziona l'epg.
+            const today = new Date();
+            today.setHours(this.EPG_START_DAY,0,0,0);
+            const endDay = new Date();
+            endDay.setHours(24,0,0,0);
+            const emptyProgram = {
+                id: channel.id + '-0',
+                title: 'Nessun programma',
+                description: '',
+                start: today,
+                end:  endDay,
+                stop: endDay, 
+                startTime: this.formatTime(today),
+                stopTime: this.formatTime(endDay),
+                category: '',
+                image: '/img/placeholder.png',
+            };
+            var programs = [];
+
             try {
                 const now = new Date();
 
@@ -704,7 +724,7 @@ const vueApp = createApp({
                 const endOfDay = new Date();
                 endOfDay.setHours(this.EPG_EVENING_END, 30, 0, 0);
 
-                return channel.programs.filter(program => {
+                programs = channel.programs.filter(program => {
 
                     // --- FILTRO: ONLY EVENING ---
                     if (this.epgOnlyEvening) {
@@ -743,10 +763,17 @@ const vueApp = createApp({
                     return true;
                 });
 
+                
+
             } catch (err) {
                 console.error('getEpgPrograms Error:', err);
-                return [];
             }
+            
+            if (programs.length == 0){
+                programs.push(emptyProgram);
+            }
+            return programs;
+
         },
 
         calculateProgress(program) {
