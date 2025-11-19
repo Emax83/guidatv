@@ -325,26 +325,23 @@ const vueApp = createApp({
                 }
 
                 jsonData = await response.json();
-                var programId = 0;
-                var channelId = 0;
                 // creo la lista arrichita.
-                this.channels = jsonData.map(item => {
-                    channelId++;
+                this.channels = jsonData.map(channel => {
                     return {
-                        id: channelId,
-                        name: item.name,
-                        epgName: item.epgName,
-                        logo: item.logo || '/img/placeholder.png',
+                        id: channel.id,
+                        name: channel.name,
+                        epgName: channel.epgName,
+                        logo: channel.logo || '/img/placeholder.png',
                         externalUrl:
-                            this.officialLinks.find(link => link.epgName === item.name)?.externalUrl ||
-                            "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(item.name),
-                        isFavorite: false,
-                        programs: item.programs.map(program => {
+                            this.officialLinks.find(link => link.epgName === channel.epgName)?.externalUrl ||
+                            "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(channel.name),
+                        isFavorite: this.isFavoriteChannel(channel.name),
+                        link: channel.link,
+                        programs: channel.programs.map(program => {
                             const startLocal = this.utcToLocal(program.start);
                             const endLocal = this.utcToLocal(program.end);
-                            programId++;
                             return {
-                                id: channelId + '-' + programId,
+                                id: channel.id + '-' + program.id,
                                 start: startLocal,
                                 stop: endLocal,
                                 end: endLocal, // retrocompatibilità
@@ -366,8 +363,9 @@ const vueApp = createApp({
                                 showFullDescription: !this.isMobile,
                                 category: program.category || '',
                                 image: program.poster || '/img/placeholder.png',
-                                channelName: item.name,
-                                channelLogo: item.logo || '/img/placeholder.png',
+                                link: program.link,
+                                channelName: channel.name,
+                                channelLogo: channel.logo || '/img/placeholder.png',
                             };
                         })
                     };

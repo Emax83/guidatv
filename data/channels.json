@@ -1,162 +1,162 @@
 [
     {
-        "id":"rai-1",
-        "epgName":"Rai 1",
+        "epgName":"rai-1",
+        "name":"Rai 1",
         "externalUrl": "https://www.raiplay.it/dirette/rai1"
     },
     {
-        "id":"rai-2",
-        "epgName":"Rai 2",
+        "epgName":"rai-2",
+        "name":"Rai 2",
         "externalUrl": "https://www.raiplay.it/dirette/rai2"
     },
     {
-        "id":"rai-3",
-        "epgName":"Rai 3",
+        "epgName":"rai-3",
+        "name":"Rai 3",
         "externalUrl": "https://www.raiplay.it/dirette/rai3"
     },
     {
-        "id":"rai-4",
-        "epgName":"Rai 4",
+        "epgName":"rai-4",
+        "name":"Rai 4",
         "externalUrl": "https://www.raiplay.it/dirette/rai4"
     },
     {
-        "id":"rai-5",
-        "epgName":"Rai 5",
+        "epgName":"rai-5",
+        "name":"Rai 5",
         "externalUrl": "https://www.raiplay.it/dirette/rai5"
     },
     {
-        "id":"rai-movie",
-        "epgName":"Rai Movie",
+        "epgName":"rai-movie",
+        "name":"Rai Movie",
         "externalUrl": "https://www.raiplay.it/dirette/raimovie"
     },
     {
-        "id":"rete-4",
-        "epgName":"Rete 4",
+        "epgName":"rete-4",
+        "name":"Rete 4",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/rete4_cR4"
     },
     {
-        "id":"canale-5",
-        "epgName":"Canale 5",
+        "epgName":"canale-5",
+        "name":"Canale 5",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/canale5_cC5"
     },
     {
-        "id":"italia-1",
-        "epgName":"Italia 1",
+        "epgName":"italia-1",
+        "name":"Italia 1",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/italia1_cI1"
     },
     {
-        "id":"la7",
-        "epgName":"LA7",
+        "epgName":"la7",
+        "name":"LA7",
         "externalUrl": "https://www.la7.it/dirette-tv"
     },
     {
-        "id":"la7d",
-        "epgName":"LA7D",
+        "epgName":"la7d",
+        "name":"LA7D",
         "externalUrl": "https://www.la7.it/dirette-tv"
     },
     {
-        "id":"tv8",
-        "epgName":"TV8",
+        "epgName":"tv8",
+        "name":"TV8",
         "externalUrl": "https://www.tv8.it/streaming"
     },
     {
-        "id":"nove",
         "epgName":"nove",
+        "name":"nove",
         "externalUrl": "https://nove.tv/"
     },
     {
-        "id":"iris",
         "epgName":"iris",
+        "name":"iris",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/iris_cKI"
     },
     {
-        "id":"cielo",
-        "epgName":"Cielo",
+        "epgName":"cielo",
+        "name":"Cielo",
         "externalUrl": "https://www.raiplay.it/dirette/rai2"
     },
     {
-        "id":"la5",
-        "epgName":"La5",
+        "epgName":"la5",
+        "name":"La5",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/la5_cKA"
     },
     {
-        "id":"real-time",
-        "epgName":"Real Time",
+        "epgName":"real-time",
+        "name":"Real Time",
         "externalUrl": "https://realtime.it/"
     },
     {
-        "id":"cine-34",
-        "epgName":"Cine 34",
+        "epgName":"cine-34",
+        "name":"Cine 34",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/cine34_cB6"
     },
     {
-        "id":"twenty-seven",
-        "epgName":"Twenty Seven",
+        "epgName":"twenty-seven",
+        "name":"Twenty Seven",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/_cTS"
     },
     {
-        "id":"focus",
-        "epgName":"Focus",
+        "epgName":"focus",
+        "name":"Focus",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/focus_cFU"
     },
     {
-        "id":"warner-tv",
-        "epgName":"discovery",
+        "epgName":"warner-tv",
+        "name":"discovery",
         "externalUrl": "https://discovery.it/"
     },
     {
-        "id":"italia-2",
-        "epgName":"Italia 2",
+        "epgName":"italia-2",
+        "name":"Italia 2",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/italia2_cI2"
     },
     {
-        "id":"tgcom-24",
-        "epgName":"Tgcom 24",
-        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/video_cKF"
+        "epgName":"tgcom-24",
+        "name":"Tgcom 24",
+        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/vepgNameeo_cKF"
     },
     {
-        "id":"dmax",
-        "epgName":"DMAX",
+        "epgName":"dmax",
+        "name":"DMAX",
         "externalUrl": "https://dmax.it/"
     },
     {
-        "id":"mediaset-venti",
-        "epgName":"Mediaset 20",
+        "epgName":"mediaset-venti",
+        "name":"Mediaset 20",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/20mediaset_cLB"
     },
     {
-        "id":"mediaset-extra",
-        "epgName":"Mediaset Extra",
+        "epgName":"mediaset-extra",
+        "name":"Mediaset Extra",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/mediasetextra_cKQ"
     },
     {
-        "id":"giallo",
-        "epgName":"Giallo",
+        "epgName":"giallo",
+        "name":"Giallo",
         "externalUrl": "https://giallotv.it/"
     },
     {
-        "id":"top-crime",
-        "epgName":"Top Crime",
+        "epgName":"top-crime",
+        "name":"Top Crime",
         "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/topcrime_cLT"
     },
     {
-        "id":"boing",
-        "epgName":"Boing",
-        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/kids_cKB"
+        "epgName":"boing",
+        "name":"Boing",
+        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/kepgNames_cKB"
     },
     {
-        "id":"frisbee",
-        "epgName":"Frisbee",
+        "epgName":"frisbee",
+        "name":"Frisbee",
         "externalUrl": ""
     },
     {
-        "id":"cartoonito",
-        "epgName":"Cartoonito",
-        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/kids_cLA"
+        "epgName":"cartoonito",
+        "name":"Cartoonito",
+        "externalUrl": "https://mediasetinfinity.mediaset.it/diretta/kepgNames_cLA"
     },
     {
-        "id":"k2",
-        "epgName":"K2",
+        "epgName":"k2",
+        "name":"K2",
         "externalUrl": ""
     }
 ]
