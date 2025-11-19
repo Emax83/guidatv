@@ -363,6 +363,7 @@ const vueApp = createApp({
                                 tmdbLink: '',
                                 description: program.description || '',
                                 shortDescription: (program.description?.substring(0, 100) + "..." || ''),
+                                showFullDescription: !this.isMobile,
                                 category: program.category || '',
                                 image: program.poster || '/img/placeholder.png',
                                 channelName: item.name,
