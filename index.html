@@ -105,7 +105,7 @@
 
             <section class="greetings mb-3" v-cloak>
                 <div>
-                    <button class="btn btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
+                    <button class="btn  btn-sm btn-dark float-end" @click="greetingsName = 'straniero'"><i class="bi bi-eraser"></i></button>
                     <h2 class="greeting">{{greetingsTime}}, {{greetingsName}} </h2>
                 </div>
                 <div v-if="greetingsName == 'straniero' || !greetingsName">
@@ -159,7 +159,7 @@
             <!-- FAVORITI -->
             <section class="favorites mb-3" v-if="!loading && hasFavorites">
                 <div>
-                    <button class="btn btn-dark float-end" @click="clearFavorites"><i class="bi bi-eraser"></i></button>
+                    <button class="btn btn-sm btn-dark float-end" @click="clearFavorites"><i class="bi bi-eraser"></i></button>
                     <h2 class="section-title">I tuoi preferiti</h2>
                 </div>
                 <div class="fav-list" >
