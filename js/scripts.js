@@ -1173,16 +1173,35 @@ const vueApp = createApp({
             this.startY = 0;
             this.currentY = 0;
         },
-         getCardWidth(){
-       const first = this.$refs.carousel?.querySelector('.tv-carousel-item');
-       return first ? first.clientWidth : 300;
-     },
-       scrollNext() {
+
+        getSlideSize() {
+            const container = this.$refs.carousel;
+            if (!container) return 300;
+
+            const first = container.querySelector('.tv-carousel-item');
+            if (!first) return 300;
+
+            const rect = first.getBoundingClientRect();
+            const style = getComputedStyle(container);
+            
+            const gap = parseFloat(style.columnGap || style.gap || 0);
+
+            return rect.width + gap;
+        },
+
+        getCardWidth(){
+            const first = this.$refs.carousel?.querySelector('.tv-carousel-item');
+            return first ? first.clientWidth : 300;
+        },
+        scrollNext() {
             if(this.currentSection == 'homepage'){
                 const el = this.$refs.carousel;
                 if(!el) return;
-                const w = this.getCardWidth();
-                el.scrollBy({ left: w, behavior: 'smooth' });
+
+                /*const w = this.getCardWidth();
+                el.scrollBy({ left: w, behavior: 'smooth' });*/
+                const step = this.getSlideSize();
+                el.scrollBy({ left: step, behavior: 'smooth' });
             }
         },
 
@@ -1190,8 +1209,10 @@ const vueApp = createApp({
             if(this.currentSection == 'homepage'){
                 const el = this.$refs.carousel;
                 if(!el) return;
-                const w = this.getCardWidth();
-                el.scrollBy({ left: -w, behavior: 'smooth' });
+                /*const w = this.getCardWidth();
+                el.scrollBy({ left: -w, behavior: 'smooth' });*/
+                const step = this.getSlideSize();
+                el.scrollBy({ left: -step, behavior: 'smooth' });
             }
         },
 

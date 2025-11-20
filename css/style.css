@@ -1064,6 +1064,7 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     font-weight: 600;
     margin-bottom: 10px;
     margin-right: 10px;
+    display: inline-block;
 }
 
 /* Badge rosso lampeggiante */
