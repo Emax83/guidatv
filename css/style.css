@@ -1052,6 +1052,11 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
     cursor: pointer!important;
 }
 
+.text-ellipsis{
+    white-space: nowrap;
+    text-wrap: ellipsis;
+}
+
 .badge {
     padding: 0.4rem 0.8rem;
     border-radius: 1rem;

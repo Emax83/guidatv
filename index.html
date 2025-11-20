@@ -495,12 +495,12 @@
 
                         <div class="border-top mt-2 py-2 row" >
                             <div class="col-12 col-sm-6">
-                            <button v-if="movie.isScheduled" type="button" class="btn btn-primary w-100 mb-1 box-shadow" @click="addToCalendar(movie)">
+                            <button v-if="movie.isScheduled" type="button" class="btn btn-primary w-100 mb-2 box-shadow" @click="addToCalendar(movie)">
                                 <i class="bi bi-calendar-plus"></i> Promemoria
                             </button>
                             </div>
                             <div class="col-12 col-sm-6">
-                            <a class="btn btn-primary w-100 mb-1 box-shadow" :href="movie.channelLink" target="_blank" >
+                            <a class="btn btn-primary w-100 mb-2 box-shadow" :href="movie.channelLink" target="_blank" >
                                 <i class="bi bi-play-fill"></i> Guarda Online
                             </a>
                             </div>
@@ -533,15 +533,19 @@
             </div>
             <div id="searchResults" class="search-results-list" v-show="searchResults.length > 0">
                 <div v-for="item in searchResults" class="search-result" @click="handleSearchResultClick(item)">
-                    <div class="d-flex align-items-center">
-                        <img :src="item.image" class="search-result-image" loading="lazy" >
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">{{item.title}}</div>
-                            <small class="text-light">
+                    <div class="row">
+                        <div class="col-3">
+                            <img :src="item.image" class="search-result-image" loading="lazy" >
+                        </div>
+                        <div class="col-9">
+                            <div class="fw-bold text-ellipsis">{{item.title}}</div>
+                            <div class="d-flex">
                                 <span v-if="item.channel" class="me-3 fw-bold"><i class="bi bi-tv"></i> {{item.channel.name}}</span>
                                 <span v-if="item.program" class="me-3"><i class="bi bi-clock"></i> {{ item.program.startTime}}</span>
+                            </div>
+                            <div class="d-flex">
                                 <span v-if="item.program" class="program-genre me-3">{{item.program.category}}</span>
-                            </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -590,7 +594,7 @@
                     <i class="bi bi-clock"></i> {{selectedProgram.startTime}} • {{selectedProgram.durationMin}}min
                 </div>
 
-                <div>
+                <div class="d-flex">
                     <span class="program-genre">{{selectedProgram.category}}</span>
                     <span class="badge bg-success box-shadow" v-if="selectedProgram.isScheduled"><i class="bi bi-calendar-check"></i> Oggi</span>
                     <span class="badge bg-warning box-shadow" v-else><i class="bi bi-calendar-x"></i> Non In Programma</span>
@@ -609,7 +613,7 @@
                         </a>
                     </div>
                 </div>
-                <div v-else>
+                <div v-else-if="selectedProgram.isScheduled">
                     <div class="border-top mt-2 pt-2">
                         <button type="button" class="btn btn-primary w-100" @click="addToCalendar(selectedProgram)">
                             <i class="bi bi-calendar-plus"></i> Aggiungi a Calendario
