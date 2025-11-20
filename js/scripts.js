@@ -119,6 +119,7 @@ const vueApp = createApp({
             const searchLower = this.searchQuery.toLowerCase();
             const today = new Date();
             today.setHours(0, 0, 0, 0);
+            let isScheduled = false;
 
             this.channels.forEach(channel => {
                 if (channel.name.toLowerCase().includes(searchLower)) {
@@ -136,6 +137,7 @@ const vueApp = createApp({
                 channel.programs.forEach(program => {
                     if (program.title.toLowerCase().includes(searchLower)
 					   || program.category?.toLowerCase().includes(searchLower)) {
+                        let isScheduled = false;
                         const start = this.utcToLocal(program.start);
                         if (start.toDateString() === today.toDateString()) {
                             results.push({

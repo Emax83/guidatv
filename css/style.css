@@ -1053,8 +1053,11 @@ input[type="checkbox"], .form-check, .form-check-label, .form-check-input {
 }
 
 .badge {
-    padding: 0.4rem 0.8rem ;
+    padding: 0.4rem 0.8rem;
     border-radius: 1rem;
+    max-height: 1.5rem;
+    height: 1.5rem;
+    line-height: 0;
 }
 
 /* Badge rosso lampeggiante */

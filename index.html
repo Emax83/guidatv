@@ -186,7 +186,8 @@
                         <div class="program-time d-none">{{program.startTime}} - {{program.durationMin}}</div>
                         <div class="d-flex" style="flex-flow: wrap;">
                             <span class="program-genre">{{program.category}}</span>
-                            <span class="badge bg-warning" v-if="program.isScheduled"><i class="bi bi-clock"></i> Oggi</span>
+                            <span class="badge bg-success" v-if="program.isScheduled"><i class="bi bi-calendar-check"></i> Oggi</span>
+                            <span class="badge bg-warning" v-else><i class="bi bi-calendar-x"></i> Non In Programma</span>
                         </div>
                         </div>
                     </div>
@@ -492,12 +493,17 @@
                             <p class="mt-3 program-description">{{movie.description}}</p>
                         </div>
 
-                        
-
-                        <div class="border-top mt-2" >
-                                <a class="btn btn-primary mt-3 w-100" :href="movie.channelLink" target="_blank" >
-                                    <i class="bi bi-play-fill"></i> Guarda Online
-                                </a>
+                        <div class="border-top mt-2 py-2 row" >
+                            <div class="col-12 col-sm-6">
+                            <button v-if="movie.isScheduled" type="button" class="btn btn-primary w-100 mb-1 box-shadow" @click="addToCalendar(movie)">
+                                <i class="bi bi-calendar-plus"></i> Promemoria
+                            </button>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                            <a class="btn btn-primary w-100 mb-1 box-shadow" :href="movie.channelLink" target="_blank" >
+                                <i class="bi bi-play-fill"></i> Guarda Online
+                            </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -567,6 +573,9 @@
                 </div>
             </div>
             <div class="program-card" v-if="selectedProgram">
+                
+                <div class="badge-live" v-if="selectedProgram.isOnAir"><i class="bi bi-broadcast"></i></div>
+
                 <img :src="selectedProgram.image" class="program-image">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                         <h3 class="program-title">{{selectedProgram.title}}</h3>
@@ -580,11 +589,15 @@
                 <div class="program-time">
                     <i class="bi bi-clock"></i> {{selectedProgram.startTime}} • {{selectedProgram.durationMin}}min
                 </div>
-                <span class="program-genre">{{selectedProgram.category}}</span>
 
-                <div class="badge-live" v-if="selectedProgram.isOnAir"><i class="bi bi-broadcast"></i></div>
+                <div>
+                    <span class="program-genre">{{selectedProgram.category}}</span>
+                    <span class="badge bg-success box-shadow" v-if="selectedProgram.isScheduled"><i class="bi bi-calendar-check"></i> Oggi</span>
+                    <span class="badge bg-warning box-shadow" v-else><i class="bi bi-calendar-x"></i> Non In Programma</span>
+                </div>
 
-                <p class="mt-3">{{selectedProgram.description}}</p>
+                <div class="mt-3">{{selectedProgram.description}}</div>
+
                 <div class="mt-3" v-if="selectedProgram.isOnAir">
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" :style="{ width: getProgress(selectedProgram) + '%' }"></div>
