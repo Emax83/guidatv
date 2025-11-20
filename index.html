@@ -495,12 +495,12 @@
 
                         <div class="border-top mt-2 py-2 row" >
                             <div class="col-12 col-sm-6">
-                            <button v-if="movie.isScheduled" type="button" class="btn btn-primary w-100 mb-2 box-shadow" @click="addToCalendar(movie)">
+                            <button v-if="movie.isScheduled" type="button" class="btn btn-primary w-100 mb-3 box-shadow" @click="addToCalendar(movie)">
                                 <i class="bi bi-calendar-plus"></i> Promemoria
                             </button>
                             </div>
                             <div class="col-12 col-sm-6">
-                            <a class="btn btn-primary w-100 mb-2 box-shadow" :href="movie.channelLink" target="_blank" >
+                            <a class="btn btn-primary w-100 mb-3 box-shadow" :href="movie.channelLink" target="_blank" >
                                 <i class="bi bi-play-fill"></i> Guarda Online
                             </a>
                             </div>
@@ -613,7 +613,7 @@
                         </a>
                     </div>
                 </div>
-                <div v-else-if="selectedProgram.isScheduled">
+                <div v-if="selectedProgram.isScheduled">
                     <div class="border-top mt-2 pt-2">
                         <button type="button" class="btn btn-primary w-100" @click="addToCalendar(selectedProgram)">
                             <i class="bi bi-calendar-plus"></i> Aggiungi a Calendario
