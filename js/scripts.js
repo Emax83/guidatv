@@ -336,6 +336,7 @@ const vueApp = createApp({
                         programs: channel.programs.map(program => {
                             const startLocal = this.utcToLocal(program.start);
                             const endLocal = this.utcToLocal(program.end);
+                            const cleanTitle = this.cleanTitle(program.title);
                             return {
                                 id: channel.id + '-' + program.id,
                                 start: startLocal,
@@ -349,11 +350,11 @@ const vueApp = createApp({
                                 isEvening: startLocal.getHours() >= this.EPG_EVENING_START,
                                 isSameDay: startLocal.toDateString() === now.toDateString(),
                                 isOnAir: (endLocal > now && now >= startLocal), // si aggiornarà nella funzione updateIsOnAir
-                                isFavorite: false, // verrà impostato.
+                                isFavorite: this.isFavoriteProgram(cleanTitle), 
                                 isScheduled: true, // essendo nella guida è true
                                 title: program.title,
-                                cleanTitle: this.cleanTitle(program.title),
-                                tmdbLink: '',
+                                cleanTitle: cleanTitle,
+                                tmdbLink: (program.category == "Film" ? 'https://www.themoviedb.org/search?query=' + encodeURIComponent(cleanTitle) : ''),
                                 description: program.description || '',
                                 shortDescription: (program.description?.substring(0, 100) + "..." || ''),
                                 showFullDescription: !this.isMobile,
