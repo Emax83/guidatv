@@ -327,7 +327,7 @@ const vueApp = createApp({
                         id: channel.id,
                         name: channel.name,
                         epgName: channel.epgName,
-                        logo: channel.logo || '/img/placeholder.png',
+                        logo: (channel.logo || '/img/placeholder.png').replace("theme=light","theme=dark"),
                         externalUrl:
                             this.officialLinks.find(link => link.epgName === channel.epgName)?.externalUrl ||
                             "https://www.google.com/search?q=live+streaming+" + encodeURIComponent(channel.name),
