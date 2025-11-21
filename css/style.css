@@ -405,7 +405,7 @@ body {
   margin: 0;
 }
 
-.list-group-item{
+.epg-program-list .list-group-item{
     background-color: inherit!important;
     border-bottom: solid 1px var(--card-bg);
 }
@@ -493,7 +493,7 @@ body {
 
   .epg-column {
     width: 85%;
-    min-width: 290px;
+    min-width: 270px;
   }
 
   .logo-image {
