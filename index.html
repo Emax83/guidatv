@@ -177,9 +177,9 @@
                         <div class="badge-live" v-if="program.isOnAir"><i class="bi bi-broadcast"></i></div>
 
                         <div class="fav-card-channel-logo">
-                        <img :alt="program.channelName" :title="program.channelName" :src="program.channelLogo" loading="lazy" />
+                        <img :alt="program.channelName" :title="program.channelName" :src="program.channelLogo" @error="handleImageError" loading="lazy" />
                         </div>
-                        <img :alt="program.cleanTitle" :title="program.cleanTitle" :src="program.image" loading="lazy" />
+                        <img :alt="program.cleanTitle" :title="program.cleanTitle" :src="program.image" @error="handleImageError" loading="lazy" />
                         
                         <div class="fav-card-program-overlay" >
                         <div class="program-title">{{program.cleanTitle}}</div>
@@ -580,7 +580,7 @@
                 
                 <div class="badge-live" v-if="selectedProgram.isOnAir"><i class="bi bi-broadcast"></i></div>
 
-                <img :src="selectedProgram.image" class="program-image">
+                <img :src="selectedProgram.image" @error="handleImageError(event)" class="program-image" :alt="selectedProgram.title" :title="selectedProgram.title" />
                 <div class="d-flex justify-content-between align-items-start mb-2">
                         <h3 class="program-title">{{selectedProgram.title}}</h3>
                         
@@ -631,14 +631,14 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between">
-                    <img  class="channel-logo" :src="selectedChannel.logo" :alt="selectedChannel.name">
+                    <img :title="selectedChannel.name" class="channel-logo" :src="selectedChannel.logo" @error="handleImageError(event)" :alt="selectedChannel.name" />
                     <h5 class="modal-title me-5" id="scheduleChannelName">{{selectedChannel.name}}</h5>
 
                     <button class="favorite-btn" :class="{'active' : isFavoriteChannel(selectedChannel.name)}" @click="toggleFavoriteChannel(selectedChannel.name)" title="Aggiungi canale ai preferiti">
                         <i class="bi bi-star"></i>
                     </button>
 
-                    <button type="button" class="btn-close btn-close-white text-white" @click="showScheduleModal = false"></button>
+                    <button title="Close" type="button" class="btn-close btn-close-white text-white" @click="showScheduleModal = false"></button>
                 </div>
                 <div class="modal-body" id="scheduleContent" >
                     <div class="program-card" :class="{ 'border-primary': program.isOnAir }"

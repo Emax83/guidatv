@@ -69,6 +69,7 @@ const vueApp = createApp({
             const today = now.toDateString();
 
             return this.favorites.programs.map(p => {
+
                 let isOnAir = false;
                 let isScheduled = false;
 
@@ -76,7 +77,6 @@ const vueApp = createApp({
                 for (const channel of this.channels) {
                     // trova se c'è un programma con lo stesso cleanTitle
                     const prog = channel.programs.find(pr => pr.cleanTitle === p.cleanTitle);
-
                     if (prog) {
                         // programma trovato nella lista corrente
                         // aggiorna isScheduled se il programma è programmato oggi
@@ -84,23 +84,17 @@ const vueApp = createApp({
                         if (progDate === today) {
                             isScheduled = true;
                         }
-
                         // aggiorna isOnAir se il programma è in onda ora
                         if (prog.isOnAir) {
                             isOnAir = true;
                         }
                     }
-
-                    // se entrambi già veri, possiamo uscire dal ciclo
-                    if (isOnAir && isScheduled) break;
                 }
 
-                return {
-                    ...p,
-                    isOnAir,
-                    isScheduled,
-                    isFavorite: true,
-                };
+                p.isOnAir = isOnAir;
+                p.isScheduled = isScheduled;
+
+                return p;
             });
         },
 
@@ -925,12 +919,28 @@ const vueApp = createApp({
             return now >= start && now <= stop;
         },*/
 
-        isProgramLive(program) {
-            if (program){
-                const now = new Date();
-                const start = this.utcToLocal(program.start);
-                const end = this.utcToLocal(program.stop);
-                return now >= start && now < end;
+        isProgramLive(programTitle) {
+            if (programTitle){
+                // devo cercare se esiste un programma con lo stesso nome che è attualmente LIVE
+                this.channels.forEach(c => {
+                    if(c.programs.some(p => p.cleanTitle === programTitle && p.isOnAir == true)){
+                        return true;
+                    }
+                });
+            }
+            return false;
+        },
+
+        isProgramScheduled(programTitle) {
+            if (programTitle){
+                // devo cercare se esiste un programma con lo stesso nome che è schedulato nella data odierna
+                this.channels.forEach(c => {
+                    if(c.programs.some(p => p.cleanTitle === programTitle && p.isScheduled == true)){
+                        return true;
+                    }
+                });
+
+                return ;
             }
             return false;
         },
@@ -1073,6 +1083,7 @@ const vueApp = createApp({
 
         handleFavoriteProgramClick(program) {
             const channel = JSON.parse(JSON.stringify(this.channels.find(c => c.name === program.channelName))); 
+            program.isScheduled = this.isProgramScheduled(program.cleanTitle);
             if (program.isScheduled) {
                 const sameTitlePrograms = channel.programs.filter(
                     item => item.cleanTitle === program.cleanTitle
@@ -1135,12 +1146,13 @@ const vueApp = createApp({
             }
         },
 
-        /* handleImageError(event) {
+        handleImageError(event) {
             const fallback = "/img/placeholder.png";
             if (event.target.src.includes(fallback)) return;
             event.target.src = fallback;
             //event.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%231a1f3a' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' font-size='14' fill='%230dcaf0' text-anchor='middle' dy='.3em'%3ETV%3C/text%3E%3C/svg%3E";
-        }, */
+        }, 
+
 		updateDevice() {
       		this.isMobile = checkIsMobile();
   	    },
