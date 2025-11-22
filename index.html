@@ -568,8 +568,8 @@
         <div class="p-4" id="bottomSheetContent">
             <div class="text-center mb-3">
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
-                    <img class="logo-image" :src="selectedChannel.logo" :alt="selectedChannel.name" :title="selectedChannel.name">
-                    <h4 class="mx-3">{{selectedChannel.name}}</h4>
+                    <img class="logo-image" @click="showChannelSchedule(selectedChannel)" :src="selectedChannel.logo" :alt="selectedChannel.name" :title="selectedChannel.name">
+                    <h4 class="mx-3" @click="showChannelSchedule(selectedChannel)" >{{selectedChannel.name}}</h4>
 
                     <button class="favorite-btn float-end" :class="{'active' : isFavoriteChannel(selectedChannel.name)}" @click="toggleFavoriteChannel(selectedChannel.name)" title="Aggiungi canale ai preferiti">
                         <i class="bi bi-star"></i>
