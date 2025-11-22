@@ -1026,7 +1026,17 @@ const vueApp = createApp({
             this.showBottomSheet = true;
         },
 
+        // usato da movie: movie.channelName
+        getChannelFromName(channelName){
+            const channel = this.channels.find(c => c.name === channelName);
+            return channel;
+        },
+
         showChannelSchedule(channel) {
+            if(!channel){
+                return;
+            }
+
             this.selectedChannel = channel;
             this.selectedProgram = null;
             this.showScheduleModal = true;

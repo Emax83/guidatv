@@ -453,7 +453,7 @@
                 <div class="movie-card" v-for="movie in allMovies">
                     <div class="text-center mb-3">
                         <div class="d-flex justify-content-center align-items-center gap-2 mt-2" >
-                            <div @click="showChannelSchedule(movie.channelName)">
+                            <div title="Programmazione" style="cursor: pointer;" @click="showChannelSchedule(getChannelFromName(movie.channelName))">
                                 <img class="d-inline-block logo-image" :src="movie.channelLogo" :alt="movie.channelName" :title="movie.channelName">
                                 <h4 class="d-inline-block mx-3">{{movie.channelName}}</h4>
                             </div>
